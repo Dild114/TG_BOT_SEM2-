@@ -31,6 +31,8 @@ public interface DbRepository {
   UserId generateUserId();
   boolean createUser(User user);
   boolean deleteUser(UserId userId);
+  boolean updateUserData(User user);
+  boolean updateUserName();
 
 
 
