@@ -1,0 +1,20 @@
+server:
+  port: 8080
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+spring:
+  application:
+    name: HomeWork
+  datasource:
+    url: jdbc:postgresql://localhost:5432/my_postgres
+    username: postgres
+    password: changeme
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
