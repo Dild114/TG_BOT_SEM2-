@@ -1,31 +1,26 @@
 package app.api.controller;
 
-import app.api.entity.Article;
-//import app.api.entity.Category;
-import app.api.entity.UserId;
-import app.api.service.ArticleService;
-import app.api.controller.interfaceDrivenControllers.ArticleControllerInterface;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import app.api.entity.Article;
+import app.api.service.ArticleService;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/articles")
-public class ArticlesController implements ArticleControllerInterface {
+public class ArticlesController /*implements ArticleControllerInterface*/ {
 
-  private final ArticleService articleService;
+    private final ArticleService articleService;
 
-  public ArticlesController(ArticleService articleService) {
+    public ArticlesController(ArticleService articleService) {
 
-    this.articleService = articleService;
-  }
+        this.articleService = articleService;
+    }
 
 //  @Override
 //  public ResponseEntity<Map<Article, Category>> getArticles(int id) {
@@ -39,9 +34,9 @@ public class ArticlesController implements ArticleControllerInterface {
 //    }
 //  }
 
-  @PostMapping("/create_article")
-  public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-    Article savedArticle = articleService.saveArticle(article);
-    return ResponseEntity.ok(savedArticle);
-  }
+    @PostMapping("/create_article")
+    public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+        Article savedArticle = articleService.saveArticle(article);
+        return ResponseEntity.ok(savedArticle);
+    }
 }
