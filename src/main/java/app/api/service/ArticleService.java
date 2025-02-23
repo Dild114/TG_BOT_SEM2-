@@ -21,6 +21,7 @@ public class ArticleService {
 //    return articles;
 //  }
 
+  @Transactional
   public Article saveArticle(Article article) {
     return articleRepository.save(article);
   }
