@@ -2,9 +2,7 @@ package app.api.controller;
 
 import app.api.entity.Article;
 //import app.api.entity.Category;
-import app.api.entity.UserId;
 import app.api.service.ArticleService;
-import app.api.controller.interfaceDrivenControllers.ArticleControllerInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/articles")
-public class ArticlesController implements ArticleControllerInterface {
+public class ArticlesController{
 
   private final ArticleService articleService;
 
