@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-public class UsersController implements UserControllerInterface {
+public class  UsersController implements UserControllerInterface {
 
   private final UsersService usersService;
 

@@ -24,5 +24,4 @@ public class ArticlesService {
     log.info("getArticles userId={}", userId);
     return articles;
   }
-
 }
