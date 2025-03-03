@@ -24,6 +24,9 @@ public class CategoriesController implements CategoryControllerInterface {
 
   @Override
   public ResponseEntity<List<Category>> getMyCategories(UserId userId) {
+    if (userId.id() <= 0) {
+      throw new IllegalArgumentException("Invalid userId = " + userId.id());
+    }
     log.info("Fetching categories for userId: {}", userId);
     List<Category> categories = categoriesService.findAll(userId);
     return ResponseEntity.ok(categories);

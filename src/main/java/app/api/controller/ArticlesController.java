@@ -6,7 +6,6 @@ import app.api.entity.UserId;
 import app.api.service.ArticlesService;
 import app.api.controller.interfaceDrivenControllers.ArticleControllerInterface;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,13 +23,11 @@ public class ArticlesController implements ArticleControllerInterface {
 
   @Override
   public ResponseEntity<Map<Article, Category>> getArticles(int id) {
-    log.info("Fetching articles for userId={}", id);
-    try {
-      Map<Article, Category> articles = articlesService.getArticles(new UserId(id));
-      return ResponseEntity.ok(articles);
-    } catch (Exception e) {
-      log.error("get articles failed", e);
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    if (id <= 0) {
+      throw new IllegalArgumentException("Invalid userId = " + id);
     }
+    log.info("Fetching articles for userId={}", id);
+    Map<Article, Category> articles = articlesService.getArticles(new UserId(id));
+    return ResponseEntity.ok(articles);
   }
 }
