@@ -18,7 +18,15 @@ public class UsersService {
   public UserId createUser(String userName, String password) {
     log.info("Creating user {}", userName);
     User user = new User(userName, password);
-    return usersRepository.createAccount(user);
+    try {
+      UserId userId = usersRepository.createAccount(user);
+      log.info("User {} created", userId);
+      if ()
+      return userId;
+    } catch (Exception e) {
+      log.error("Error creating user", e);
+    }
+
   }
 
   public void deleteUser(UserId userId) {
