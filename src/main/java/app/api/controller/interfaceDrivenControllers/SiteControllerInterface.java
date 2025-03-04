@@ -11,11 +11,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@Validated
 @Tag(name = "SiteControllerInterface", description = "Управление сайтами")
 @RequestMapping("/site")
 public interface SiteControllerInterface {
@@ -30,10 +32,10 @@ public interface SiteControllerInterface {
       @ApiResponse(responseCode = "200", description = "Получены сайты пользователя"),
       @ApiResponse(responseCode = "400", description = "Некорректные данные")
   })
-  @GetMapping
+  @GetMapping("/{userId}")
   ResponseEntity<List<Site>> mySites(
       @Parameter(description = "ID пользователя", required = true)
-      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestBody Long userId
+      @Valid @Min(value = 1, message = "User ID must be greater than 0") @PathVariable Long userId
   );
 
   @Operation(summary = "Добавить сайт пользователю")
@@ -48,7 +50,7 @@ public interface SiteControllerInterface {
       @Valid @Min(value = 1, message = "Site ID must be greater than 0") @PathVariable Long siteId,
 
       @Parameter(description = "ID пользователя", required = true)
-      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestBody Long userId
+      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestParam Long userId
   );
 
   @Operation(summary = "Удалить сайт пользователя")
@@ -62,6 +64,6 @@ public interface SiteControllerInterface {
       @Valid @Min(value = 1, message = "Site ID must be greater than 0") @PathVariable Long siteId,
 
       @Parameter(description = "ID пользователя", required = true)
-      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestBody Long userId
+      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestParam Long userId
   );
 }

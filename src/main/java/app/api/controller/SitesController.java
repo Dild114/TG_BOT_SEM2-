@@ -46,7 +46,7 @@ public class SitesController implements SiteControllerInterface {
   public ResponseEntity<SiteId> addSite(Long siteId, Long userId) {
     log.info("Adding site for userId: {}", userId);
     sitesService.addSite(new SiteId(siteId), new UserId(userId));
-    return ResponseEntity.status(HttpStatus.CREATED).body(new SiteId(siteId));
+    return ResponseEntity.status(HttpStatus.OK).body(new SiteId(siteId));
   }
 
   @Override

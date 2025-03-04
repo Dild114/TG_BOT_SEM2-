@@ -26,5 +26,6 @@ public class DummySitesRepository implements SitesRepository {
 
   @Override
   public void add(SiteId siteId, UserId userId) {
+
   }
 }
