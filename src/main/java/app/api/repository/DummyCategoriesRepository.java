@@ -27,7 +27,7 @@ public class DummyCategoriesRepository implements CategoriesRepository {
   }
 
   @Override
-  public CategoryId delete(CategoryId id, UserId userId) {
+  public CategoryId delete(CategoryId id) {
     return null;
   }
 

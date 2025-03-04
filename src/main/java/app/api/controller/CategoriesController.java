@@ -5,9 +5,11 @@ import app.api.entity.CategoryId;
 import app.api.entity.UserId;
 import app.api.service.CategoriesService;
 import app.api.controller.interfaceDrivenControllers.CategoryControllerInterface;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +17,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class CategoriesController implements CategoryControllerInterface {
-
   private final CategoriesService categoriesService;
 
   public CategoriesController(CategoriesService categoriesService) {
@@ -23,51 +24,46 @@ public class CategoriesController implements CategoryControllerInterface {
   }
 
   @Override
-  public ResponseEntity<List<Category>> getMyCategories(UserId userId) {
-    if (userId.id() <= 0) {
-      throw new IllegalArgumentException("Invalid userId = " + userId.id());
-    }
+  public ResponseEntity<List<Category>> getMyCategories(Long userId) {
     log.info("Fetching categories for userId: {}", userId);
-    List<Category> categories = categoriesService.findAll(userId);
-    return ResponseEntity.ok(categories);
+    // TODO: исключение
+    List<Category> categories = categoriesService.findAll(new UserId(userId));
+    return ResponseEntity.status(HttpStatus.OK).body(categories);
   }
 
-  @Override
-  public ResponseEntity<?> addCategory(CategoryRequest categoryRequest) {
-    log.info("Add category for userId: {}", categoryRequest.userId());
-    try {
-      CategoryId categoryId = categoriesService.create(categoryRequest.name(), categoryRequest.userId());
-      return ResponseEntity.status(HttpStatus.OK).body(categoryId);
-    } catch (Exception e) {
-      log.error("Failed to add category: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-  }
 
   @Override
-  public ResponseEntity<HttpStatus> deleteCategory(int id, UserId userId) {
-    log.info("Deleting category with ID: {} for userId: {}", id, userId);
-    try {
-      categoriesService.delete(new CategoryId(id), userId);
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    } catch (Exception e) {
-      log.error("Failed to delete category: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
+  public ResponseEntity<Category> getCategoryById(Long categoryId) {
+    //TODO: исключение
+    log.info("Fetching category with ID: {}", categoryId);
+    Category category = categoriesService.findById(new CategoryId(categoryId));
+    return ResponseEntity.status(HttpStatus.OK).body(category);
   }
 
+
   @Override
-  public ResponseEntity<?> addCategories(int userId, String[] categories) {
-    log.info("Adding multiple categories for userId: {}", userId);
-    try {
-      CategoryId[] categoriesId = new CategoryId[categories.length];
-      for (int i = 0; i < categories.length; i++) {
-        categoriesId[i] = categoriesService.create(categories[i], new UserId(userId));
-      }
-      return ResponseEntity.ok(categoriesId);
-    } catch (Exception e) {
-      log.error("Failed to add categories: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
+  public ResponseEntity<CategoryId> createCategoryForUser(CategoryRequest categoryRequest, Long userId) {
+    //TODO: исключение
+    log.info("Creating category for userId: {}", userId);
+    CategoryId categoryId = categoriesService.create(categoryRequest.name(), new UserId(userId));
+    return ResponseEntity.status(HttpStatus.OK).body(categoryId);
+  }
+
+
+  @Override
+  public ResponseEntity<Void> deleteUserCategories(Long userId) {
+    //TODO
+    log.info("Deleting all categories for userId: {}", userId);
+    categoriesService.deleteUser(new UserId(userId));
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+
+  @Override
+  public ResponseEntity<Void> deleteCategory(Long categoryId) {
+    log.info("Deleting category with ID: {}", categoryId);
+    // TODO: исключение
+    categoriesService.deleteCategory(new CategoryId(categoryId));
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

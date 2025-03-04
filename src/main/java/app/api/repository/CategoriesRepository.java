@@ -13,7 +13,7 @@ public interface CategoriesRepository {
 
   Category findById(CategoryId id);
 
-  CategoryId delete(CategoryId id, UserId userId);
+  CategoryId delete(CategoryId id);
 
   boolean create(Category category);
 }

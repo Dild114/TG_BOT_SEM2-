@@ -2,6 +2,7 @@ package app.api.service;
 
 import app.api.entity.Category;
 import app.api.entity.CategoryId;
+import app.api.entity.User;
 import app.api.entity.UserId;
 import app.api.repository.CategoriesRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,16 @@ public class CategoriesService {
     log.info("findById({})", id);
    return category;
   }
-  public void delete(CategoryId id, UserId userId) {
-    categoriesRepository.delete(id, userId);
+  public void deleteCategory(CategoryId id) {
+    categoriesRepository.delete(id);
     log.info("Deleting Category with id {}", id);
+  }
+
+  public void deleteUser(UserId userId) {
+    List<Category> categoryList = categoriesRepository.findAll(userId);
+    for (Category category : categoryList) {
+      categoriesRepository.delete(category.id());
+    }
   }
 
   public CategoryId create(String name, UserId userId) {
