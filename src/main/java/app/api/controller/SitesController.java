@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,9 +25,9 @@ public class SitesController implements SiteControllerInterface {
   }
 
   @Override
-  public ResponseEntity<?> getSites() {
+  public ResponseEntity<Map<String, Integer>> getSites() {
     log.info("Getting all sites");
-    HashMap<String, Integer> sites = new HashMap<>();
+    Map<String, Integer> sites = new HashMap<>();
     int ind = 0;
     for (var site : Sites.values()) {
       sites.put(site.getUrl(), ind++);
@@ -35,33 +36,23 @@ public class SitesController implements SiteControllerInterface {
   }
 
   @Override
-  public ResponseEntity<?> mySites(int userId) {
+  public ResponseEntity<List<Site>> mySites(Long userId) {
     log.info("Getting sites for userId: {}", userId);
     List<Site> sites = sitesService.getSites(new UserId(userId));
-    return ResponseEntity.ok(sites);
+    return ResponseEntity.status(HttpStatus.OK).body(sites);
   }
 
   @Override
-  public ResponseEntity<SiteId> addSite(int siteId, @RequestBody UserId userId) {
+  public ResponseEntity<SiteId> addSite(Long siteId, Long userId) {
     log.info("Adding site for userId: {}", userId);
-    try {
-      sitesService.addSite(new SiteId(siteId), userId);
-      return ResponseEntity.status(HttpStatus.CREATED).body(new SiteId(siteId));
-    } catch (Exception e) {
-      log.error("Adding site failed: ", e);
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
+    sitesService.addSite(new SiteId(siteId), new UserId(userId));
+    return ResponseEntity.status(HttpStatus.CREATED).body(new SiteId(siteId));
   }
 
   @Override
-  public ResponseEntity<Integer> deleteSite(int siteId, UserId userId) {
+  public ResponseEntity<Void> deleteSite(Long siteId, Long userId) {
     log.info("Deleting site for userId: {}", userId);
-    try {
-      sitesService.deleteSite(new SiteId(siteId), userId);
-      return ResponseEntity.ok(siteId);
-    } catch (Exception e) {
-      log.error("Deleting site failed", e);
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
+    sitesService.deleteSite(new SiteId(siteId), new UserId(userId));
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

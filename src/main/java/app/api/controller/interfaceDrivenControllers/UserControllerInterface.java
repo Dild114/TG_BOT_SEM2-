@@ -4,22 +4,30 @@ import app.api.controller.UserRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Validated
 @Tag(name = "UserControllerInterface", description = "Управление пользователями")
 @RequestMapping("/signup")
 public interface UserControllerInterface {
 
   @Operation(summary = "Создать пользователя")
-  @ApiResponse(responseCode = "200", description = "Пользователь создан")
-  @ApiResponse(responseCode = "400", description = "Некорректные данные")
-  @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Пользователь создан"),
+    @ApiResponse(responseCode = "400", description = "Некорректные данные"),
+    @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+  })
   @PostMapping
   ResponseEntity<?> createUser(
       @Parameter(description = "Имя пользователя", required = true)
-      @RequestBody UserRequest userRequest
+      @Valid @RequestBody UserRequest userRequest
   );
 
   @Operation(summary = "Удалить пользователя по id")
@@ -28,7 +36,7 @@ public interface UserControllerInterface {
   @DeleteMapping("/{id}")
   ResponseEntity<?> deleteUser(
       @Parameter(description = "ID пользователя", example = "123")
-      @PathVariable int id
+      @Valid @Min(value = 1, message = "User ID must be greater than 0") @PathVariable Long id
   );
 
   @Operation(summary = "Обновить данные пользователя по id")
@@ -37,10 +45,10 @@ public interface UserControllerInterface {
   @PutMapping("/{id}")
   ResponseEntity<?> updateUserData(
       @Parameter(description = "ID пользователя", example = "123")
-      @PathVariable int id,
+      @Valid @Min(value = 1, message = "Category ID must be greater than 0") @PathVariable Long id,
 
       @Parameter(description = "Пользователь", required = true)
-      @RequestBody UserRequest userRequest
+      @Valid @RequestBody UserRequest userRequest
   );
 
   @Operation(summary = "Обновить имя пользователя")
@@ -49,9 +57,9 @@ public interface UserControllerInterface {
   @PatchMapping("/{id}")
   ResponseEntity<?> updateUserName(
       @Parameter(description = "ID пользователя", example = "123")
-      @PathVariable int id,
+      @Valid @Min(value = 1, message = "User ID must be greater than 0") @PathVariable Long id,
 
       @Parameter(description = "Новое имя пользователя", required = true)
-      @RequestBody String name
+      @NotNull @RequestBody String name
   );
 }

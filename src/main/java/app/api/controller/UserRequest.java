@@ -1,6 +1,9 @@
 package app.api.controller;
 
 
+import jakarta.validation.constraints.NotNull;
+
 public record UserRequest (
-  String name,
-  String password) {}
+  @NotNull String name,
+  @NotNull String password
+) {}

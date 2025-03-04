@@ -21,57 +21,34 @@ public class UsersController implements UserControllerInterface {
   }
 
   @Override
-  public ResponseEntity<UserId> createUser(@RequestBody UserRequest userRequest) {
+  public ResponseEntity<UserId> createUser(UserRequest userRequest) {
     log.info("createUser");
-    if (userRequest == null || userRequest.name() == null || userRequest.name().isEmpty()) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
-    try {
-      UserId userId = usersService.createUser(userRequest.name(), userRequest.password());
-      return ResponseEntity.status(HttpStatus.CREATED).body(userId);
-    } catch (Exception e) {
-      log.error("createUser failed", e);
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
+    UserId userId = usersService.createUser(userRequest.name(), userRequest.password());
+    return ResponseEntity.status(HttpStatus.CREATED).body(userId);
   }
 
   @Override
-  public ResponseEntity<?> deleteUser(int id) {
+  public ResponseEntity<?> deleteUser(Long id) {
     log.info("deleteUser");
     UserId userId = new UserId(id);
-    try {
-      usersService.deleteUser(userId);
-      return ResponseEntity.noContent().build();
-    } catch (Exception e) {
-      log.error("deleteUser failed", e);
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
+    usersService.deleteUser(userId);
+    return ResponseEntity.noContent().build();
   }
 
   @Override
-  public ResponseEntity<?> updateUserData(int id, UserRequest userRequest) {
+  public ResponseEntity<?> updateUserData(Long id, UserRequest userRequest) {
     log.info("Update user data with id: {}", id);
     UserId userId = new UserId(id);
     User user = new User(userRequest.name(), userRequest.password());
-    try {
-      usersService.updateUserData(userId, user);
-      return ResponseEntity.ok("update successful");
-    } catch (Exception e) {
-      log.error("update user failed ", e);
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
+    usersService.updateUserData(userId, user);
+    return ResponseEntity.ok("update successful");
   }
 
   @Override
-  public ResponseEntity<?> updateUserName(int id, String name) {
+  public ResponseEntity<?> updateUserName(Long id, String name) {
     log.info("update username with id: {}", id);
     UserId userId = new UserId(id);
-    try {
-      usersService.updateUserName(userId, name);
-      return ResponseEntity.noContent().build();
-    } catch (Exception e) {
-      log.error("update UserName failed", e);
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
+    usersService.updateUserName(userId, name);
+    return ResponseEntity.noContent().build();
   }
 }

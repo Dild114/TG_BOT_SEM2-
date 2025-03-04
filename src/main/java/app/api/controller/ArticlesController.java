@@ -22,12 +22,9 @@ public class ArticlesController implements ArticleControllerInterface {
   }
 
   @Override
-  public ResponseEntity<Map<Article, Category>> getArticles(int id) {
-    if (id <= 0) {
-      throw new IllegalArgumentException("Invalid userId = " + id);
-    }
-    log.info("Fetching articles for userId={}", id);
-    Map<Article, Category> articles = articlesService.getArticles(new UserId(id));
+  public ResponseEntity<Map<Article, Category>> getArticles(Long userId) {
+    log.info("Fetching articles for userId={}", userId);
+    Map<Article, Category> articles = articlesService.getArticles(new UserId(userId));
     return ResponseEntity.ok(articles);
   }
 }

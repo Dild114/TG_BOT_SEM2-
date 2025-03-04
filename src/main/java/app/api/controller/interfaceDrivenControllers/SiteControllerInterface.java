@@ -6,9 +6,15 @@ import app.api.entity.UserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Tag(name = "SiteControllerInterface", description = "Управление сайтами")
 @RequestMapping("/site")
@@ -17,38 +23,45 @@ public interface SiteControllerInterface {
   @Operation(summary = "Получить все сайты")
   @ApiResponse(responseCode = "200", description = "Получены все сайты")
   @GetMapping("/all")
-  ResponseEntity<?> getSites();
+  ResponseEntity<Map<String, Integer>> getSites();
 
   @Operation(summary = "Получить сайты пользователя по ID")
-  @ApiResponse(responseCode = "200", description = "Получены сайты пользователя")
-  @ApiResponse(responseCode = "400", description = "Некорректные данные")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Получены сайты пользователя"),
+      @ApiResponse(responseCode = "400", description = "Некорректные данные")
+  })
   @GetMapping
-  ResponseEntity<?> mySites(
+  ResponseEntity<List<Site>> mySites(
       @Parameter(description = "ID пользователя", required = true)
-      @RequestBody int userId
+      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestBody Long userId
   );
 
   @Operation(summary = "Добавить сайт пользователю")
-  @ApiResponse(responseCode = "200", description = "Добавлен сайт пользователю")
-  @ApiResponse(responseCode = "400", description = "Некорректные данные")
+
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Добавлен сайт пользователю"),
+      @ApiResponse(responseCode = "400", description = "Некорректные данные")
+  })
   @PatchMapping("/{siteId}")
   ResponseEntity<SiteId> addSite(
       @Parameter(description = "ID сайта", required = true)
-      @PathVariable int siteId,
+      @Valid @Min(value = 1, message = "Site ID must be greater than 0") @PathVariable Long siteId,
 
       @Parameter(description = "ID пользователя", required = true)
-      @RequestBody UserId userId
+      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestBody Long userId
   );
 
   @Operation(summary = "Удалить сайт пользователя")
-  @ApiResponse(responseCode = "200", description = "Сайт пользователя удален")
-  @ApiResponse(responseCode = "404", description = "Сайт не найден")
-  @DeleteMapping("/{id}")
-  ResponseEntity<?> deleteSite(
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Сайт пользователя удален"),
+      @ApiResponse(responseCode = "404", description = "Сайт не найден")
+  })
+  @DeleteMapping("/{siteId}")
+  ResponseEntity<Void> deleteSite(
       @Parameter(description = "ID сайта", required = true)
-      @PathVariable int id,
+      @Valid @Min(value = 1, message = "Site ID must be greater than 0") @PathVariable Long siteId,
 
       @Parameter(description = "ID пользователя", required = true)
-      @RequestBody UserId userId
+      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestBody Long userId
   );
 }
