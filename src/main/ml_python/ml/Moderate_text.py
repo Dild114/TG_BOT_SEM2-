@@ -6,6 +6,8 @@ toxicity_model = pipeline("text-classification", model="unitary/unbiased-toxic-r
 def split_text(text, max_length=450):
     return [text[i:i+max_length] for i in range(0, len(text), max_length)]
 
+
+# если flag = true, то текст норм если false, то не проходит цензуру
 def moderate_text(text):
     chunks = split_text(text)
     flag = True
@@ -19,6 +21,5 @@ def moderate_text(text):
         print(f"Chunk: {chunk[:50]}...")
         print(f"Hate score: {hate_result['score']}, label: {hate_result['label']}")
         print(f"Toxic score: {toxic_result['score']}, label: {toxic_result['label']}\n")
-
-    return {"result": flag}
+    return flag
 

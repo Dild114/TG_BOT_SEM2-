@@ -18,15 +18,24 @@ class RequestModel(BaseModel):
 
 class RequestParsingModel(BaseModel):
     url: str
+class RequestModel(BaseModel):
+    article: str
+    categories : List[str]
+class RequestModelOnlyArticle(BaseModel):
+    article: str
+
 @app.post("/articles")
 async def receive_json(data: RequestModel):
     result = model(data.article, data.categories)
     best_label = result["labels"][0]
     best_score = result["scores"][0]
     best_index = data.categories.index(best_label)
-    return {"best_label": best_label, "best_score": best_score, "best_index": best_index}
+    if best_score > 0.8:
+        return best_index
+    else:
+        return -1
 
-
+# здесь -1 значит что статья не подходит, -2 что не проходит цензуру
 @app.post("/articleswithmoderate")
 async def receive_json(data: RequestModel):
     check_moderate = Moderate_text.moderate_text(data.article)
@@ -37,9 +46,12 @@ async def receive_json(data: RequestModel):
         best_label = result["labels"][0]
         best_score = result["scores"][0]
         best_index = data.categories.index(best_label)
-        return {"best_label": best_label, "best_score": best_score, "best_index": best_index, "Moderate" : check_moderate}
+        if best_score > 0.8:
+            return best_index
+        else:
+            return -1
     else:
-        return {"best_label" : None, "best_score" : None, "best_index" : None, "Moderate" : check_moderate}
+        return -2
 
 @app.post("/check_moderate")
 async def receive_json(data: RequestModel):
@@ -47,7 +59,8 @@ async def receive_json(data: RequestModel):
     return {"Moderate" : check_moderate}
 
 @app.post("/retelling")
-async def receive_json(data: RequestModel):
+async def receive_json(data: RequestModelOnlyArticle):
+    print(data)
     result = Retelling_text.retelling(data.article)
     return result
 
