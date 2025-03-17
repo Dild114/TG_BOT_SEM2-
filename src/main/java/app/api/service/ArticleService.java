@@ -1,12 +1,16 @@
 package app.api.service;
 
 import app.api.entity.Article;
+import app.api.entity.ArticleId;
+import app.api.entity.Category;
 import app.api.repository.ArticleRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -15,14 +19,19 @@ public class ArticleService {
 
   public ArticleRepository articleRepository;
 
-//  public Map<Article, Category> getArticles(UserId userId) {
-//    Map<Article, Category> articles = articleRepository.getArticles(userId);
-//    log.info("getArticles userId={}", userId);
-//    return articles;
-//  }
+  @Transactional
+  public Article addArticle(Article article) {
+    return articleRepository.save(article);
+  }
 
   @Transactional
-  public Article saveArticle(Article article) {
-    return articleRepository.save(article);
+  public Article findArticleById(ArticleId id) {
+    return articleRepository.findById(id).orElse(null);
+  }
+
+  @Transactional
+  public void deleteArticleById(ArticleId id) {
+    Article article = findArticleById(id);
+    articleRepository.delete(article);
   }
 }
