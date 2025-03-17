@@ -10,7 +10,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -23,9 +23,9 @@ public class User {
 
   private String name;
 
-  private Boolean isSubscribeEnabled;
+  private boolean isSubscribeEnabled;
 
-  private Boolean isShortDescriptionEnabled;
+  private boolean isShortDescriptionEnabled;
 
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinTable(
