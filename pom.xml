@@ -47,6 +47,20 @@
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-spring-boot-starter</artifactId>
+            <version>6.9.7.1</version>
+        </dependency>
+		<dependency>
+    		<groupId>jakarta.annotation</groupId>
+    		<artifactId>jakarta.annotation-api</artifactId>
+    		<version>2.1.1</version>
+		</dependency>
 
 
 
