@@ -7,8 +7,9 @@ import app.api.entity.UserId;
 import java.util.List;
 
 public interface SitesRepository {
-  SiteId getSiteId(Site site);
   List<Site> findAllSite(UserId userId);
-  void deleteSiteById(SiteId id, UserId userId);
-  void add(SiteId siteId, UserId userId);
+  void deleteSiteById(SiteId id);
+  void add(Site site);
+  SiteId generateId();
+  Site getSiteById(SiteId id);
 }

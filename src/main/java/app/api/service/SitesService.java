@@ -24,11 +24,14 @@ public class SitesService {
     return sites;
   }
   public void deleteSite(SiteId siteId, UserId userId) {
-    sitesRepository.deleteSiteById(siteId, userId);
+    sitesRepository.deleteSiteById(siteId);
     log.info("Delete site {}", siteId);
   }
-  public void addSite(SiteId siteId, UserId userId) {
-    sitesRepository.add(siteId, userId);
-    log.info("Add site {}", siteId);
+
+  public SiteId addSite(String url) {
+    SiteId siteId = sitesRepository.generateId();
+    Site site = Site.builder().id(siteId).url(url).build();
+    sitesRepository.add(site);
+    return siteId;
   }
 }

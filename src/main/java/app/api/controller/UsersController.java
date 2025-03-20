@@ -1,13 +1,14 @@
 package app.api.controller;
 
 import app.api.controller.interfaceDrivenControllers.UserControllerInterface;
+import app.api.controller.requests.UserRequest;
 import app.api.entity.User;
+import app.api.entity.UserData;
 import app.api.entity.UserId;
 import app.api.service.UsersService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -22,9 +23,21 @@ public class UsersController implements UserControllerInterface {
 
   @Override
   public ResponseEntity<UserId> createUser(UserRequest userRequest) {
-    log.info("createUser");
+    log.info("create user");
     UserId userId = usersService.createUser(userRequest.name(), userRequest.password());
     return ResponseEntity.status(HttpStatus.CREATED).body(userId);
+  }
+
+  @Override
+  public ResponseEntity<User> findUserById(Long userId) {
+    log.info("Find user by id: {}", userId);
+    User user = usersService.getUserById(new UserId(userId));
+    if (user == null) {
+      log.info("User not found");
+      return ResponseEntity.notFound().build();
+    }
+    log.info("User found", user);
+    return ResponseEntity.status(HttpStatus.OK).body(user);
   }
 
   @Override
@@ -37,18 +50,10 @@ public class UsersController implements UserControllerInterface {
 
   @Override
   public ResponseEntity<?> updateUserData(Long id, UserRequest userRequest) {
-    log.info("Update user data with id: {}", id);
+    log.info("Update user data with user id: {}", id);
     UserId userId = new UserId(id);
-    User user = new User(userRequest.name(), userRequest.password());
-    usersService.updateUserData(userId, user);
+    UserData userData = UserData.builder().userName(userRequest.name()).password(userRequest.password()).build();
+    usersService.updateUserData(userId, userData);
     return ResponseEntity.ok("update successful");
-  }
-
-  @Override
-  public ResponseEntity<?> updateUserName(Long id, String name) {
-    log.info("update username with id: {}", id);
-    UserId userId = new UserId(id);
-    usersService.updateUserName(userId, name);
-    return ResponseEntity.noContent().build();
   }
 }

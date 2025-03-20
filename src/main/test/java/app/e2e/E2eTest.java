@@ -1,6 +1,6 @@
-package app.e2e;
-import app.api.controller.CategoryRequest;
-import app.api.controller.UserRequest;
+package java.app.e2e;
+import app.api.controller.requests.CategoryRequest;
+import app.api.controller.requests.UserRequest;
 import app.api.entity.Article;
 import app.api.entity.Category;
 import app.api.entity.CategoryId;
@@ -67,7 +67,7 @@ public class E2eTest {
 
 
     // add category
-    CategoryRequest categoryRequest = new CategoryRequest("qwerty", new UserId(1));
+    CategoryRequest categoryRequest = new CategoryRequest("qwerty");
     ResponseEntity<CategoryId> responseEntity5 = restTemplate.postForEntity(url + "/category", categoryRequest, CategoryId.class);
     assertEquals(HttpStatus.OK, responseEntity5.getStatusCode());
     assertEquals(responseEntity5.getBody().id(), 1);

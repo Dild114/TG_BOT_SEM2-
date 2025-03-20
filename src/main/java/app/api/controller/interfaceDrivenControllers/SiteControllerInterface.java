@@ -1,5 +1,6 @@
 package app.api.controller.interfaceDrivenControllers;
 
+import app.api.controller.requests.SiteRequest;
 import app.api.entity.Site;
 import app.api.entity.SiteId;
 import app.api.entity.UserId;
@@ -38,20 +39,17 @@ public interface SiteControllerInterface {
       @Valid @Min(value = 1, message = "User ID must be greater than 0") @PathVariable Long userId
   );
 
-  @Operation(summary = "Добавить сайт пользователю")
-
+  @Operation(summary = "Добавить сайт")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Добавлен сайт пользователю"),
       @ApiResponse(responseCode = "400", description = "Некорректные данные")
   })
-  @PatchMapping("/{siteId}")
-  ResponseEntity<SiteId> addSite(
-      @Parameter(description = "ID сайта", required = true)
-      @Valid @Min(value = 1, message = "Site ID must be greater than 0") @PathVariable Long siteId,
 
-      @Parameter(description = "ID пользователя", required = true)
-      @Valid @Min(value = 1, message = "User ID must be greater than 0") @RequestParam Long userId
-  );
+  @PatchMapping("/create")
+  ResponseEntity<SiteId> addSite(
+    @Parameter(description = "ID сайта", required = true)
+    @Valid @RequestBody SiteRequest siteRequest
+    );
 
   @Operation(summary = "Удалить сайт пользователя")
   @ApiResponses({

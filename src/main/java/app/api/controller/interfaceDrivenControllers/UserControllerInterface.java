@@ -1,6 +1,7 @@
 package app.api.controller.interfaceDrivenControllers;
 
-import app.api.controller.UserRequest;
+import app.api.controller.requests.UserRequest;
+import app.api.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +31,18 @@ public interface UserControllerInterface {
       @Valid @RequestBody UserRequest userRequest
   );
 
+  @Operation(summary = "Найти пользователя по ID")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Пользователь найден"),
+    @ApiResponse(responseCode = "400", description = "Некорректные данные"),
+    @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+  })
+  @GetMapping("/user/{userId}")
+  ResponseEntity<User> findUserById(
+    @Parameter(description = "ID пользователя", required = true)
+    @Valid @PathVariable Long userId
+  );
+
   @Operation(summary = "Удалить пользователя по id")
   @ApiResponse(responseCode = "204", description = "Пользователь удален")
   @ApiResponse(responseCode = "404", description = "Пользователь не найден")
@@ -49,17 +62,5 @@ public interface UserControllerInterface {
 
       @Parameter(description = "Пользователь", required = true)
       @Valid @RequestBody UserRequest userRequest
-  );
-
-  @Operation(summary = "Обновить имя пользователя")
-  @ApiResponse(responseCode = "200", description = "Имя пользователя обновлено")
-  @ApiResponse(responseCode = "400", description = "Некорректные данные")
-  @PatchMapping("/{id}")
-  ResponseEntity<?> updateUserName(
-      @Parameter(description = "ID пользователя", example = "123")
-      @Valid @Min(value = 1, message = "User ID must be greater than 0") @PathVariable Long id,
-
-      @Parameter(description = "Новое имя пользователя", required = true)
-      @NotNull @RequestBody String name
   );
 }

@@ -1,6 +1,7 @@
 package app.api.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.List;
 @Data
 @Schema(name = "User", description = "Сущность пользователя")
 public class User {
-  // пока что telegramId и email не нужен и мы его не будет использовать
   @Schema(description = "ID пользователя", example = "123")
   UserId userId;
   @Schema(description = "Имя пользователя", example = "Nikolay")
@@ -22,7 +22,8 @@ public class User {
   @Schema(description = "Список сайтов пользователя", example = "[https://habr.com/ru/articles/814061/, https://ru.wikipedia.org/wiki/]")
   List<Site> sites;
 
-  public User(String userName, String password) {
+  public User(UserId userId, String userName, String password) {
+    this.userId = userId;
     this.userName = userName;
     this.password = password;
   }

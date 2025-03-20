@@ -1,15 +1,14 @@
 package app.api.controller;
 
+import app.api.controller.requests.CategoryRequest;
 import app.api.entity.Category;
 import app.api.entity.CategoryId;
 import app.api.entity.UserId;
 import app.api.service.CategoriesService;
 import app.api.controller.interfaceDrivenControllers.CategoryControllerInterface;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 public class CategoriesController implements CategoryControllerInterface {
-  private final CategoriesService categoriesService;
-
-  public CategoriesController(CategoriesService categoriesService) {
-    this.categoriesService = categoriesService;
-  }
+  private final CategoriesService categoriesService = new CategoriesService();
 
   @Override
   public ResponseEntity<List<Category>> getMyCategories(Long userId) {

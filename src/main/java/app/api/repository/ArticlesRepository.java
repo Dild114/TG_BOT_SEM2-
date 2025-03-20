@@ -8,6 +8,7 @@ import app.api.entity.UserId;
 import java.util.List;
 import java.util.Map;
 
+
 public interface ArticlesRepository {
   Long generateId();
 

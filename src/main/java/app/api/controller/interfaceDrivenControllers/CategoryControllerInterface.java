@@ -1,13 +1,10 @@
 package app.api.controller.interfaceDrivenControllers;
 
-import app.api.controller.CategoryRequest;
+import app.api.controller.requests.CategoryRequest;
 import app.api.entity.Category;
 import app.api.entity.CategoryId;
-import app.api.entity.UserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,12 +27,6 @@ public interface CategoryControllerInterface {
   )
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Получены категории пользователя"
-//          T
-//          content = @Content(
-//              mediaType = "application/json",
-//              examples = @ExampleObject(
-//              value = "{\"userId\" : 1}"
-//          ))
       ),
       @ApiResponse(responseCode = "404", description = "Пользователь с таким ID не найден"),
       @ApiResponse(responseCode = "400", description = "Неккоректное ID пользователя")

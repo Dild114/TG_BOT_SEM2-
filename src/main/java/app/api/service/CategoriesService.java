@@ -24,14 +24,16 @@ public class CategoriesService {
     log.info("Finding all categories");
     return categoriesRepository.findAll(userId);
   }
+
   public Category findById(CategoryId id) {
     Category category = categoriesRepository.findById(id);
     log.info("findById({})", id);
    return category;
   }
+
   public void deleteCategory(CategoryId id) {
     categoriesRepository.delete(id);
-    log.info("Deleting Category with id {}", id);
+    log.info("Category with id {} was deleted", id);
   }
 
   public void deleteUser(UserId userId) {

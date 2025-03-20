@@ -1,5 +1,6 @@
 package app.api.controller;
 
+import app.api.controller.requests.SiteRequest;
 import app.api.entity.Site;
 import app.api.entity.SiteId;
 import app.api.entity.UserId;
@@ -43,10 +44,10 @@ public class SitesController implements SiteControllerInterface {
   }
 
   @Override
-  public ResponseEntity<SiteId> addSite(Long siteId, Long userId) {
-    log.info("Adding site for userId: {}", userId);
-    sitesService.addSite(new SiteId(siteId), new UserId(userId));
-    return ResponseEntity.status(HttpStatus.OK).body(new SiteId(siteId));
+  public ResponseEntity<SiteId> addSite(SiteRequest siteRequest) {
+    log.info("Add site with name");
+    SiteId siteId = sitesService.addSite(siteRequest.url);
+    return ResponseEntity.status(HttpStatus.OK).body(siteId);
   }
 
   @Override

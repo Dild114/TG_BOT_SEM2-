@@ -1,4 +1,4 @@
-package app.api.controller;
+package app.api.controller.requests;
 
 
 import jakarta.validation.constraints.NotNull;
