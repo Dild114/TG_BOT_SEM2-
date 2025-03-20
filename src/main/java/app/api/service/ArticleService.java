@@ -29,9 +29,26 @@ public class ArticleService {
     return articleRepository.findById(id).orElse(null);
   }
 
+  public List<Article> getArticlesByCategory(Category category) {
+    return articleRepository.findByCategory(category);
+  }
+
   @Transactional
   public void deleteArticleById(ArticleId id) {
     Article article = findArticleById(id);
     articleRepository.delete(article);
   }
+
+  @Transactional
+  public void deleteArticlesByCategory(Category category) {
+    List<Article> articles = articleRepository.findByCategory(category);
+    if (!articles.isEmpty()) {
+      articleRepository.deleteAll(articles);
+    }
+  }
+
+  public List<Article> getAllArticles() {
+    return articleRepository.findAll();
+  }
+
 }
