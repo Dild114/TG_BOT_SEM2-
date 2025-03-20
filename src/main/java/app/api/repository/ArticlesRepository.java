@@ -5,10 +5,13 @@ import app.api.entity.ArticleId;
 import app.api.entity.Category;
 import app.api.entity.UserId;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ArticlesRepository {
-  ArticleId generateId();
+  Long generateId();
 
-  Map<Article, Category> getArticles(UserId userId);
+  List<Article> getArticles();
+
+  void add(Article article);
 }

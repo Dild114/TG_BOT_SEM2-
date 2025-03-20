@@ -7,13 +7,9 @@ import app.api.entity.UserId;
 import java.util.List;
 
 public interface CategoriesRepository {
-  CategoryId getCategoryId();
-
-  List<Category> findAll(UserId userId);
-
-  Category findById(CategoryId id);
-
-  CategoryId delete(CategoryId id);
-
-  boolean create(Category category);
+  List<Category> findAll(UserId userId); // Найти все категории пользователя
+  Category findById(CategoryId id);     // Найти категорию по ID
+  void delete(CategoryId id);           // Удалить категорию по ID
+  void create(Category category);       // Создать новую категорию
+  CategoryId getCategoryId();           // Генерация нового ID категории
 }

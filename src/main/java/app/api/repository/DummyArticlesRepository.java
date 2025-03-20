@@ -6,19 +6,32 @@ import app.api.entity.Category;
 import app.api.entity.UserId;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class DummyArticlesRepository implements ArticlesRepository {
-  int countId = 0;
+  private final List<Article> repository;
+  private final AtomicLong countId = new AtomicLong(0);
+
+    public DummyArticlesRepository() {
+        this.repository = new ArrayList<>();
+    }
+
   @Override
-  public ArticleId generateId() {
-    countId += 1;
-    return new ArticleId(countId);
+  public Long generateId() {
+    return countId.incrementAndGet();
   }
 
   @Override
-  public Map<Article, Category> getArticles(UserId userId) {
-    return Map.of();
+  public List<Article> getArticles() {
+    return repository;
+  }
+
+  @Override
+  public void add(Article article) {
+      repository.add(article);
   }
 }

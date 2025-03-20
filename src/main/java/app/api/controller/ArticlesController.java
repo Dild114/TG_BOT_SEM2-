@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -23,11 +24,21 @@ public class ArticlesController implements ArticleControllerInterface {
   }
 
   @Override
-  public ResponseEntity<Map<Article, Category>> getArticles(Long userId) {
-    log.info("Fetching articles for userId={}", userId);
+  public ResponseEntity<List<Article>> getArticles() {
+    log.info("Fetching articles");
     try {
-      Map<Article, Category> articles = articlesService.getArticles(new UserId(userId));
+      List<Article> articles = articlesService.getArticles();
       return ResponseEntity.ok(articles);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+  }
+
+  @Override
+  public ResponseEntity<Map<Article, Category>> getArticleWithCategory(Long userId) {
+    try {
+      Map<Article, Category> articleCategoryMap = articlesService.getArticlesWithCategory(new UserId(userId));
+      return ResponseEntity.ok(articleCategoryMap);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }

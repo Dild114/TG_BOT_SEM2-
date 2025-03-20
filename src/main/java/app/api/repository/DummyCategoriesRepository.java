@@ -3,36 +3,49 @@ package app.api.repository;
 import app.api.entity.Category;
 import app.api.entity.CategoryId;
 import app.api.entity.UserId;
-import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-@Repository
+// Простая заглушка, использующая список в памяти
 public class DummyCategoriesRepository implements CategoriesRepository {
-  int countId= 0;
-  @Override
-  public CategoryId getCategoryId() {
-    countId += 1;
-    return new CategoryId(countId);
-  }
+
+  private final List<Category> inMemoryCategories = new ArrayList<>();
 
   @Override
   public List<Category> findAll(UserId userId) {
-    return List.of();
+    // Фильтруем категории по ID пользователя
+    List<Category> userCategories = new ArrayList<>();
+    for (Category category : inMemoryCategories) {
+      if (category.userId().equals(userId)) {
+        userCategories.add(category);
+      }
+    }
+    return userCategories;
   }
 
   @Override
   public Category findById(CategoryId id) {
-    return null;
+    return inMemoryCategories.stream()
+      .filter(category -> category.id().equals(id))
+      .findFirst()
+      .orElseThrow(() -> new IllegalArgumentException("Category not found: " + id));
   }
 
   @Override
-  public CategoryId delete(CategoryId id) {
-    return null;
+  public void delete(CategoryId id) {
+    inMemoryCategories.removeIf(category -> category.id().equals(id));
   }
 
   @Override
-  public boolean create(Category category) {
-    return false;
+  public void create(Category category) {
+    inMemoryCategories.add(category);
+  }
+
+  @Override
+  public CategoryId getCategoryId() {
+    // Генерация простого идентификатора
+    return new CategoryId(1);
   }
 }

@@ -5,33 +5,48 @@ import app.api.entity.Category;
 import app.api.entity.UserId;
 import app.api.exception.NoContentInRepositoryException;
 import app.api.repository.ArticlesRepository;
+import app.api.repository.DummyArticlesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Service
 public class ArticlesService {
-  public ArticlesRepository articleRepository;
+  private final ArticlesRepository articleRepository;
+  private final CategoriesService categoriesService;
 
-
-  public ArticlesService(ArticlesRepository articleRepository) {
-    this.articleRepository = articleRepository;
+  public ArticlesService() {
+    this.articleRepository = new DummyArticlesRepository();
+    this.categoriesService = new CategoriesService();
   }
 
-  public Map<Article, Category> getArticles(UserId userId) {
+  public List<Article> getArticles() {
     try {
-      Map<Article, Category> articles = articleRepository.getArticles(userId);
-      log.info("getArticles userId = {}", userId);
+      List<Article> articles = articleRepository.getArticles();
+      log.info("getArticles");
       if (articles.isEmpty()) {
-        log.error("No articles for user with userId = {}", userId);
-        throw new NoContentInRepositoryException("getArticles userId = " + userId + " was failed");
+        log.error("No articles exists");
+        throw new NoContentInRepositoryException("getArticles was failed");
       }
       return articles;
     } catch (Exception e) {
-      log.error("getArticles userId = {} was failed", userId, e);
+      log.error("getArticles was failed", e);
       throw e;
     }
+  }
+
+  public Map<Article, Category> getArticlesWithCategory(UserId userId) {
+    List<Article> articles = getArticles();
+    log.info("Get articles with category");
+    Map<Article, Category> articleCategoryMap = new HashMap<>();
+    for(Article article : articles) {
+      articleCategoryMap.put(article, categoriesService.findById(article.categoryId()));
+    }
+    log.info("Get articles with category finished");
+    return articleCategoryMap;
   }
 }

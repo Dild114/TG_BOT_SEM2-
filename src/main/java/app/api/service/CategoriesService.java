@@ -5,6 +5,7 @@ import app.api.entity.CategoryId;
 import app.api.entity.User;
 import app.api.entity.UserId;
 import app.api.repository.CategoriesRepository;
+import app.api.repository.DummyCategoriesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,8 @@ import java.util.List;
 public class CategoriesService {
   private final CategoriesRepository categoriesRepository;
 
-  public CategoriesService(CategoriesRepository categoriesRepository) {
-    this.categoriesRepository = categoriesRepository;
+  public CategoriesService() {
+    this.categoriesRepository = new DummyCategoriesRepository();
   }
 
   public List<Category> findAll(UserId userId) {
