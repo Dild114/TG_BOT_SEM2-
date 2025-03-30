@@ -21,12 +21,12 @@ public class UsersService {
     try {
       UserId userId = usersRepository.createAccount(user);
       log.info("User {} created", userId);
-      if ()
+
       return userId;
     } catch (Exception e) {
       log.error("Error creating user", e);
     }
-
+    return null;
   }
 
   public void deleteUser(UserId userId) {
