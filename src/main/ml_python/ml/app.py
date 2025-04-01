@@ -72,5 +72,5 @@ async def receive_json(data: RequestParsingModel):
 # true - fake, false - real news
 @app.post("/check_fake")
 async def receive_json(data: RequestModelOnlyArticle):
-    result = True if classifierFake(data.article) > 0.5 else False
+    result = True if classifierFake(data.article)[0]["score"] > 0.77 else False
     return result
