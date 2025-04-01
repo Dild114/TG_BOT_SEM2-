@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class CategoryId implements Serializable {
 
+  @Getter
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_id_seq")
   @SequenceGenerator(name = "category_id_seq", sequenceName = "category_id_seq", allocationSize = 1)
   private Long id;

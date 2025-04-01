@@ -14,11 +14,16 @@ import java.util.Objects;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class WebsiteId implements Serializable {
 
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "website_id_seq")
   @SequenceGenerator(name = "website_id_seq", sequenceName = "website_id_seq", allocationSize = 1)
   private Long id;
+
+  public Long getId() {
+    return id;
+  }
 
   @Override
   public final boolean equals(Object o) {
@@ -36,3 +41,4 @@ public class WebsiteId implements Serializable {
     return Objects.hash(id);
   }
 }
+

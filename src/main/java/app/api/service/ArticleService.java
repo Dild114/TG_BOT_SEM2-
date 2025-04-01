@@ -1,54 +1,62 @@
 package app.api.service;
 
+import app.api.dto.ArticleDto;
 import app.api.entity.Article;
 import app.api.entity.ArticleId;
-import app.api.entity.Category;
+import app.api.mapper.ArticleMapper;
 import app.api.repository.ArticleRepository;
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+
 public class ArticleService {
 
-  public ArticleRepository articleRepository;
+  private final ArticleRepository articleRepository;
+  private final ArticleMapper articleMapper;
 
   @Transactional
-  public Article addArticle(Article article) {
-    return articleRepository.save(article);
+  public void saveArticle(ArticleDto articleDto) { //сохранение новой статьи в бд
+    articleRepository.save(articleMapper.toEntity(articleDto));
+    log.info("Article (name = {}) was saved", articleDto.getName());
+  }
+
+  @Transactional(readOnly = true)
+  public ArticleDto getArticle(Long id) { //получает статью по ее id
+    Article article = articleRepository.findById(new ArticleId(id))
+            .orElseThrow(() -> new EntityNotFoundException("Article not found"));
+    log.info("Article (id = {}) was found", id);
+    return articleMapper.toDto(article);
+  }
+
+  @Transactional(readOnly = true)
+  public List<ArticleDto> getArticles() { //получает список всех статей
+   return articleRepository.findAll().stream()
+           .map(articleMapper::toDto)
+           .toList();
   }
 
   @Transactional
-  public Article findArticleById(ArticleId id) {
-    return articleRepository.findById(id).orElse(null);
-  }
-
-  public List<Article> getArticlesByCategory(Category category) {
-    return articleRepository.findByCategory(category);
+  public void deleteArticle(Long id) { //удаление статьи по ее id
+    articleRepository.deleteById(new ArticleId(id));
+    log.info("Article (id = {}) was deleted", id);
   }
 
   @Transactional
-  public void deleteArticleById(ArticleId id) {
-    Article article = findArticleById(id);
-    articleRepository.delete(article);
+  public void updateArticle(ArticleDto articleDto) { //обновление информации о статье
+    articleRepository.save(articleMapper.toEntity(articleDto));
   }
 
-  @Transactional
-  public void deleteArticlesByCategory(Category category) {
-    List<Article> articles = articleRepository.findByCategory(category);
-    if (!articles.isEmpty()) {
-      articleRepository.deleteAll(articles);
-    }
+  @Transactional(readOnly = true)
+  public List<ArticleDto> getArticlesByCategory(String category) { //получение всех статей по соответсвующей категории
+    return articleRepository.findAllByCategoryName(category).stream()
+            .map(articleMapper::toDto)
+            .toList();
   }
-
-  public List<Article> getAllArticles() {
-    return articleRepository.findAll();
-  }
-
 }

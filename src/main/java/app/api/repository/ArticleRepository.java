@@ -2,17 +2,18 @@ package app.api.repository;
 
 import app.api.entity.Article;
 import app.api.entity.ArticleId;
-import app.api.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-
 public interface ArticleRepository extends JpaRepository<Article, ArticleId> {
-  List<Article> findByTitleContaining(String keyword);
-  List<Article> findByCategoryId(ArticleId categoryId);
-  List<Article> findByUserId(ArticleId userId);
-  List<Article> findByCategory(Category category);
+
+  Optional<Article> findByUrl(String url);
+
+  @Query("select a from Article a join fetch a.categories c where c.name = :category")
+  List<Article> findAllByCategoryName(@Param("category") String category);
 }

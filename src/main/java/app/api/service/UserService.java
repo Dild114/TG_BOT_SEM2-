@@ -1,0 +1,71 @@
+package app.api.service;
+
+import app.api.dto.UserDto;
+import app.api.entity.User;
+import app.api.entity.UserId;
+import app.api.entity.Website;
+import app.api.entity.WebsiteId;
+import app.api.mapper.UserMapper;
+import app.api.repository.UserRepository;
+import app.api.repository.WebsiteRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+@Log4j2
+@Slf4j
+
+public class UserService {
+
+  private final UserRepository userRepository;
+  private final WebsiteRepository websiteRepository;
+  private final UserMapper userMapper;
+
+  public UserDto createUser(UserDto userDto) { //создание пользователя
+    User user = userMapper.toEntity(userDto);
+    user = userRepository.save(user);
+    log.info("User created: {}", user);
+    return userMapper.toDto(user);
+  }
+
+  public void deleteUser(Long userId) { //удаление пользователя по id
+    UserId id = new UserId(userId);
+    if (!userRepository.existsById(id)) {
+      log.info("User with id {} does not exist", userId);
+      throw new EntityNotFoundException("User does not exist: " + userId);
+    }
+    userRepository.deleteById(id);
+  }
+
+  public UserDto addWebsiteToUser(Long userId, Long websiteId) { //добавление нового сайта.
+    User user = userRepository.findById(new UserId(userId))
+            .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+    Website website = websiteRepository.findById(new WebsiteId(websiteId))
+            .orElseThrow(() -> new EntityNotFoundException("Site not found: " + websiteId));
+    user.getWebsites().add(website);
+    user = userRepository.save(user);
+    return userMapper.toDto(user);
+  }
+
+  public UserDto removeWebsiteFromUser(Long userId, Long websiteId) { //удаление сайта
+    User user = userRepository.findById(new UserId(userId))
+            .orElseThrow(() -> {
+              log.error("User this ID {} is not found.", userId);
+              return new EntityNotFoundException("User not found: " + userId);
+            });
+    boolean removed = user.getWebsites().removeIf(a -> a.getWebsiteId().getId().equals(websiteId));
+    if (!removed) {
+      log.warn("The user {} does not have this website {}.", userId, websiteId);
+      throw new EntityNotFoundException("The user's website was not found " + websiteId);
+    }
+    user = userRepository.save(user);
+    log.info("Site {} deleted from the user {}", websiteId, userId);
+    return userMapper.toDto(user);
+  }
+}

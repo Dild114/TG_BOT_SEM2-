@@ -44,21 +44,6 @@ CREATE TABLE favourite_articles_of_user
     CONSTRAINT favourite_articles_of_user_pkey PRIMARY KEY (article_id, user_id)
 );
 
-CREATE TABLE flyway_schema_history
-(
-    installed_rank INTEGER       NOT NULL,
-    version        VARCHAR(50),
-    description    VARCHAR(200)  NOT NULL,
-    type           VARCHAR(20)   NOT NULL,
-    script         VARCHAR(1000) NOT NULL,
-    checksum       INTEGER,
-    installed_by   VARCHAR(100)  NOT NULL,
-    installed_on   TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
-    execution_time INTEGER       NOT NULL,
-    success        BOOLEAN       NOT NULL,
-    CONSTRAINT flyway_schema_history_pk PRIMARY KEY (installed_rank)
-);
-
 CREATE TABLE users
 (
     is_short_description_enabled BOOLEAN NOT NULL,
@@ -82,8 +67,6 @@ CREATE TABLE websites
     url VARCHAR(255),
     CONSTRAINT websites_pkey PRIMARY KEY (id)
 );
-
-CREATE INDEX flyway_schema_history_s_idx ON flyway_schema_history (success);
 
 ALTER TABLE categories_of_article
     ADD CONSTRAINT fk5v5o952fy8h2501w2b7hwh66u FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE NO ACTION;

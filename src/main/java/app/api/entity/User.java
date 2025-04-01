@@ -17,7 +17,7 @@ import java.util.Set;
 public class User {
 
   @EmbeddedId
-  private UserId userId;
+  public UserId userId;
 
   private String telegramId;
 
