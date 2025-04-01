@@ -12,15 +12,15 @@ summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 hate_speech_model = pipeline("text-classification", model="facebook/roberta-hate-speech-dynabench-r4-target")
 toxicity_model = pipeline("text-classification", model="unitary/unbiased-toxic-roberta")
 model = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+classifierFake = pipeline("text-classification", model="mrm8488/bert-tiny-finetuned-fake-news-detection")
+
 class RequestModel(BaseModel):
     article: str
     categories : List[str]
 
 class RequestParsingModel(BaseModel):
     url: str
-class RequestModel(BaseModel):
-    article: str
-    categories : List[str]
+
 class RequestModelOnlyArticle(BaseModel):
     article: str
 
@@ -67,4 +67,10 @@ async def receive_json(data: RequestModelOnlyArticle):
 @app.post("/parsing")
 async def receive_json(data: RequestParsingModel):
     result = parsing_sites.parsing(data.url)
+    return result
+
+# true - fake, false - real news
+@app.post("/check_fake")
+async def receive_json(data: RequestModelOnlyArticle):
+    result = True if classifierFake(data.article) > 0.5 else False
     return result
