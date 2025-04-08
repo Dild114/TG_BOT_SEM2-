@@ -46,7 +46,7 @@ async def receive_json(data: RequestModel):
         best_label = result["labels"][0]
         best_score = result["scores"][0]
         best_index = data.categories.index(best_label)
-        if best_score > 0.8:
+        if best_score > 0.7:
             return best_index
         else:
             return -1
@@ -66,8 +66,9 @@ async def receive_json(data: RequestModelOnlyArticle):
 
 @app.post("/parsing")
 async def receive_json(data: RequestParsingModel):
-    result = parsing_sites.parsing(data.url)
-    return result
+    print(data.url)
+    result = parsing_sites.parser(data.url)
+    return result.split("q1w2e3r4t5y6u7i8o9@@#!@")
 
 # true - fake, false - real news
 @app.post("/check_fake")
