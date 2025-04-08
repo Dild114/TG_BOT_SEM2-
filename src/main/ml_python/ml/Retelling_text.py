@@ -3,6 +3,8 @@ import translate
 
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
+
+# возможно все лучше переделать и просто использовать deepseek
 def retelling(text):
     new_text_english = translate.translate_from_russian(text)
     result = summarizer(new_text_english, truncation=True)
