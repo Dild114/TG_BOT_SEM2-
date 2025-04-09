@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 
 public class ArticleService {
-
   private final ArticleRepository articleRepository;
   private final ArticleMapper articleMapper;
 

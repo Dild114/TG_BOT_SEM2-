@@ -11,12 +11,12 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/my_postgres
     username: postgres
-    password: changeme
+    password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

@@ -9,20 +9,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface WebsiteRepository extends JpaRepository<Website, WebsiteId> {
 
-  //@Query("select w from Website w join WebsitesOfUser c on a.id = c.website_id where c.user_id = :userId")
-  //List<Website> findAllWebsite(@Param("userId") UserId userId); //получение сайтов пользователя
-
-//  List<Website> findByUsers_id(UserId userId);
-
-  Optional<Website> findById(WebsiteId websiteId);
-
-  void deleteById(WebsiteId websiteId);
-
-  Website save(Website website);
-
+  @Query("SELECT w FROM Website w JOIN w.users u WHERE u.userId = :userId")
+  List<Website> findAllWebsiteByUser(@Param("userId") UserId userId);
 }

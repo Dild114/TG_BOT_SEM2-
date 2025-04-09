@@ -1,5 +1,6 @@
 package app.api.dto;
 
+import app.api.entity.Website;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

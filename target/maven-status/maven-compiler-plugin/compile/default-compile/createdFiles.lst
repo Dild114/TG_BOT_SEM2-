@@ -19,7 +19,6 @@ app/api/service/WebsiteService.class
 app/api/dto/ArticleDto.class
 app/api/entity/WebsiteId.class
 app/api/controller/ArticleController.class
-app/api/mapper/UserMapper$UserMapperBuilder.class
 app/api/mapper/ArticleMapper.class
 app/api/entity/CategoryId.class
 app/api/entity/User$UserBuilder.class

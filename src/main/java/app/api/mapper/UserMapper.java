@@ -2,25 +2,19 @@ package app.api.mapper;
 
 import app.api.dto.UserDto;
 import app.api.entity.*;
-import lombok.Builder;
 import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.stream.Collectors;
-import app.api.repository.UserRepository;
-import app.api.repository.WebsiteRepository;
 import lombok.RequiredArgsConstructor;
 
-@Builder
 @Component
 @RequiredArgsConstructor
 
 public class UserMapper {
-  private final UserRepository userRepository;
-  private final WebsiteRepository websiteRepository;
-
   public UserDto toDto(User user) {
     return UserDto.builder()
             .userId(user.getUserId().getId())
+            .name(user.getName())
             .telegramId(user.getTelegramId())
             .isSubscribeEnabled(user.isSubscribeEnabled())
             .isShortDescriptionEnabled(user.isShortDescriptionEnabled())
@@ -30,6 +24,7 @@ public class UserMapper {
                     .collect(Collectors.toSet()))
             .build();
   }
+
 
   public User toEntity(UserDto dto) {
     Set<Website> websites = dto.getWebsiteIds()
@@ -41,6 +36,7 @@ public class UserMapper {
 
     return User.builder()
             .userId(new UserId(dto.getUserId()))
+            .name(dto.getName())
             .telegramId(dto.getTelegramId())
             .isSubscribeEnabled(dto.isSubscribeEnabled())
             .isShortDescriptionEnabled(dto.isShortDescriptionEnabled())

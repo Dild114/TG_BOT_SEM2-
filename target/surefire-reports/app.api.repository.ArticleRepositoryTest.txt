@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: app.api.repository.ArticleRepositoryTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.066 s -- in app.api.repository.ArticleRepositoryTest

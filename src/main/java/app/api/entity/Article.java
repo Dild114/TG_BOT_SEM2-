@@ -24,7 +24,7 @@ public class Article {
 
     private String url;
 
-    private String creationDate;//-что это за счастье
+    private String creationDate;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "categories_of_article",

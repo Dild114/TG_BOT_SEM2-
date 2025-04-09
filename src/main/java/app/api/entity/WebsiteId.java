@@ -40,5 +40,6 @@ public class WebsiteId implements Serializable {
   public final int hashCode() {
     return Objects.hash(id);
   }
+
 }
 
