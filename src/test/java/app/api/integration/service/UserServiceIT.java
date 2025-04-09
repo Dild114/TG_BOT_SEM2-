@@ -28,7 +28,6 @@ public class UserServiceIT extends IntegrationTestDataBase {
             .websiteIds(new HashSet<>())
             .articlesIds(new HashSet<>())
             .categoriesIds(new HashSet<>())
-            //нужно сделать так, чтобы запуск был без website,articles,categories, но сейчас не работает и с этим ;($;(
             .build();
     UserDto createdUser = userService.createUser(dto);
     Assertions.assertNotNull(createdUser.getUserId());
