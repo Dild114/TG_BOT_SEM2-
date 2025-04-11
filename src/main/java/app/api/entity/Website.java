@@ -2,7 +2,7 @@ package app.api.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.hibernate.proxy.HibernateProxy;
 import java.util.*;
 
 @Getter
@@ -21,19 +21,19 @@ public class Website {
   @ManyToMany(mappedBy = "websites")
   private Set<User> users = new HashSet<>();
 
-  public WebsiteId getWebsiteId() {
-    return this.id;
-  }
-
   @Override
-  public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass()) return false;
+  public final boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null) return false;
+    Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+    Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+    if (thisEffectiveClass != oEffectiveClass) return false;
     Website website = (Website) o;
-    return Objects.equals(id, website.id) && Objects.equals(url, website.url);
+    return getId() != null && Objects.equals(getId(), website.getId());
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(id, url);
+  public final int hashCode() {
+    return Objects.hash(id);
   }
 }

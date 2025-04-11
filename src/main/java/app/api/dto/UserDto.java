@@ -17,16 +17,15 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-
   private Long userId;
 
   private String telegramId;
 
   private String name;
 
-  private boolean isSubscribeEnabled; //подписка включена или нет
+  private boolean isSubscribeEnabled;
 
-  private boolean isShortDescriptionEnabled; //краткое описание
+  private boolean isShortDescriptionEnabled;
 
   private Set<Long> categoriesIds = new HashSet<>();
 

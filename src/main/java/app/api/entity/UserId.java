@@ -7,7 +7,6 @@ import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -15,9 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-
 public class UserId implements Serializable {
-
   @Getter
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
   @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)

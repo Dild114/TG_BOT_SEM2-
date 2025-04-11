@@ -13,7 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 
 public class WebsiteDto {
-
   private Long id;
 
   private String url;

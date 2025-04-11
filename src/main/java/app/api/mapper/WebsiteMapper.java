@@ -5,7 +5,6 @@ import app.api.entity.User;
 import app.api.entity.UserId;
 import app.api.entity.Website;
 import app.api.entity.WebsiteId;
-import app.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
@@ -13,11 +12,9 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class WebsiteMapper {
-  private final UserRepository userRepository;
-
   public  WebsiteDto toDto(Website website) {
     return WebsiteDto.builder()
-            .id(website.getWebsiteId().getId())
+            .id(website.getId().getId())
             .url(website.getUrl())
             .userIds(website.getUsers()
                     .stream()

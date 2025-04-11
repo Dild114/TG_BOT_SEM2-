@@ -11,7 +11,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDto {
-
   private Long id;
 
   private String name;

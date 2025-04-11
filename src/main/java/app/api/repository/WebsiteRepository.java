@@ -7,12 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
 public interface WebsiteRepository extends JpaRepository<Website, WebsiteId> {
-
   @Query("SELECT w FROM Website w JOIN w.users u WHERE u.userId = :userId")
   List<Website> findAllWebsiteByUser(@Param("userId") UserId userId);
 }

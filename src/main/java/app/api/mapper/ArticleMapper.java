@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-
 public class ArticleMapper {
   public ArticleDto toDto(Article article) {
     return ArticleDto.builder()

@@ -2,10 +2,8 @@ package app.api.entity;
 
 import lombok.Getter;
 import org.hibernate.proxy.HibernateProxy;
-
 import java.io.Serializable;
 import java.util.Objects;
-
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Embeddable
 public class ArticleId implements Serializable {
-
   @Getter
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "article_id_seq")
   @SequenceGenerator(name = "article_id_seq", sequenceName = "article_id_seq", allocationSize = 1)

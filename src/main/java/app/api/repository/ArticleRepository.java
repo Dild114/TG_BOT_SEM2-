@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, ArticleId> {
-
   Optional<Article> findByUrl(String url);
 
   @Query("select a from Article a join fetch a.categories c where c.name = :category")

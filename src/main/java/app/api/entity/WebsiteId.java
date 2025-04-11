@@ -7,16 +7,13 @@ import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.proxy.HibernateProxy;
-
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class WebsiteId implements Serializable {
-
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "website_id_seq")
   @SequenceGenerator(name = "website_id_seq", sequenceName = "website_id_seq", allocationSize = 1)
   private Long id;
@@ -42,4 +39,3 @@ public class WebsiteId implements Serializable {
   }
 
 }
-

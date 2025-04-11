@@ -12,7 +12,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class ArticleDto {
-
   private Long id;
 
   private String name;

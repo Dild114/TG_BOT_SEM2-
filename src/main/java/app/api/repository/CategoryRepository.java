@@ -11,10 +11,6 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, CategoryId> {
-
   @Query("select c from Category c join c.users u where u.userId = :userId")
   List<Category> findCategoriesByUsersId(@Param("userId") UserId userId);
 }
-
-
-

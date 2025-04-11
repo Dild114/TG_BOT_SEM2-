@@ -2,7 +2,7 @@ package app.api.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.hibernate.proxy.HibernateProxy;
 import java.util.*;
 
 @Getter
@@ -13,7 +13,6 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 public class Category {
-
   @EmbeddedId
   private CategoryId id;
 
@@ -25,16 +24,19 @@ public class Category {
   @ManyToMany(mappedBy = "categories")
   private Set<User> users = new HashSet<>();
 
-
   @Override
-  public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass()) return false;
+  public final boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null) return false;
+    Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+    Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+    if (thisEffectiveClass != oEffectiveClass) return false;
     Category category = (Category) o;
-    return Objects.equals(id, category.id) && Objects.equals(name, category.name);
+    return getId() != null && Objects.equals(getId(), category.getId());
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(id, name);
+  public final int hashCode() {
+    return Objects.hash(id);
   }
 }

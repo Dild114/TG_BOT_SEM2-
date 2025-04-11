@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-
 public class UserMapper {
   public UserDto toDto(User user) {
     return UserDto.builder()
@@ -20,7 +19,7 @@ public class UserMapper {
             .isShortDescriptionEnabled(user.isShortDescriptionEnabled())
             .websiteIds(user.getWebsites()
                     .stream()
-                    .map(w -> w.getWebsiteId().getId())
+                    .map(w -> w.getId().getId())
                     .collect(Collectors.toSet()))
             .build();
   }
