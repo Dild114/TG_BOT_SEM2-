@@ -29,11 +29,10 @@ public class CategoryMapper {
     User user = userRepository.findById(new UserId(categoryDto.getUserId()))
         .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + categoryDto.getUserId()));
 
-    // Создаем и возвращаем сущность Category
     return Category.builder()
         .id(categoryDto.getId())
         .name(categoryDto.getName())
-        .user(user)  // Устанавливаем пользователя в Category
+        .user(user)
         .build();
   }
 }

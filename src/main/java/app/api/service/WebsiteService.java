@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,26 +35,28 @@ public class WebsiteService {
   }
 
 
-  public UserDto addWebsiteByUserId(Long userId, Long websiteId) {
+  public void addWebsiteByUserId(WebsiteDto websiteDto) {
+    Long userId = websiteDto.getUserId();
     User user = userRepository.findById(new UserId(userId))
         .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
-    Website website = websiteRepository.findById(new WebsiteId(websiteId))
-        .orElseThrow(() -> new EntityNotFoundException("Site not found: " + websiteId));
 
+    Website website = websiteMapper.toEntity(websiteDto);
+    website.setUser(user);
     user.getWebsites().add(website);
-    user = userRepository.save(user);
-    return userMapper.toDto(user);
+    userRepository.save(user);
+
   }
 
-  public UserDto removeWebsiteByUserId(Long userId, Long websiteId) {
+  public void removeWebsiteByUserId(Long userId, Long websiteId) {
     User user = userRepository.findById(new UserId(userId))
         .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
-    boolean removed = user.getWebsites().removeIf(a -> a.getId().equals(websiteId));
-    if (!removed) {
-      throw new EntityNotFoundException("The user's website was not found: " + websiteId);
-    }
-    user = userRepository.save(user);
-    return userMapper.toDto(user);
+    Website website = websiteRepository.findById(new WebsiteId(websiteId))
+        .orElseThrow(() -> new EntityNotFoundException("Website not found: " + userId));;
+
+    user.getWebsites().remove(website);
+    website.setUser(null);
+    userRepository.save(user);
+
   }
 }

@@ -1,11 +1,13 @@
 package app.api.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,6 +34,9 @@ public class User {
 
   @Column(name = "is_subscribe_enabled")
   private boolean isSubscribeEnabled;
+
+  @Column(name = "message_storage_time_day")
+  private long messageStorageTimeDay;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Category> categories = new HashSet<>();

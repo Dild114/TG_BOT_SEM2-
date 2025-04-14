@@ -8,11 +8,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, ArticleId> {
-  Optional<Article> findByUrl(String url);
-
-  @Query("select a from Article a join fetch a.categories c where c.name = :category")
-  List<Article> findAllByCategoryName(@Param("category") String category);
+  Set<Article> findArticlesByUserId(Long userId);
 }

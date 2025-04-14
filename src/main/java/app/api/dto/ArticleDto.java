@@ -22,4 +22,6 @@ public class ArticleDto {
   private Long categoryId;
 
   private Long websiteId;
+
+  private String userId;
 }

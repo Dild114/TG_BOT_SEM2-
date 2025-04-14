@@ -8,6 +8,4 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Set;
 
 public interface UserRepository extends JpaRepository<User, UserId> {
-  @Query("select a.websites from User a where a.id = :userId")
-  Set<Website> getUserWebsites(Long userId);
 }

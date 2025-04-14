@@ -9,6 +9,7 @@ CREATE TABLE users (
     telegram_id                  VARCHAR(255),
     is_short_description_enabled BOOLEAN NOT NULL,
     is_subscribe_enabled         BOOLEAN NOT NULL,
+    message_storage_time_day     BIGINT NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 
@@ -32,7 +33,7 @@ CREATE TABLE articles (
     id            BIGINT NOT NULL,
     name          VARCHAR(255),
     url           VARCHAR(255),
-    creation_date VARCHAR(255),
+    creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
     website_id    BIGINT NOT NULL,
     category_id   BIGINT NOT NULL,
     CONSTRAINT articles_pkey PRIMARY KEY (id),
@@ -47,3 +48,7 @@ CREATE TABLE favourite_articles_of_user (
     CONSTRAINT fk_fav_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_fav_article FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
 );
+
+
+-- DELETE FROM articles
+-- WHERE creation_date < NOW() - INTERVAL 'N days'; удаление статьи

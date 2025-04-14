@@ -20,8 +20,10 @@ public class Article {
     @SequenceGenerator(name = "article_seq", sequenceName = "article_id_seq", allocationSize = 1)
     private Long id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "url")
     private String url;
 
     @Column(name = "creation_date")
@@ -34,4 +36,8 @@ public class Article {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
