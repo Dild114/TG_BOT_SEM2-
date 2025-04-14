@@ -15,7 +15,6 @@ public class CategoryDto {
 
   private String name;
 
-  private Set<Long> userIds;
+  private Long userId;
 
-  private Set<Long> articleIds;
 }

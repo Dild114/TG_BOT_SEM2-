@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ArticleDto {
+
   private Long id;
 
   private String name;
@@ -20,7 +19,7 @@ public class ArticleDto {
 
   private String creationDate;
 
-  private Set<Long> categoryIds;
+  private Long categoryId;
 
-  private Set<Long> userIds;
+  private Long websiteId;
 }

@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserService {
   private final UserRepository userRepository;
-  private final WebsiteRepository websiteRepository;
   private final UserMapper userMapper;
 
   public UserDto createUser(UserDto userDto) {
@@ -34,32 +33,5 @@ public class UserService {
       throw new EntityNotFoundException("User does not exist: " + userId);
     }
     userRepository.deleteById(id);
-  }
-
-  public UserDto addWebsiteToUser(Long userId, Long websiteId) {
-    User user = userRepository.findById(new UserId(userId))
-            .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
-    Website website = websiteRepository.findById(new WebsiteId(websiteId))
-            .orElseThrow(() -> new EntityNotFoundException("Site not found: " + websiteId));
-
-    if (user.getWebsites().contains(website)) {
-      return userMapper.toDto(user);
-    }
-
-    user.getWebsites().add(website);
-    user = userRepository.save(user);
-    return userMapper.toDto(user);
-  }
-
-  public UserDto removeWebsiteFromUser(Long userId, Long websiteId) {
-    User user = userRepository.findById(new UserId(userId))
-            .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
-
-    boolean removed = user.getWebsites().removeIf(a -> a.getId().getId().equals(websiteId));
-    if (!removed) {
-      throw new EntityNotFoundException("The user's website was not found: " + websiteId);
-    }
-    user = userRepository.save(user);
-    return userMapper.toDto(user);
   }
 }

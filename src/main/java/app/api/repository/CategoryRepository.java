@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, CategoryId> {
-  @Query("select c from Category c join c.users u where u.userId = :userId")
-  List<Category> findCategoriesByUsersId(@Param("userId") UserId userId);
+  Set<Category> findCategoriesByUserId(Long userId);
 }

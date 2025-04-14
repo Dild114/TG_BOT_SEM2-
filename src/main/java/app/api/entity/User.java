@@ -2,67 +2,53 @@ package app.api.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "users")
+@Setter
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class User {
-  @EmbeddedId
-  public UserId userId;
-
-  private String telegramId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+  @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
+  private Long id;
 
   private String name;
 
-  private boolean isSubscribeEnabled;
+  @Column(name = "telegram_id")
+  private String telegramId;
 
+  @Column(name = "is_short_description_enabled")
   private boolean isShortDescriptionEnabled;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-  @JoinTable(
-          name = "category_of_user",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "category_id")
-  )
+  @Column(name = "is_subscribe_enabled")
+  private boolean isSubscribeEnabled;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Category> categories = new HashSet<>();
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinTable(
-          name = "website_of_user",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "website_id")
-  )
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Website> websites = new HashSet<>();
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinTable(
-          name = "favourite_articles_of_user",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "article_id")
-  )
-  private Set<Article> articles = new HashSet<>();
-
   @Override
-  public final boolean equals(Object o) {
+  public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null) return false;
-    Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-    Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-    if (thisEffectiveClass != oEffectiveClass) return false;
+    if (o == null || getClass() != o.getClass()) return false;
     User user = (User) o;
-    return getUserId() != null && Objects.equals(getUserId(), user.getUserId());
+    return id != null && id.equals(user.id);
   }
 
   @Override
-  public final int hashCode() {
-    return Objects.hash(userId);
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

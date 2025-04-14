@@ -17,5 +17,5 @@ public class WebsiteDto {
 
   private String url;
 
-  private Set<Long> userIds;
+  private Long userId;
 }

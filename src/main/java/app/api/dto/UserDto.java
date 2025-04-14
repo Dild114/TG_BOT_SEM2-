@@ -26,10 +26,4 @@ public class UserDto {
   private boolean isSubscribeEnabled;
 
   private boolean isShortDescriptionEnabled;
-
-  private Set<Long> categoriesIds = new HashSet<>();
-
-  private Set<Long> articlesIds = new HashSet<>();
-
-  private Set<Long> websiteIds = new HashSet<>();
 }

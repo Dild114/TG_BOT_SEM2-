@@ -43,11 +43,6 @@ public class ArticleService {
     articleRepository.deleteById(new ArticleId(id));
   }
 
-  @Transactional
-  public void updateArticle(ArticleDto articleDto) { //обновление информации о статье
-    articleRepository.save(articleMapper.toEntity(articleDto));
-  }
-
   @Transactional(readOnly = true)
   public List<ArticleDto> getArticlesByCategory(String category) {
     return articleRepository.findAllByCategoryName(category).stream()

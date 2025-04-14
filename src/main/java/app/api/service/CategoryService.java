@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,9 +47,11 @@ public void saveCategory(CategoryDto categoryDto) {
   }
 
   @Transactional(readOnly = true)
-  public List<CategoryDto> getCategoriesByUserId(Long userId) {
-    return categoryRepository.findCategoriesByUsersId(new UserId(userId)).stream()
-            .map(categoryMapper::toDto)
-            .collect(Collectors.toList());
+  public Set<CategoryDto> getCategoriesByUserId(Long userId) {
+    return categoryRepository.
+        findCategoriesByUserId(userId)
+        .stream()
+        .map(categoryMapper::toDto)
+        .collect(Collectors.toSet());
   }
 }

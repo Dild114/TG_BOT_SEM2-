@@ -1,8 +1,11 @@
 package app.api.service;
 
+import app.api.dto.UserDto;
 import app.api.dto.WebsiteDto;
 import app.api.entity.*;
+import app.api.mapper.UserMapper;
 import app.api.mapper.WebsiteMapper;
+import app.api.repository.UserRepository;
 import app.api.repository.WebsiteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,30 +19,41 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class WebsiteService {
   private final WebsiteRepository websiteRepository;
   private final WebsiteMapper websiteMapper;
+  private final UserRepository userRepository;
+  private final UserMapper userMapper;
 
-  @Transactional(readOnly = true)
   public Set<WebsiteDto> getAllWebsitesByUserId(UserId userId) {
-    List<Website> websites = websiteRepository.findAllWebsiteByUser(userId);
+    List<Website> websites = websiteRepository.findAllWebsitesByUserId(userId.getId());
     return websites.stream()
             .map(websiteMapper::toDto)
             .collect(Collectors.toSet());
   }
 
-  @Transactional
-  public void addWebsite(WebsiteDto websiteDto) {
-    websiteRepository.save(websiteMapper.toEntity(websiteDto));
+
+  public UserDto addWebsiteByUserId(Long userId, Long websiteId) {
+    User user = userRepository.findById(new UserId(userId))
+        .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+    Website website = websiteRepository.findById(new WebsiteId(websiteId))
+        .orElseThrow(() -> new EntityNotFoundException("Site not found: " + websiteId));
+
+    user.getWebsites().add(website);
+    user = userRepository.save(user);
+    return userMapper.toDto(user);
   }
 
-  @Transactional
-  public void deleteWebsite(WebsiteDto websiteDto) {
-    WebsiteId websiteId = new WebsiteId(websiteDto.getId());
-    if(!websiteRepository.existsById(websiteId)) {
-      throw new EntityNotFoundException("Website not found");
-    } else{
-      websiteRepository.deleteById(websiteId);
+  public UserDto removeWebsiteByUserId(Long userId, Long websiteId) {
+    User user = userRepository.findById(new UserId(userId))
+        .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+
+    boolean removed = user.getWebsites().removeIf(a -> a.getId().equals(websiteId));
+    if (!removed) {
+      throw new EntityNotFoundException("The user's website was not found: " + websiteId);
     }
+    user = userRepository.save(user);
+    return userMapper.toDto(user);
   }
 }

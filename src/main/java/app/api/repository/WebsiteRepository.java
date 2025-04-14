@@ -11,6 +11,5 @@ import java.util.List;
 
 @Repository
 public interface WebsiteRepository extends JpaRepository<Website, WebsiteId> {
-  @Query("SELECT w FROM Website w JOIN w.users u WHERE u.userId = :userId")
-  List<Website> findAllWebsiteByUser(@Param("userId") UserId userId);
+  List<Website> findAllWebsitesByUserId(Long user_id);
 }
