@@ -24,9 +24,6 @@ public class User {
   @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
   private Long id;
 
-  @Column(name = "name")
-  private String name;
-
   @Column(name = "telegram_id")
   private String telegramId;
 
@@ -38,6 +35,9 @@ public class User {
 
   @Column(name = "message_storage_time_day")
   private long messageStorageTimeDay;
+
+  @Column(name = "count_element_on_table")
+  private long countElementOnTable;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Category> categories = new HashSet<>();

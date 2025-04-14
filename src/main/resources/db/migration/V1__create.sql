@@ -10,6 +10,7 @@ CREATE TABLE users (
     is_short_description_enabled BOOLEAN NOT NULL,
     is_subscribe_enabled         BOOLEAN NOT NULL,
     message_storage_time_day     BIGINT NOT NULL,
+    count_element_on_table       BIGINT NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 

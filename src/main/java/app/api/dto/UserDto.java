@@ -21,8 +21,6 @@ public class UserDto {
 
   private String telegramId;
 
-  private String name;
-
   private boolean isSubscribeEnabled;
 
   private boolean isShortDescriptionEnabled;

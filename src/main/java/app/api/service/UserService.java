@@ -41,4 +41,11 @@ public class UserService {
     user.setShortDescriptionEnabled(isShortDescriptionEnabled);
     userRepository.save(user);
   }
+
+  public void setCountElementOnTable(Long userId, long countElementOnTable) {
+    User user = userRepository.findById(new UserId(userId))
+        .orElseThrow(() -> new EntityNotFoundException("User does not exist: " + userId));
+    user.setCountElementOnTable(countElementOnTable);
+    userRepository.save(user);
+  }
 }

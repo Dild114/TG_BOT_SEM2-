@@ -18,7 +18,6 @@ public class UserMapper {
     // Конвертация сущности в DTO
     return UserDto.builder()
         .userId(user.getId())
-        .name(user.getName())
         .telegramId(user.getTelegramId())
         .isSubscribeEnabled(user.isSubscribeEnabled())
         .isShortDescriptionEnabled(user.isShortDescriptionEnabled())
@@ -37,7 +36,6 @@ public class UserMapper {
 
     return User.builder()
         .id(dto.getUserId())
-        .name(dto.getName())
         .telegramId(dto.getTelegramId())
         .isSubscribeEnabled(dto.isSubscribeEnabled())
         .isShortDescriptionEnabled(dto.isShortDescriptionEnabled())
