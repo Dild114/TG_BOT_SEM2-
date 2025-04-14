@@ -1,22 +1,39 @@
-from transformers import pipeline
-import translate
-
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-
+from openai import OpenAI
 
 # возможно все лучше переделать и просто использовать deepseek
 def retelling(text):
-    new_text_english = translate.translate_from_russian(text)
-    result = summarizer(new_text_english, truncation=True)
-    # result = summarizer(new_text_english)
-    print(str(len(result)))
-    new_text_russian = truncate_by_words(translate.translate_from_english(result[0]["summary_text"]), 100)
-    return new_text_russian
+    client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key="YOUR_KEY",
+    )
 
-def truncate_by_words(text, max_words):
-    words = text.split()
-    truncated_text = " ".join(words[:max_words])
-    return truncated_text
+    completion = client.chat.completions.create(
+        extra_headers={
+        },
+        extra_body={},
+        model="deepseek/deepseek-chat-v3-0324:free",
+        # пока что нет нормального промта
+        messages=[
+            {
+                "role": "user",
+                "content":"""
+                Ты должен проанализировать следующий HTML-код страницы и извлечь только статьи или новости, которые могут быть полезны для проекта. Игнорируй ненужную информацию, такую как рекламные блоки, меню, футеры и другие нерелевантные части.
+        Ты парсер новостей.Тебе нужно извлечь последние 10 новостей или статей с веб-страницы,игнорируя рекламу, не относящиеся к теме материалы или неконтентные элементы,Не нужно парсить всю страницу — только актуальные новости.
+        1. Прочти и извлеки только последние 10 актуальных новостей/статей с сайта,не включая рекламу, боковые панели или не относящиеся к теме статьи.
+        2. Убедись, что текст каждой новости является полноценным и структурированным
+        3. Верни результаты в виде списка с заголовками, а далее текст статьи на 400-500 слов
+        Дай мне список последних новостей с html кода, ничего лишнего
+        Нужен строгий формат разделения статей. НИКАКОГО ВВОДНОГО ТЕКСТА только парсинг.
+        Вот структура:
+        текст статьи на 400-500 слов или меньше, смотря какая длина.  дальше идет q1w2e3r4t5y6u7i8o9@@#!@
+        ссылка на статью откуда текст, дальше идет q1w2e3r4t5y6u7i8o9@@#!@
+        конец
+        Если статей не будет вообще только строго напиши: не нашел статей
+        вот html код:
+        """ + text
+            }
+        ]
+    )
 
 # {
 #   "article": "Предыстория\nВ
