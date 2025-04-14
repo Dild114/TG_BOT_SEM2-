@@ -17,6 +17,7 @@ CREATE TABLE categories (
     id      BIGINT NOT NULL,
     name    VARCHAR(255),
     user_id BIGINT NOT NULL,
+    is_enabled BOOLEAN NOT NULL,
     CONSTRAINT categories_pkey PRIMARY KEY (id),
     CONSTRAINT fk_category_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -25,6 +26,7 @@ CREATE TABLE websites (
     id      BIGINT NOT NULL,
     url     VARCHAR(255),
     user_id BIGINT NOT NULL,
+    is_enabled BOOLEAN NOT NULL,
     CONSTRAINT websites_pkey PRIMARY KEY (id),
     CONSTRAINT fk_website_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -41,13 +43,14 @@ CREATE TABLE articles (
     CONSTRAINT fk_article_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
-CREATE TABLE favourite_articles_of_user (
-    article_id BIGINT NOT NULL,
-    user_id    BIGINT NOT NULL,
-    CONSTRAINT favourite_articles_of_user_pkey PRIMARY KEY (article_id, user_id),
-    CONSTRAINT fk_fav_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_fav_article FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
-);
+-- пусть избранное пока останется
+-- CREATE TABLE favourite_articles_of_user (
+--     article_id BIGINT NOT NULL,
+--     user_id    BIGINT NOT NULL,
+--     CONSTRAINT favourite_articles_of_user_pkey PRIMARY KEY (article_id, user_id),
+--     CONSTRAINT fk_fav_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+--     CONSTRAINT fk_fav_article FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
+-- );
 
 
 -- DELETE FROM articles

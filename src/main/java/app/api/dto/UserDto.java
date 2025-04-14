@@ -26,4 +26,7 @@ public class UserDto {
   private boolean isSubscribeEnabled;
 
   private boolean isShortDescriptionEnabled;
+
+  private Set<Website> websites = new HashSet<>();
+  private Set<Category> categories = new HashSet<>();
 }

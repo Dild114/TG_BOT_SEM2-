@@ -22,19 +22,16 @@ public class UserMapper {
         .telegramId(user.getTelegramId())
         .isSubscribeEnabled(user.isSubscribeEnabled())
         .isShortDescriptionEnabled(user.isShortDescriptionEnabled())
-        .websiteIds(user.getWebsites()
-            .stream()
-            .map(Website::getId)
-            .collect(Collectors.toSet()))
+        .websites(user.getWebsites())
         .build();
   }
 
   public User toEntity(UserDto dto) {
     // Создание сущности User из DTO
-    Set<Website> websites = dto.getWebsiteIds()
+    Set<Website> websites = dto.getWebsites()
         .stream()
         .map(id -> Website.builder()
-            .id(id)
+            .id(id.getId())
             .build())
         .collect(Collectors.toSet());
 

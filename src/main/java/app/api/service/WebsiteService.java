@@ -1,6 +1,5 @@
 package app.api.service;
 
-import app.api.dto.UserDto;
 import app.api.dto.WebsiteDto;
 import app.api.entity.*;
 import app.api.mapper.UserMapper;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +33,7 @@ public class WebsiteService {
   }
 
 
-  public void addWebsiteByUserId(WebsiteDto websiteDto) {
+  public WebsiteId addWebsiteByUserId(WebsiteDto websiteDto) {
     Long userId = websiteDto.getUserId();
     User user = userRepository.findById(new UserId(userId))
         .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
@@ -44,6 +42,7 @@ public class WebsiteService {
     website.setUser(user);
     user.getWebsites().add(website);
     userRepository.save(user);
+    return new WebsiteId(website.getId());
 
   }
 
@@ -57,6 +56,12 @@ public class WebsiteService {
     user.getWebsites().remove(website);
     website.setUser(null);
     userRepository.save(user);
+  }
 
+  public void setWebSiteEnabled(Long websiteId, boolean enabled) {
+    Website website = websiteRepository.findById(new WebsiteId(websiteId))
+        .orElseThrow(() -> new EntityNotFoundException("Website not found: " + websiteId));
+    website.setEnabled(enabled);
+    websiteRepository.save(website);
   }
 }

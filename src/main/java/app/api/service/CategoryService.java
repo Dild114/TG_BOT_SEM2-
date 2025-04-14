@@ -26,7 +26,7 @@ public class CategoryService {
   private final UserRepository userRepository;
 
   @Transactional
-  public void addCategoryByUserId(CategoryDto categoryDto) {
+  public CategoryId addCategoryByUserId(CategoryDto categoryDto) {
       Long userId = categoryDto.getUserId();
       User user = userRepository.findById(new UserId(userId))
           .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
@@ -34,8 +34,8 @@ public class CategoryService {
       Category category = categoryMapper.toEntity(categoryDto);
       category.setUser(user);
       categoryRepository.save(category);
+      return new CategoryId(category.getId());
     }
-
 
   @Transactional
   public void deleteCategory(Long userId, Long categoryId) {
@@ -56,5 +56,14 @@ public class CategoryService {
         .stream()
         .map(categoryMapper::toDto)
         .collect(Collectors.toSet());
+  }
+
+  @Transactional
+  public void setCategoryEnabled(Long categoryId, boolean enabled) {
+    Category category = categoryRepository.findById(new CategoryId(categoryId))
+        .orElseThrow(() -> new EntityNotFoundException("Category not found: " + categoryId));
+
+    category.setEnabled(enabled);
+    categoryRepository.save(category);
   }
 }

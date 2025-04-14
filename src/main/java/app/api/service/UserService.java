@@ -34,4 +34,11 @@ public class UserService {
     }
     userRepository.deleteById(id);
   }
+
+  public void setUserIsShortDescriptionEnabled(Long userId, boolean isShortDescriptionEnabled) {
+    User user = userRepository.findById(new UserId(userId))
+        .orElseThrow(() -> new EntityNotFoundException("User does not exist: " + userId));
+    user.setShortDescriptionEnabled(isShortDescriptionEnabled);
+    userRepository.save(user);
+  }
 }

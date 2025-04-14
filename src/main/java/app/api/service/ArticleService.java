@@ -3,15 +3,14 @@ package app.api.service;
 import app.api.dto.ArticleDto;
 import app.api.entity.Article;
 import app.api.entity.ArticleId;
-import app.api.entity.UserId;
 import app.api.mapper.ArticleMapper;
 import app.api.repository.ArticleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,10 +24,13 @@ public class ArticleService {
   // вот тут так раз надо учитывать время хранения и удалять статьи которые хранятся дольше чем нужно
   // те нужно сделать @Query select ... where now - createDateArticle < user.massage_storage_time_day
   // а дальше лучше сделать @Query delete ... where now - createDateArticle > user.massage_storage_time_day
+  // тут уже находятся статьи которые подходят по времени и удаляются остальные
+
   @Transactional(readOnly = true)
   public Set<ArticleDto> getArticlesByUserId(Long userId) {
-   Set<Article> articles = articleRepository.findArticlesByUserId(userId);
+   Set<Article> articles = articleRepository.findActiveArticlesByUserId(userId);
    Set<ArticleDto> articleDtoSet = articles.stream().map(articleMapper::toDto).collect(Collectors.toSet());
+   articleRepository.deleteExpiredArticlesByUserId(userId);
    return articleDtoSet;
   }
 

@@ -24,6 +24,7 @@ public class User {
   @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
   private Long id;
 
+  @Column(name = "name")
   private String name;
 
   @Column(name = "telegram_id")

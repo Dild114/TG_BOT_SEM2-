@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +19,7 @@ public class ArticleDto {
 
   private String url;
 
-  private String creationDate;
+  private LocalDateTime creationDate;
 
   private Long categoryId;
 
