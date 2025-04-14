@@ -21,6 +21,7 @@ def parser(url_request):
         },
         extra_body={},
         model="deepseek/deepseek-chat-v3-0324:free",
+        # лучше отдельно разбить название статьи и ее содержимое
         messages=[
             {
                 "role": "user",
