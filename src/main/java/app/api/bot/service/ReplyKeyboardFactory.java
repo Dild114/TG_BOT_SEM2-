@@ -65,10 +65,10 @@ public class ReplyKeyboardFactory {
     keyboardMarkup.setSelective(true);
 
     KeyboardRow row1 = new KeyboardRow();
-    row1.add("➕ Добавить");
+    row1.add("➕ Добавить источник");
 
     KeyboardRow row2 = new KeyboardRow();
-    row2.add("\uD83D\uDDD1 Удалить");
+    row2.add("\uD83D\uDDD1 Удалить источник");
 
     KeyboardRow row3 = new KeyboardRow();
     row3.add("↩ Главная");

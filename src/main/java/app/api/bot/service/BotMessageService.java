@@ -1,6 +1,7 @@
 package app.api.bot.service;
 
 import app.api.bot.TelegramBot;
+import app.api.bot.stubs.PairForSource;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -138,7 +139,7 @@ public class BotMessageService {
     SendMessage sendFirstMessage = new SendMessage();
     sendFirstMessage.setText("Ваши категории:");
     sendFirstMessage.setChatId(chatId);
-    sendFirstMessage.setReplyMarkup(inlineKeyboardFactory.createCategoriesList(categories, 1));
+    sendFirstMessage.setReplyMarkup(inlineKeyboardFactory.createCategoriesList(chatId, categories, 1));
 
     SendMessage sendSecondMessage = new SendMessage();
     sendSecondMessage.setText("Выберите действие:");
@@ -160,7 +161,7 @@ public class BotMessageService {
     EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
     editMessageReplyMarkup.setChatId(chatId);
     editMessageReplyMarkup.setMessageId(messageId);
-    editMessageReplyMarkup.setReplyMarkup(inlineKeyboardFactory.createCategoriesList(categories, pageNum));
+    editMessageReplyMarkup.setReplyMarkup(inlineKeyboardFactory.createCategoriesList(chatId, categories, pageNum));
     try {
       telegramBot.execute(editMessageReplyMarkup);
     } catch (TelegramApiException e) {
@@ -168,17 +169,37 @@ public class BotMessageService {
     }
   }
 
-  public void sendSourceMenuMassage(long chatId) {
-    SendMessage sendMessage = new SendMessage();
-    sendMessage.setText("Сюда добавить список ресурсов");
-    sendMessage.setChatId(chatId);
-    sendMessage.setReplyMarkup(replyKeyboardFactory.getSourceMenu());
+  public void sendSourceMenuMassage(long chatId, LinkedHashMap<String, PairForSource> sources) {
+    SendMessage sendFirstMessage = new SendMessage();
+    sendFirstMessage.setText("Ваши источники:");
+    sendFirstMessage.setChatId(chatId);
+    sendFirstMessage.setReplyMarkup(inlineKeyboardFactory.createSourcesList(chatId, sources, 1, "state"));
+
+    SendMessage sendSecondMessage = new SendMessage();
+    sendSecondMessage.setText("Выберите действие:");
+    sendSecondMessage.setChatId(chatId);
+    sendSecondMessage.setReplyMarkup(replyKeyboardFactory.getSourceMenu());
 
     try {
-      Message message = telegramBot.execute(sendMessage);
-      mapForMessagesToDelete.computeIfAbsent(chatId, k -> new ArrayList<>()).add(message.getMessageId());
+      Message firstMessage = telegramBot.execute(sendFirstMessage);
+      Message secondMessage = telegramBot.execute(sendSecondMessage);
+      mapForMessagesToDelete.computeIfAbsent(chatId, k -> new ArrayList<>()).addAll(List.of(firstMessage.getMessageId(), secondMessage.getMessageId()));
+      mapForLastInlineKeyboardEnabledToUpdate.put(chatId, firstMessage.getMessageId());
     } catch (TelegramApiException e) {
-      log.error("При попытке перейти к меню ресурсов в чате {} упала ошибка", chatId, e);
+      log.error("При попытке перейти к меню источников в чате {} упала ошибка", chatId, e);
+    }
+  }
+
+  public void updateSourceMenuMessage(long chatId, int pageNum, LinkedHashMap<String, PairForSource> sources, String viewMode) throws TelegramApiRequestException {
+    int messageId = mapForLastInlineKeyboardEnabledToUpdate.get(chatId);
+    EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
+    editMessageReplyMarkup.setChatId(chatId);
+    editMessageReplyMarkup.setMessageId(messageId);
+    editMessageReplyMarkup.setReplyMarkup(inlineKeyboardFactory.createSourcesList(chatId, sources, pageNum, viewMode));
+    try {
+      telegramBot.execute(editMessageReplyMarkup);
+    } catch (TelegramApiException e) {
+      throw new TelegramApiRequestException(e.getMessage());
     }
   }
 
@@ -194,6 +215,8 @@ public class BotMessageService {
       log.error("При попытке отправить сообщение в чат {} упала ошибка", chatId, e);
     }
   }
+
+
 
   public void deleteMessage(long chatId, int messageId) {
     DeleteMessage deleteMessage = new DeleteMessage();
