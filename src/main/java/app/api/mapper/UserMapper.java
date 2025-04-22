@@ -19,7 +19,6 @@ public class UserMapper {
     return UserDto.builder()
         .userId(user.getId())
         .telegramId(user.getTelegramId())
-        .isSubscribeEnabled(user.isSubscribeEnabled())
         .isShortDescriptionEnabled(user.isShortDescriptionEnabled())
         .websites(user.getWebsites())
         .build();
@@ -37,7 +36,6 @@ public class UserMapper {
     return User.builder()
         .id(dto.getUserId())
         .telegramId(dto.getTelegramId())
-        .isSubscribeEnabled(dto.isSubscribeEnabled())
         .isShortDescriptionEnabled(dto.isShortDescriptionEnabled())
         .websites(websites)
         .build();

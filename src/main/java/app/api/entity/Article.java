@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "articles")
 @Getter
 @Builder
 @Setter
@@ -29,7 +30,8 @@ public class Article {
     private String url;
 
     @Column(name = "creation_date")
-    private LocalDateTime creationDate;
+    // offsetdatetime
+    private OffsetDateTime creationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "website_id", nullable = false)

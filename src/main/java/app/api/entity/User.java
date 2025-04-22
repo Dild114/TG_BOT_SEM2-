@@ -30,9 +30,6 @@ public class User {
   @Column(name = "is_short_description_enabled")
   private boolean isShortDescriptionEnabled;
 
-  @Column(name = "is_subscribe_enabled")
-  private boolean isSubscribeEnabled;
-
   @Column(name = "message_storage_time_day")
   private long messageStorageTimeDay;
 
