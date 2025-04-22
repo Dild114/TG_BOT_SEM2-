@@ -1,12 +1,16 @@
 package app.api.bot.stubs;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
-@AllArgsConstructor
+@Setter
+@Getter
+@Component
 public class User {
-  @Setter
-  @Getter
-  private int pageSize = 5;
+  private int pageSize;
+
+  public User() {
+    this.pageSize = 5;
+  }
 }
