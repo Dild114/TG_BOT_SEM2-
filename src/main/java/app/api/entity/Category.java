@@ -40,3 +40,4 @@ public class Category {
     return Objects.hash(id);
   }
 }
+

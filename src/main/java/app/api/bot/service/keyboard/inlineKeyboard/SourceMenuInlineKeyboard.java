@@ -1,0 +1,57 @@
+package app.api.bot.service.keyboard.inlineKeyboard;
+
+import app.api.bot.stubs.PairForSource;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class SourceMenuInlineKeyboard {
+  private final InlineKeyboardHelper inlineKeyboardHelper;
+
+  //TODO: заменить sources чтобы нормально соотносилось, (проверить, подходит ли LinkedHashMap)
+  public InlineKeyboardMarkup createSourcesList(
+    LinkedHashMap<String, PairForSource> sources,
+    int pageNum,
+    String viewMode,
+    int pageSize
+  ) {
+
+    InlineKeyboardMarkup sourceListKeyboard = new InlineKeyboardMarkup();
+
+    int countPages = (int) Math.ceil(sources.size() / (double) pageSize);
+
+    int start = (pageNum - 1) * pageSize;
+    int end = Math.min((pageNum) * pageSize, sources.size());
+
+    //TODO: аналогично проверить, всё ли норм из-зи LinkedHashMap
+    List<String> currentPageSources = new ArrayList<>(sources.keySet()).subList(start, end);
+
+    List<List<InlineKeyboardButton>> sourcesKeyboard = new ArrayList<>();
+
+    InlineKeyboardButton viewToggle = inlineKeyboardHelper.createCallbackButton(
+      "state".equals(viewMode) ? "Вид: Состояние" : "Вид: Ссылочный",
+      "state".equals(viewMode) ? "change_source_view_link_" + pageNum : "change_source_view_state_" + pageNum
+    );
+    sourcesKeyboard.add(List.of(viewToggle));
+
+    for (String source : currentPageSources) {
+      InlineKeyboardButton btn = "state".equals(viewMode)
+        ? inlineKeyboardHelper.createCallbackButton((sources.get(source).active() ? "✅ " : "❌ ") + source, "change_source_status_" + source + "_" + pageNum)
+        : inlineKeyboardHelper.createUrlButton("🔗 " + source, sources.get(source).url());
+      sourcesKeyboard.add(List.of(btn));
+    }
+
+    List<InlineKeyboardButton> navigation = inlineKeyboardHelper.buildNavigationButtons("page_source", pageNum, countPages);
+    sourcesKeyboard.add(navigation);
+
+    sourceListKeyboard.setKeyboard(sourcesKeyboard);
+    return sourceListKeyboard;
+  }
+}

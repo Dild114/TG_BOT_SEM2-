@@ -1,5 +1,6 @@
 package app.api.entity;
 
+
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,3 +37,4 @@ public class UserId implements Serializable {
     return id;
   }
 }
+

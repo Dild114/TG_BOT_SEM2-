@@ -5,6 +5,7 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
 spring:
   application:
     name: HomeWork
@@ -21,3 +22,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+telegram:
+  bot:
+    name: News_recommendations_bot
+    token: 7738264458:AAEf1mmSBXFdFWS6SjYvfnvYxfe9vvZn4HU
+
