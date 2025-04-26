@@ -1,29 +1,57 @@
 package app.api.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-@Data
-@Schema(name = "User", description = "Сущность пользователя")
+@Entity
+@Table(name = "users")
+@Setter
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-  // пока что telegramId и email не нужен и мы его не будет использовать
-  @Schema(description = "ID пользователя", example = "123")
-  UserId userId;
-  @Schema(description = "Имя пользователя", example = "Nikolay")
-  String userName;
-  @Schema(description = "Пароль пользователя", example = "qwerty")
-  String password;
-  @Schema(description = "Email пользователя", example = "qwerty@qwerty.com")
-  String email;
-  @Schema(description = "Список категорий пользователя", example = "[ML,frontend, backend]")
-  List<Category> categories;
-  @Schema(description = "Список сайтов пользователя", example = "[https://habr.com/ru/articles/814061/, https://ru.wikipedia.org/wiki/]")
-  List<Site> sites;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+  @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
+  private Long id;
 
-  public User(String userName, String password) {
-    this.userName = userName;
-    this.password = password;
+  @Column(name = "telegram_id")
+  private String telegramId;
+
+  @Column(name = "is_short_description_enabled")
+  private boolean isShortDescriptionEnabled;
+
+  @Column(name = "message_storage_time_day")
+  private long messageStorageTimeDay;
+
+  @Column(name = "count_element_on_table")
+  private long countElementOnTable;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Category> categories = new HashSet<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Website> websites = new HashSet<>();
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return id != null && id.equals(user.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

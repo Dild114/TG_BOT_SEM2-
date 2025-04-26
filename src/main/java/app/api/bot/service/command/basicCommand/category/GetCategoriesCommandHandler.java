@@ -24,6 +24,7 @@ public class GetCategoriesCommandHandler implements BasicCommandHandler {
   public void handle(Message message) {
     long chatId = message.getChatId();
     // TODO: List<CategoryDto> userCategories = categoryService.getCategories(chatId)
+
     categoryMessageService.sendCategoryMenuMessage(chatId, categoryServiceStub.getCategories()); // TODO: заменить на userCategories
   }
 }

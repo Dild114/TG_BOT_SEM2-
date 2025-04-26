@@ -9,3 +9,20 @@ telegram:
   bot:
     name: News_recommendations_bot
     token: 7738264458:AAEf1mmSBXFdFWS6SjYvfnvYxfe9vvZn4HU
+
+spring:
+  application:
+    name: HomeWork
+  datasource:
+    url: jdbc:postgresql://localhost:5432/my_postgres
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

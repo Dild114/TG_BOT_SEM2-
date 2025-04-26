@@ -1,24 +1,26 @@
 package app.api.entity;
 
-import lombok.Getter;
-import org.hibernate.proxy.HibernateProxy;
-import java.io.Serializable;
-import java.util.Objects;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.proxy.HibernateProxy;
+import java.io.Serializable;
+import java.util.Objects;
 
+@Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
-public class ArticleId implements Serializable {
-  @Getter
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "article_id_seq")
-  @SequenceGenerator(name = "article_id_seq", sequenceName = "article_id_seq", allocationSize = 1)
+public class WebsiteId implements Serializable {
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "website_id_seq")
+  @SequenceGenerator(name = "website_id_seq", sequenceName = "website_id_seq", allocationSize = 1)
   private Long id;
+
+  public Long getId() {
+    return id;
+  }
 
   @Override
   public final boolean equals(Object o) {
@@ -27,12 +29,13 @@ public class ArticleId implements Serializable {
     Class<?> oEffectiveClass = o instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : o.getClass();
     Class<?> thisEffectiveClass = this instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
     if (thisEffectiveClass != oEffectiveClass) return false;
-    ArticleId articleId = (ArticleId) o;
-    return id != null && Objects.equals(id, articleId.id);
+    WebsiteId websiteId = (WebsiteId) o;
+    return id != null && Objects.equals(id, websiteId.id);
   }
 
   @Override
   public final int hashCode() {
     return Objects.hash(id);
   }
+
 }
