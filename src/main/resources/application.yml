@@ -7,15 +7,15 @@ springdoc:
     path: /swagger-ui.html
 telegram:
   bot:
-    name: News_recommendations_bot
-    token: 7738264458:AAEf1mmSBXFdFWS6SjYvfnvYxfe9vvZn4HU
+    name: project_mts2_bot
+    token: 7823152476:AAEvfULCTjabyDnuBH9z6li7RkovjvZWCgg
 
 spring:
   application:
     name: HomeWork
   datasource:
-    url: jdbc:postgresql://localhost:5432/my_postgres
-    username: postgres
+    url: jdbc:postgresql://localhost:5432/postgress
+    username: postgress
     password: password
     driver-class-name: org.postgresql.Driver
   jpa:

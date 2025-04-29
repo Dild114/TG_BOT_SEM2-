@@ -6,9 +6,9 @@ services:
     container_name: my_postgres
     restart: always
     environment:
-      POSTGRES_DB: my_postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: changeme
+      POSTGRES_DB: postgress
+      POSTGRES_USER: postgress
+      POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
     networks:
