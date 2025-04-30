@@ -11,18 +11,20 @@ telegram:
     token: 7823152476:AAEvfULCTjabyDnuBH9z6li7RkovjvZWCgg
 
 spring:
+  flyway:
+    schemas: public
   application:
     name: HomeWork
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/postgress
-#    username: postgress
-#    password: password
-#    driver-class-name: org.postgresql.Driver
-#  jpa:
-#    database-platform: org.hibernate.dialect.PostgreSQLDialect
-#    hibernate:
-#      ddl-auto: update
-#    show-sql: true
-#    properties:
-#      hibernate:
-#        format_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgress
+    username: postgress
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
