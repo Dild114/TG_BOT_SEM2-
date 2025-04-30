@@ -3,7 +3,8 @@ package app.api.bot.service.command.callbackComand.source;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.source.SourceMessageService;
-import app.api.bot.stubs.source.SourceServiceStub;
+import app.api.entity.*;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -18,7 +19,7 @@ public class StatusSourceCallbackHandler implements CallbackCommandHandler {
   private final SourceMessageService sourceMessageService;
   private final ChatStateService chatStateService;
   //TODO:заменить на нормальный сервис
-  private final SourceServiceStub sourceServiceStub;
+  private final WebsiteService sourceService;
 
   @Override
   public boolean canHandle(String callbackData) {
@@ -31,11 +32,11 @@ public class StatusSourceCallbackHandler implements CallbackCommandHandler {
     long chatId = callbackQuery.getMessage().getChatId();
 
     String[] parts = callbackData.split("_");
-    int sourceId = Integer.parseInt(parts[3]);
+    Long sourceId = Long.parseLong(parts[3]);
     int pageNum = Integer.parseInt(parts[4]);
     //TODO: заменить на норм сервис, который принимает ещё и chatId
-    sourceServiceStub.changeUserSourceStatus(chatId, sourceId);
+    sourceService.changeUserSourceStatus(chatId, sourceId);
     //TODO: аналогично меняем заглушку на норм сервис
-    sourceMessageService.updateSourceMenuMessage(chatId, pageNum, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId));
+    sourceMessageService.updateSourceMenuMessage(chatId, pageNum, sourceService.getUserSources(chatId), chatStateService.getTempViewMode(chatId));
   }
 }

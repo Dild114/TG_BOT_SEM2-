@@ -1,3 +1,7 @@
+CREATE SEQUENCE IF NOT EXISTS article_id_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS category_id_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS website_id_seq START WITH 1 INCREMENT BY 1;
+
 CREATE TABLE users (
                        chat_id BIGINT PRIMARY KEY NOT NULL,
                        brief_content_of_articles_status BOOLEAN NOT NULL DEFAULT FALSE,
@@ -7,8 +11,8 @@ CREATE TABLE users (
 );
 
 CREATE TABLE categories (
-                            id BIGINT NOT NULL,
-                            name VARCHAR(255),
+                            id      BIGINT NOT NULL,
+                            name    VARCHAR(255),
                             user_id BIGINT NOT NULL,
                             is_enabled BOOLEAN NOT NULL,
                             CONSTRAINT categories_pkey PRIMARY KEY (id),
@@ -16,22 +20,23 @@ CREATE TABLE categories (
 );
 
 CREATE TABLE websites (
-                          id BIGINT NOT NULL,
-                          url VARCHAR(255),
-                          user_id BIGINT NOT NULL,
-                          is_enabled BOOLEAN NOT NULL,
-                          CONSTRAINT websites_pkey PRIMARY KEY (id),
+                          source_id   BIGINT NOT NULL DEFAULT nextval('website_id_seq'),
+                          name        VARCHAR(255),
+                          url         VARCHAR(255),
+                          is_enabled  BOOLEAN NOT NULL,
+                          user_id     BIGINT NOT NULL,
+                          CONSTRAINT websites_pkey PRIMARY KEY (source_id),
                           CONSTRAINT fk_website_user FOREIGN KEY (user_id) REFERENCES users(chat_id) ON DELETE CASCADE
 );
 
 CREATE TABLE articles (
-                          id BIGINT NOT NULL,
-                          name VARCHAR(255),
-                          url VARCHAR(255),
+                          id            BIGINT NOT NULL,
+                          name          VARCHAR(255),
+                          url           VARCHAR(255),
                           creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
-                          website_id BIGINT NOT NULL,
-                          category_id BIGINT NOT NULL,
-                          user_id BIGINT NOT NULL,
+                          website_id    BIGINT NOT NULL,
+                          category_id   BIGINT NOT NULL,
+                          user_id       BIGINT NOT NULL,
                           CONSTRAINT articles_pkey PRIMARY KEY (id),
                           CONSTRAINT fk_article_user FOREIGN KEY (user_id) REFERENCES users(chat_id) ON DELETE CASCADE
 );

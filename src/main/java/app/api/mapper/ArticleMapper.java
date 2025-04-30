@@ -14,7 +14,7 @@ public class ArticleMapper {
         .url(article.getUrl())
         .creationDate(article.getCreationDate())
         .categoryId(article.getCategory().getId())  // Привязка к категории
-        .websiteId(article.getWebsite().getId())  // Привязка к сайту
+        .websiteId(article.getWebsite().getSourceId())  // Привязка к сайту
         .build();
   }
 

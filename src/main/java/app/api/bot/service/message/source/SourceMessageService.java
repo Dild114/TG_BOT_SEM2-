@@ -5,6 +5,7 @@ import app.api.bot.service.keyboard.replyKeyboard.factory.ReplyKeyboardFactory;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.message.MessageTrackingService;
 import app.api.bot.stubs.source.SourceStub;
+import app.api.entity.*;
 import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class SourceMessageService {
 
 
   //TODO: Заменить LinkedHashMap на что-то нормальное
-  public void sendSourceMenuMassage(long chatId, List<SourceStub> sources) {
+  public void sendSourceMenuMassage(long chatId, List<Website> sources) {
     messageSenderService.deleteLastBotMessage(chatId);
 
     SendMessage sendFirstMessage = new SendMessage();
@@ -46,7 +47,7 @@ public class SourceMessageService {
   }
 
   //TODO: Заменить LinkedHashMap на что-то нормальное
-  public void updateSourceMenuMessage(long chatId, int pageNum, List<SourceStub> sources, String viewMode) {
+  public void updateSourceMenuMessage(long chatId, int pageNum, List<Website> sources, String viewMode) {
     int messageId = messageTrackingService.getLastInlineKeyboardId(chatId);
     EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
     editMessageReplyMarkup.setChatId(chatId);

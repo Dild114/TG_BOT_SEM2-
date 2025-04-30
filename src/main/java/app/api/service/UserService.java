@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
   private final UserRepository userRepository;
-  private final SourceServiceStub sourceServiceStub;
+  private final WebsiteService sourceService;
   private final CategoryService categoryService;
 
   @Transactional
@@ -33,7 +33,7 @@ public class UserService {
       log.warn("User not found: {}, for delete", chatId);
       return;
     }
-    sourceServiceStub.deleteUserSources(chatId);
+//    sourceService.deleteUserSources(chatId);
 //    categoryService.deleteAllUserCategories(chatId);
     userRepository.deleteById(chatId);
   }

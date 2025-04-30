@@ -16,8 +16,8 @@ public class WebsiteMapper {
 
   public WebsiteDto toDto(Website website) {
     return WebsiteDto.builder()
-        .id(website.getId())
-        .url(website.getUrl())
+        .id(website.getSourceId())
+        .url(website.getSourceUrl())
         .userId(website.getUser().getChatId())
         .build();
   }
@@ -27,8 +27,8 @@ public class WebsiteMapper {
         .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + dto.getUserId()));
 
     return Website.builder()
-        .id(dto.getId())
-        .url(dto.getUrl())
+        .sourceId(dto.getId())
+        .sourceUrl(dto.getUrl())
         .user(user)
         .build();
   }

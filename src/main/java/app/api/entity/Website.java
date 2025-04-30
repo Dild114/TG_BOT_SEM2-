@@ -14,13 +14,16 @@ public class Website {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "website_seq")
   @SequenceGenerator(name = "website_seq", sequenceName = "website_id_seq", allocationSize = 1)
-  private Long id;
+  private Long sourceId;
+
+  @Column(name = "name")
+  private String sourceName;
 
   @Column(name = "url")
-  private String url;
+  private String sourceUrl;
 
   @Column(name = "is_enabled")
-  boolean isEnabled = true;
+  private boolean sourceActiveStatus;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)

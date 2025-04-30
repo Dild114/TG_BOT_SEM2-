@@ -36,5 +36,5 @@ public class User {
   private List<Category> categories = new ArrayList<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Website> websites = new HashSet<>();
+  private List<Website> websites = new ArrayList<>();
 }

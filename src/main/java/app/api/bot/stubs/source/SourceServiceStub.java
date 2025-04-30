@@ -23,9 +23,7 @@ public class SourceServiceStub {
   public List<SourceStub> getUserSources(long chatId) {
     Map<Long, SourceStub> userSources = sourcesForUsers.getOrDefault(chatId, new HashMap<>());
     List<SourceStub> sortedUserSources = new ArrayList<>(userSources.values());
-
     sortedUserSources.sort(Comparator.comparing(SourceStub::getSourceId));
-
     return sortedUserSources;
   }
 

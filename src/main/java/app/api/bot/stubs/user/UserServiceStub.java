@@ -1,7 +1,6 @@
 package app.api.bot.stubs.user;
 
-import app.api.bot.stubs.source.SourceServiceStub;
-import app.api.service.CategoryService;
+import app.api.service.*;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -10,13 +9,13 @@ import java.util.Map;
 @Service
 public class UserServiceStub {
   private final Map<Long, UserStub> users;
-  private final SourceServiceStub sourceServiceStub;
+  private final WebsiteService sourceService;
   private final CategoryService categoryService;
 
-  public UserServiceStub(SourceServiceStub sourceServiceStub, CategoryService categoryService) {
+  public UserServiceStub(WebsiteService sourceService, CategoryService categoryService) {
     this.users = new HashMap<>();
 
-    this.sourceServiceStub = sourceServiceStub;
+    this.sourceService = sourceService;
     this.categoryService = categoryService;
   }
 
@@ -28,7 +27,7 @@ public class UserServiceStub {
     //TODO: в бд по-сути должно быть реализовано как каскадное удаление
     users.remove(chatId);
 
-    sourceServiceStub.deleteUserSources(chatId);
+//    sourceService.deleteUserSources(chatId);
 //    categoryService.deleteAllUserCategories(chatId);
   }
 

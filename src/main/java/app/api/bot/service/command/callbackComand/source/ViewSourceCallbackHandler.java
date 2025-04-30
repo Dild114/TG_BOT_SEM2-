@@ -3,7 +3,7 @@ package app.api.bot.service.command.callbackComand.source;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.source.SourceMessageService;
-import app.api.bot.stubs.source.SourceServiceStub;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -18,7 +18,7 @@ public class ViewSourceCallbackHandler implements CallbackCommandHandler {
   private final SourceMessageService sourceMessageService;
   private final ChatStateService chatStateService;
   //TODO:заменить на нормальный сервис
-  private final SourceServiceStub sourceServiceStub;
+  private final WebsiteService sourceService;
 
   @Override
   public boolean canHandle(String callbackData) {
@@ -35,6 +35,6 @@ public class ViewSourceCallbackHandler implements CallbackCommandHandler {
     String newView = parts[3];
     chatStateService.setTempViewMode(chatId, newView);
     //TODO: меняем sourceServiceStub на норм сервис, принимающий chatId
-    sourceMessageService.updateSourceMenuMessage(chatId, pageNum, sourceServiceStub.getUserSources(chatId), newView);
+    sourceMessageService.updateSourceMenuMessage(chatId, pageNum, sourceService.getUserSources(chatId), newView);
   }
 }
