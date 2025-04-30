@@ -3,6 +3,7 @@ package app.api.bot.stubs.category;
 import app.api.repository.*;
 import lombok.*;
 import lombok.extern.slf4j.*;
+import app.api.bot.stubs.exceptions.InvalidValueException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,16 +48,23 @@ public class CategoryServiceStub {
     if (flag) {
       long categoryId = getNextCategoryId();
       userCategories.put(categoryId, new CategoryStub(categoryId, categoryName));
+    } else {
+      throw new InvalidValueException("Категория с названием " + categoryName + " ранее была добавлена пользователю " + chatId);
     }
   }
 
   public void deleteCategoryFromUser(long chatId, String categoryName) {
     Map<Long, CategoryStub> userCategories = categoriesForUsers.computeIfAbsent(chatId, k -> new HashMap<>());
+    boolean flag = false;
     for (CategoryStub categoryStub : userCategories.values()) {
       if (categoryStub.getCategoryName().equals(categoryName)) {
         userCategories.remove(categoryStub.getCategoryId());
+        flag = true;
         break;
       }
+    }
+    if (!flag) {
+      throw new InvalidValueException("Категория с названием " + categoryName + " не найдена у пользователя " + chatId);
     }
   }
 

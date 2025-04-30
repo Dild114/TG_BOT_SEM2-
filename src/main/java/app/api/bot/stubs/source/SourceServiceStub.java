@@ -1,6 +1,7 @@
 package app.api.bot.stubs.source;
 
 import app.api.bot.stubs.category.CategoryStub;
+import app.api.bot.stubs.exceptions.InvalidValueException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class SourceServiceStub {
     Map<Long, SourceStub> userSources = sourcesForUsers.computeIfAbsent(chatId, k -> new HashMap<>());
     boolean flag = true;
     for (SourceStub sourceStub : userSources.values()) {
-      if (sourceStub.getSourceName().equals(sourceName)) {
+      if (sourceStub.getSourceName().equals(sourceName) || sourceStub.getSourceUrl().equals(sourceUrl)) {
         flag = false;
         break;
       }
@@ -44,16 +45,23 @@ public class SourceServiceStub {
     if (flag) {
       long sourceId = getNextSourceId();
       userSources.put(sourceId, new SourceStub(sourceId, sourceName, sourceUrl));
+    } else {
+      throw new InvalidValueException("Источник с таким названием или ссылкой уже существует");
     }
   }
 
   public void deleteSourceFromUser(long chatId, String sourceName) {
     Map<Long, SourceStub> userSources = sourcesForUsers.computeIfAbsent(chatId, k -> new HashMap<>());
+    boolean flag = false;
     for (SourceStub sourceStub : userSources.values()) {
       if (sourceStub.getSourceName().equals(sourceName)) {
         userSources.remove(sourceStub.getSourceId());
+        flag = true;
         break;
       }
+    }
+    if (!flag) {
+      throw new InvalidValueException("Не найден источник с таким названием");
     }
   }
 
