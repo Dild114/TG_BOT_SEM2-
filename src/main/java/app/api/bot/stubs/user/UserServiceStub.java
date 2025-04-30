@@ -29,7 +29,7 @@ public class UserServiceStub {
     users.remove(chatId);
 
     sourceServiceStub.deleteUserSources(chatId);
-    categoryService.deleteAllUserCategories(chatId);
+//    categoryService.deleteAllUserCategories(chatId);
   }
 
   public int getUserCountStringsInOnePage(long chatId) {

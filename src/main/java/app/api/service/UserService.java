@@ -34,7 +34,7 @@ public class UserService {
       return;
     }
     sourceServiceStub.deleteUserSources(chatId);
-    categoryService.deleteAllUserCategories(chatId);
+//    categoryService.deleteAllUserCategories(chatId);
     userRepository.deleteById(chatId);
   }
 

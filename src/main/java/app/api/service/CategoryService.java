@@ -3,7 +3,6 @@ package app.api.service;
 import app.api.bot.stubs.exceptions.*;
 import app.api.dto.CategoryDto;
 import app.api.entity.Category;
-import app.api.entity.CategoryId;
 import app.api.entity.User;
 import app.api.mapper.CategoryMapper;
 import app.api.repository.CategoryRepository;
@@ -33,19 +32,20 @@ public class CategoryService {
     List<CategoryDto> categoriesDto = userCategories.stream()
         .map(categoryMapper::toDto)
         .toList();
-
-    boolean flag = true;
     for (CategoryDto categoryDto : categoriesDto) {
       if (categoryDto.getCategoryName().equals(categoryName)) {
-        Category category = categoryMapper.toEntity(categoryDto);
-        Category savedCategory = categoryRepository.save(category);
-        user.getCategories().add(savedCategory);
-        userRepository.save(user);
-        return;
+        throw new InvalidValueException("Категория с названием " + categoryName + " ранее была добавлена пользователю " + chatId);
       }
     }
-    throw new InvalidValueException("Категория с названием " + categoryName + " ранее была добавлена пользователю " + chatId);
-  }
+    Category category = Category.builder()
+        .name(categoryName)
+        .isEnabled(true)
+        .user(user)
+        .build();
+    Category savedCategory = categoryRepository.save(category);
+    user.getCategories().add(savedCategory);
+    userRepository.save(user);
+     }
 
   @Transactional
   public void deleteCategoryFromUser(Long chatId, String categoryName) {
@@ -75,18 +75,18 @@ public class CategoryService {
 
   @Transactional
   public void changeUserCategoryStatus(Long chatId, Long categoryId) {
-    Category category = categoryRepository.findById(new CategoryId(categoryId))
+    Category category = categoryRepository.findById(categoryId)
         .orElseThrow(() -> new EntityNotFoundException("Category not found: " + categoryId));
 
     category.setEnabled(!category.isEnabled());
     categoryRepository.save(category);
   }
 
-  @Transactional
-  public void deleteAllUserCategories(long chatId) {
-    User user = userRepository.findById(chatId)
-        .orElseThrow(() -> new EntityNotFoundException("User not found: " + chatId));
-    List<Category> userCategories  = user.getCategories();
-    categoryRepository.deleteAll(userCategories);
-  }
+//  @Transactional
+//  public void deleteAllUserCategories(long chatId) {
+//    User user = userRepository.findById(chatId)
+//        .orElseThrow(() -> new EntityNotFoundException("User not found: " + chatId));
+//    List<Category> userCategories  = user.getCategories();
+//    categoryRepository.deleteAll(userCategories);
+//  }
 }
