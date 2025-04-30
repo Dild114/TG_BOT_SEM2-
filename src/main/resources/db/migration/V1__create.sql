@@ -33,7 +33,5 @@ CREATE TABLE articles (
                           category_id BIGINT NOT NULL,
                           user_id BIGINT NOT NULL,
                           CONSTRAINT articles_pkey PRIMARY KEY (id),
-                          CONSTRAINT fk_article_website FOREIGN KEY (website_id) REFERENCES websites(id) ON DELETE CASCADE,
-                          CONSTRAINT fk_article_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
                           CONSTRAINT fk_article_user FOREIGN KEY (user_id) REFERENCES users(chat_id) ON DELETE CASCADE
 );
