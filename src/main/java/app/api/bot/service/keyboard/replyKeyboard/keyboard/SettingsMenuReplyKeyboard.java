@@ -23,8 +23,17 @@ public class SettingsMenuReplyKeyboard implements ReplyKeyboardInterface {
     row1.add("Изменить кол-во элементов, отображаемых на одной странице");
 
     KeyboardRow row2 = new KeyboardRow();
-    row2.add("↩ Главная");
+    row2.add("Изменить кол-во статей, получаемых одним запросом");
 
-    keyboardMarkup.setKeyboard(List.of(row1, row2));
+    KeyboardRow row3 = new KeyboardRow();
+    row3.add("Получать краткие содержания статей");
+
+    KeyboardRow row4 = new KeyboardRow();
+    row4.add("Не получать краткие содержания");
+
+    KeyboardRow row5 = new KeyboardRow();
+    row5.add("↩ Главная");
+
+    keyboardMarkup.setKeyboard(List.of(row1, row2, row3, row4, row5));
   }
 }

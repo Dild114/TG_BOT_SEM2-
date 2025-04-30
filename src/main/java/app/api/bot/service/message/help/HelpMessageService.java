@@ -20,6 +20,6 @@ public class HelpMessageService {
     sendMessage.setText(messageTemplateService.getHelpText());
     sendMessage.setReplyMarkup(closeMessageInlineKeyboard.getCloseButton());
 
-    messageSenderService.sendMessage(chatId, sendMessage);
+    messageSenderService.sendUndeletableMessage(chatId, sendMessage);
   }
 }
