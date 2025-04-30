@@ -4,7 +4,7 @@ import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.keyboard.inlineKeyboard.ArticleMenuInlineKeyboard;
 import app.api.bot.service.message.MessageTrackingService;
 import app.api.bot.stubs.Article;
-import app.api.bot.stubs.user.UserServiceStub;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -18,8 +18,6 @@ public class ArticleMessageService {
   private final ArticleMenuInlineKeyboard articleMenuInlineKeyboard;
   private final MessageSenderService messageSenderService;
   private final MessageTrackingService messageTrackingService;
-
-  private final UserServiceStub userServiceStub;
 
   //TODO: заменить List<Article> на то, что будет нужно.
   public void sendArticles(long chatId, List<Article> articles) {

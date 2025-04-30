@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -22,22 +20,22 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
   @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
-  private Long id;
+  private Long chatId;
 
-  @Column(name = "telegram_id")
-  private String telegramId;
-
-  @Column(name = "is_short_description_enabled")
-  private boolean isShortDescriptionEnabled;
+  @Column(name = "briefContentOfArticlesStatus")
+  private boolean briefContentOfArticlesStatus;
 
   @Column(name = "message_storage_time_day")
   private long messageStorageTimeDay;
 
-  @Column(name = "count_element_on_table")
-  private long countElementOnTable;
+  @Column(name = "countStringsInOnePage")
+  private int countStringsInOnePage;
+
+  @Column(name = "countArticlesInOneRequest")
+  private int countArticlesInOneRequest;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Category> categories = new HashSet<>();
+  private List<Category> categories = new ArrayList<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Website> websites = new HashSet<>();
@@ -47,11 +45,11 @@ public class User {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     User user = (User) o;
-    return id != null && id.equals(user.id);
+    return chatId != null && chatId.equals(user.chatId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id);
+    return Objects.hash(chatId);
   }
 }

@@ -11,11 +11,11 @@ import java.util.Set;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, ArticleId> {
-  Set<Article> findArticlesByUserId(Long userId);
+  Set<Article> findArticlesByUser_ChatId(Long userId);
 
   @Query("""
     SELECT a FROM Article a
-    WHERE a.user.id = :userId
+    WHERE a.user.chatId = :userId
       AND a.creationDate >= FUNCTION('DATE_SUB', CURRENT_TIMESTAMP, a.user.messageStorageTimeDay, 'DAY')
     """)
   Set<Article> findActiveArticlesByUserId(@Param("userId") Long userId);

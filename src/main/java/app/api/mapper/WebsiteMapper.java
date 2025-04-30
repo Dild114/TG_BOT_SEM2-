@@ -1,7 +1,6 @@
 package app.api.mapper;
 
 import app.api.dto.WebsiteDto;
-import app.api.entity.UserId;
 import app.api.entity.Website;
 import app.api.entity.User;
 import app.api.entity.WebsiteId;
@@ -19,12 +18,12 @@ public class WebsiteMapper {
     return WebsiteDto.builder()
         .id(website.getId())
         .url(website.getUrl())
-        .userId(website.getUser().getId())
+        .userId(website.getUser().getChatId())
         .build();
   }
 
   public Website toEntity(WebsiteDto dto) {
-    User user = userRepository.findById(new UserId(dto.getUserId()))
+    User user = userRepository.findById(dto.getUserId())
         .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + dto.getUserId()));
 
     return Website.builder()

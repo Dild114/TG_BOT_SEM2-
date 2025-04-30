@@ -1,7 +1,7 @@
 package app.api.bot.stubs.user;
 
-import app.api.bot.stubs.category.CategoryServiceStub;
 import app.api.bot.stubs.source.SourceServiceStub;
+import app.api.service.CategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -11,13 +11,13 @@ import java.util.Map;
 public class UserServiceStub {
   private final Map<Long, UserStub> users;
   private final SourceServiceStub sourceServiceStub;
-  private final CategoryServiceStub categoryServiceStub;
+  private final CategoryService categoryService;
 
-  public UserServiceStub(SourceServiceStub sourceServiceStub, CategoryServiceStub categoryServiceStub) {
+  public UserServiceStub(SourceServiceStub sourceServiceStub, CategoryService categoryService) {
     this.users = new HashMap<>();
 
     this.sourceServiceStub = sourceServiceStub;
-    this.categoryServiceStub = categoryServiceStub;
+    this.categoryService = categoryService;
   }
 
   public void createUser(long chatId) {
@@ -29,7 +29,7 @@ public class UserServiceStub {
     users.remove(chatId);
 
     sourceServiceStub.deleteUserSources(chatId);
-    categoryServiceStub.deleteAllUserCategories(chatId);
+    categoryService.deleteAllUserCategories(chatId);
   }
 
   public int getUserCountStringsInOnePage(long chatId) {

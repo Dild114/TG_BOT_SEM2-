@@ -2,7 +2,7 @@ package app.api.bot.service.command.callbackComand.category;
 
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.category.CategoryMessageService;
-import app.api.bot.stubs.category.CategoryServiceStub;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 public class StatusCategoryCallbackHandler implements CallbackCommandHandler {
   private final CategoryMessageService categoryMessageService;
   //TODO: меняем на нормальный сервис
-  private final CategoryServiceStub categoryServiceStub;
+  private final CategoryService categoryService;
 
   @Override
   public boolean canHandle(String callbackData) {
@@ -32,8 +32,8 @@ public class StatusCategoryCallbackHandler implements CallbackCommandHandler {
     int categoryId = Integer.parseInt(parts[3]);
     int pageNum = Integer.parseInt(parts[4]);
     //TODO: тут меняем на сервис и он так же принимает chatId
-    categoryServiceStub.changeUserCategoryStatus(chatId, categoryId);
+    categoryService.changeUserCategoryStatus(chatId, (long) categoryId);
     //TODO: аналогично меняем заглушку на норм сервис
-    categoryMessageService.updateCategoryMenuMessage(chatId, pageNum, categoryServiceStub.getUserCategories(chatId));
+    categoryMessageService.updateCategoryMenuMessage(chatId, pageNum, categoryService.getUserCategories(chatId));
   }
 }

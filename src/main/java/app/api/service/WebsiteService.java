@@ -2,7 +2,6 @@ package app.api.service;
 
 import app.api.dto.WebsiteDto;
 import app.api.entity.*;
-import app.api.mapper.UserMapper;
 import app.api.mapper.WebsiteMapper;
 import app.api.repository.UserRepository;
 import app.api.repository.WebsiteRepository;
@@ -23,10 +22,9 @@ public class WebsiteService {
   private final WebsiteRepository websiteRepository;
   private final WebsiteMapper websiteMapper;
   private final UserRepository userRepository;
-  private final UserMapper userMapper;
 
-  public Set<WebsiteDto> getAllWebsitesByUserId(UserId userId) {
-    List<Website> websites = websiteRepository.findAllWebsitesByUserId(userId.getId());
+  public Set<WebsiteDto> getAllWebsitesByUserId(Long userId) {
+    List<Website> websites = websiteRepository.findAllWebsitesByUser_ChatId(userId);
     return websites.stream()
             .map(websiteMapper::toDto)
             .collect(Collectors.toSet());
@@ -35,7 +33,7 @@ public class WebsiteService {
 
   public WebsiteId addWebsiteByUserId(WebsiteDto websiteDto) {
     Long userId = websiteDto.getUserId();
-    User user = userRepository.findById(new UserId(userId))
+    User user = userRepository.findById(userId)
         .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
     Website website = websiteMapper.toEntity(websiteDto);
@@ -47,7 +45,7 @@ public class WebsiteService {
   }
 
   public void removeWebsiteByUserId(Long userId, Long websiteId) {
-    User user = userRepository.findById(new UserId(userId))
+    User user = userRepository.findById(userId)
         .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
     Website website = websiteRepository.findById(new WebsiteId(websiteId))

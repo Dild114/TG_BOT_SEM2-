@@ -1,6 +1,7 @@
 package app.api.bot.service.keyboard.inlineKeyboard;
 
 import app.api.bot.stubs.category.CategoryStub;
+import app.api.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -16,7 +17,7 @@ public class CategoryMenuInlineKeyboard {
 
   //TODO: заменить categories чтобы нормально соотносилось, (проверить, подходит ли LinkedHashMap)
   public InlineKeyboardMarkup createCategoriesList(
-    List<CategoryStub> categories,
+    List<CategoryDto> categories,
     int pageNum,
     int pageSize
   ) {
@@ -29,11 +30,11 @@ public class CategoryMenuInlineKeyboard {
     int end = Math.min((pageNum) * pageSize, categories.size());
 
     //TODO: аналогично проверить, всё ли норм из-зи LinkedHashMap
-    List<CategoryStub> currentPageCategories = categories.subList(start, end);
+    List<CategoryDto> currentPageCategories = categories.subList(start, end);
 
     List<List<InlineKeyboardButton>> categoriesKeyboard = new ArrayList<>();
 
-    for (CategoryStub category : currentPageCategories) {
+    for (CategoryDto category : currentPageCategories) {
       String status = category.isCategoryActiveStatus() ? "✅" : "❌";
       InlineKeyboardButton button = inlineKeyboardHelper.createCallbackButton(
         status + " " + category.getCategoryName(),

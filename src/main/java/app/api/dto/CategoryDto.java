@@ -18,4 +18,8 @@ public class CategoryDto {
   private Long userId;
 
   private boolean categoryActiveStatus = true;
+
+  public void changeCategoryStatus() {
+    this.categoryActiveStatus = !this.categoryActiveStatus;
+  }
 }

@@ -17,14 +17,27 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-  private Long userId;
+  private Long chatId;
 
-  private String telegramId;
+  private int countStringsInOnePage = 5;
 
-  private boolean isSubscribeEnabled;
+  private int countArticlesInOneRequest = 3;
 
-  private boolean isShortDescriptionEnabled;
+  private boolean briefContentOfArticlesStatus = false;
 
+  public void changeCountStringsInOnePage(int newCountPages) {
+    this.countStringsInOnePage = newCountPages;
+  }
+
+  public void changeCountArticlesInOneRequest(int newCountArticles) {
+    this.countArticlesInOneRequest = newCountArticles;
+  }
+
+  public void changeMakeBriefStatus(boolean newBriefStatus) {
+    this.briefContentOfArticlesStatus = newBriefStatus;
+  }
+
+  // todo: понять надо ли это
   private Set<Website> websites = new HashSet<>();
   private Set<Category> categories = new HashSet<>();
 }

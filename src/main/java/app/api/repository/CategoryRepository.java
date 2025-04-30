@@ -2,7 +2,6 @@ package app.api.repository;
 
 import app.api.entity.Category;
 import app.api.entity.CategoryId;
-import app.api.entity.UserId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {
-  List<Category> findCategoriesByUserId(Long userId);
+public interface CategoryRepository extends JpaRepository<Category, CategoryId> {
+  List<Category> findCategoriesByUser_ChatId(Long userId);
 }
