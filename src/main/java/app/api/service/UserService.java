@@ -23,7 +23,6 @@ public class UserService {
 
   @Transactional
   public void createUser(Long chatId) {
-    UserDto userDto = UserDto.builder().chatId(chatId).build();
     User user = User.builder().chatId(chatId).briefContentOfArticlesStatus(false).countStringsInOnePage(5).countArticlesInOneRequest(3).build();
     userRepository.save(user);
   }
@@ -31,12 +30,12 @@ public class UserService {
   @Transactional
   public void deleteUser(Long chatId) {
     if (!userRepository.existsById(chatId)) {
-      log.warn("User not found: {}", chatId);
+      log.warn("User not found: {}, for delete", chatId);
       return;
     }
-    userRepository.deleteById(chatId);
     sourceServiceStub.deleteUserSources(chatId);
     categoryService.deleteAllUserCategories(chatId);
+    userRepository.deleteById(chatId);
   }
 
   @Transactional(readOnly = true)

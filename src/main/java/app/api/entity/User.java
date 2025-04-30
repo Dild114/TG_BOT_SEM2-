@@ -18,8 +18,6 @@ import java.util.*;
 @AllArgsConstructor
 public class User {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-  @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
   private Long chatId;
 
   @Column(name = "briefContentOfArticlesStatus")
@@ -39,17 +37,4 @@ public class User {
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Website> websites = new HashSet<>();
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return chatId != null && chatId.equals(user.chatId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(chatId);
-  }
 }
