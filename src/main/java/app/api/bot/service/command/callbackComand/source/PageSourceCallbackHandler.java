@@ -3,7 +3,7 @@ package app.api.bot.service.command.callbackComand.source;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.source.SourceMessageService;
-import app.api.bot.stubs.SourceServiceStub;
+import app.api.bot.stubs.source.SourceServiceStub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -34,6 +34,6 @@ public class PageSourceCallbackHandler implements CallbackCommandHandler {
     int pageNum = Integer.parseInt(parts[2]);
 
     //TODO: тут меняем заглушку на норм сервис, в которую будет передан chatId
-    sourceMessageService.updateSourceMenuMessage(chatId, pageNum, sourceServiceStub.getSources(), chatStateService.getTempViewMode(chatId));
+    sourceMessageService.updateSourceMenuMessage(chatId, pageNum, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId));
   }
 }

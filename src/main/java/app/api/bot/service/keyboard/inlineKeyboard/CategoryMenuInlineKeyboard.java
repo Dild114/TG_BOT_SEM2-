@@ -1,12 +1,12 @@
 package app.api.bot.service.keyboard.inlineKeyboard;
 
+import app.api.bot.stubs.category.CategoryStub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @Component
@@ -16,7 +16,7 @@ public class CategoryMenuInlineKeyboard {
 
   //TODO: заменить categories чтобы нормально соотносилось, (проверить, подходит ли LinkedHashMap)
   public InlineKeyboardMarkup createCategoriesList(
-    LinkedHashMap<String, Boolean> categories,
+    List<CategoryStub> categories,
     int pageNum,
     int pageSize
   ) {
@@ -29,15 +29,15 @@ public class CategoryMenuInlineKeyboard {
     int end = Math.min((pageNum) * pageSize, categories.size());
 
     //TODO: аналогично проверить, всё ли норм из-зи LinkedHashMap
-    List<String> currentPageCategories = new ArrayList<>(categories.keySet()).subList(start, end);
+    List<CategoryStub> currentPageCategories = categories.subList(start, end);
 
     List<List<InlineKeyboardButton>> categoriesKeyboard = new ArrayList<>();
 
-    for (String categoryName : currentPageCategories) {
-      String status = categories.get(categoryName) ? "✅" : "❌";
+    for (CategoryStub category : currentPageCategories) {
+      String status = category.isCategoryActiveStatus() ? "✅" : "❌";
       InlineKeyboardButton button = inlineKeyboardHelper.createCallbackButton(
-        status + " " + categoryName,
-        "change_category_status_" + categoryName + "_" + pageNum);
+        status + " " + category.getCategoryName(),
+        "change_category_status_" + category.getCategoryId() + "_" + pageNum);
       categoriesKeyboard.add(List.of(button));
     }
 

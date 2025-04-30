@@ -2,7 +2,7 @@ package app.api.bot.service.command.callbackComand.category;
 
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.category.CategoryMessageService;
-import app.api.bot.stubs.CategoryServiceStub;
+import app.api.bot.stubs.category.CategoryServiceStub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -33,6 +33,6 @@ public class PageCategoryCallbackHandler implements CallbackCommandHandler {
     // TODO: заменить заглушки на нормальный сервис,
     // TODO: при этом в сервисе прописать, чтобы он возвращал именно названия категорий
     //TODO: меняем categoryServiceStub
-    categoryMessageService.updateCategoryMenuMessage(chatId, pageNum, categoryServiceStub.getCategories());
+    categoryMessageService.updateCategoryMenuMessage(chatId, pageNum, categoryServiceStub.getUserCategories(chatId));
   }
 }

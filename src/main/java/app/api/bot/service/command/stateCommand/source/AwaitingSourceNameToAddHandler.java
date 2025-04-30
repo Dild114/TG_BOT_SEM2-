@@ -27,9 +27,9 @@ public class AwaitingSourceNameToAddHandler implements StateCommandHandler {
   public void handle(Message message) {
     long chatId = message.getChatId();
     String text = message.getText();
-    if (text.isBlank() || text.length() > 15 || !text.matches("^[a-zA-Z0-9а-яА-ЯёЁ]+$")) {
+    if (text == null || text.isBlank() || text.length() > 20 || text.trim().split("\\s+").length > 4 || !text.matches("^[a-zA-Z0-9а-яА-ЯёЁ\\s]+$")) {
       messageSenderService.sendTextMessage(chatId, "❗\uFE0F Недопустимое название источника + \""
-        + message.getText() + "\"\nНазвание источника должно быть единым словом длиной не более 15 символов");
+        + message.getText() + "\"\nНазвание категории должно состоять из 1-4 слов и не более 20 символов (включая пробелы)");
       chatStateService.clearState(chatId);
     } else {
       messageSenderService.sendTextMessage(chatId, "\uD83D\uDCDD➕ Введите ссылку на источник:");

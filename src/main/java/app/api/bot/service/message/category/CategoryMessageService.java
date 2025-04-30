@@ -4,13 +4,14 @@ import app.api.bot.service.keyboard.inlineKeyboard.CategoryMenuInlineKeyboard;
 import app.api.bot.service.keyboard.replyKeyboard.factory.ReplyKeyboardFactory;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.message.MessageTrackingService;
-import app.api.bot.stubs.User;
+import app.api.bot.stubs.category.CategoryStub;
+import app.api.bot.stubs.user.UserServiceStub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +21,17 @@ public class CategoryMessageService {
   private final MessageSenderService messageSenderService;
   private final MessageTrackingService messageTrackingService;
 
-  //TODO: заменить на UserService.getPageSize(chatId) или что-то в этом роде
-  private final User user;
+  private final UserServiceStub userServiceStub;
 
-  //TODO: Заменить LinkedHashMap на что-то нормальное
-  public void sendCategoryMenuMessage(long chatId, LinkedHashMap<String, Boolean> categories) {
+  public void sendCategoryMenuMessage(long chatId, List<CategoryStub> categories) {
     messageSenderService.deleteLastBotMessage(chatId);
 
     SendMessage sendFirstMessage = new SendMessage();
     sendFirstMessage.setText("Ваши категории:");
     sendFirstMessage.setChatId(chatId);
 
-    //TODO: не забыть тут заменить User на UserService
-    sendFirstMessage.setReplyMarkup(categoryMenuInlineKeyboard.createCategoriesList(categories, 1, user.getPageSize()));
+    int countPages = userServiceStub.getUserCountStringsInOnePage(chatId);
+    sendFirstMessage.setReplyMarkup(categoryMenuInlineKeyboard.createCategoriesList(categories, 1, countPages));
 
     SendMessage sendSecondMessage = new SendMessage();
     sendSecondMessage.setText("Выберите действие:");
@@ -44,14 +43,15 @@ public class CategoryMessageService {
   }
 
   //TODO: Заменить LinkedHashMap на что-то нормальное
-  public void updateCategoryMenuMessage(long chatId, int pageNum, LinkedHashMap<String, Boolean> categories) {
+  public void updateCategoryMenuMessage(long chatId, int pageNum, List<CategoryStub> categories) {
     int messageId = messageTrackingService.getLastInlineKeyboardId(chatId);
     EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
     editMessageReplyMarkup.setChatId(chatId);
     editMessageReplyMarkup.setMessageId(messageId);
 
     //TODO: не забыть тут заменить User на UserService
-    editMessageReplyMarkup.setReplyMarkup(categoryMenuInlineKeyboard.createCategoriesList(categories, pageNum, user.getPageSize()));
+    int countPages = userServiceStub.getUserCountStringsInOnePage(chatId);
+    editMessageReplyMarkup.setReplyMarkup(categoryMenuInlineKeyboard.createCategoriesList(categories, pageNum, countPages));
 
     messageSenderService.updateInlineKeyboard(editMessageReplyMarkup);
   }

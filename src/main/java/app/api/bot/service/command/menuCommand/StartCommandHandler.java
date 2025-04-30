@@ -3,6 +3,7 @@ package app.api.bot.service.command.menuCommand;
 import app.api.bot.service.command.handlerInterfaces.MenuCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.welcome.WelcomeMessageService;
+import app.api.bot.stubs.user.UserServiceStub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class StartCommandHandler implements MenuCommandHandler {
   private final ChatStateService chatStateService;
   private final WelcomeMessageService welcomeMessageService;
+
+  private final UserServiceStub userServiceStub;
 
   @Override
   public boolean canHandle(String messageText) {
@@ -29,5 +32,9 @@ public class StartCommandHandler implements MenuCommandHandler {
 
     //TODO: userService.delete(chatId)
     //TODO: userService.register(chatId)
+
+    userServiceStub.deleteUser(chatId);
+    userServiceStub.createUser(chatId);
+
   }
 }

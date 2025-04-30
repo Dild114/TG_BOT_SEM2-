@@ -2,7 +2,7 @@ package app.api.bot.service.command.basicCommand.category;
 
 import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
 import app.api.bot.service.message.category.CategoryMessageService;
-import app.api.bot.stubs.CategoryServiceStub;
+import app.api.bot.stubs.category.CategoryServiceStub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -25,6 +25,6 @@ public class GetCategoriesCommandHandler implements BasicCommandHandler {
     long chatId = message.getChatId();
     // TODO: List<CategoryDto> userCategories = categoryService.getCategories(chatId)
 
-    categoryMessageService.sendCategoryMenuMessage(chatId, categoryServiceStub.getCategories()); // TODO: заменить на userCategories
+    categoryMessageService.sendCategoryMenuMessage(chatId, categoryServiceStub.getUserCategories(chatId)); // TODO: прописать изменение заглушки
   }
 }

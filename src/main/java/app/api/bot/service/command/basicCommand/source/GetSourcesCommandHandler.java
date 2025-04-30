@@ -2,7 +2,7 @@ package app.api.bot.service.command.basicCommand.source;
 
 import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
 import app.api.bot.service.message.source.SourceMessageService;
-import app.api.bot.stubs.SourceServiceStub;
+import app.api.bot.stubs.source.SourceServiceStub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -24,6 +24,6 @@ public class GetSourcesCommandHandler implements BasicCommandHandler {
   public void handle(Message message) {
     long chatId = message.getChatId();
     // TODO: List<SourceDto> userSources = sourceService.getSources(chatId)
-    sourceMessageService.sendSourceMenuMassage(chatId, sourceServiceStub.getSources()); // TODO: заменить на userSources
+    sourceMessageService.sendSourceMenuMassage(chatId, sourceServiceStub.getUserSources(chatId)); // TODO: заменить на userSources
   }
 }

@@ -4,7 +4,7 @@ import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.source.SourceMessageService;
-import app.api.bot.stubs.SourceServiceStub;
+import app.api.bot.stubs.source.SourceServiceStub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -32,13 +32,13 @@ public class AwaitingSourceNameToDeleteHandler implements StateCommandHandler {
     long chatId = message.getChatId();
     String text = message.getText();
 
-    if (text.isBlank() || text.length() > 15 || !text.matches("^[a-zA-Z0-9а-яА-ЯёЁ]+$")) {
+    if (text == null || text.isBlank() || text.length() > 20 || text.trim().split("\\s+").length > 4 || !text.matches("^[a-zA-Z0-9а-яА-ЯёЁ\\s]+$")) {
         messageSenderService.sendTextMessage(chatId, "❗\uFE0F Недопустимое название источника + \"" + message.getText()
-          + "\"\nНазвание источника должно быть единым словом длиной не более 15 символов");
+          + "\"\nНазвание категории должно состоять из 1-4 слов и не более 20 символов (включая пробелы)");
     } else {
       //TODO: заменить на реальный сервис
-      sourceServiceStub.deleteSource(text);
-      sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceServiceStub.getSources(), chatStateService.getTempViewMode(chatId)); //TODO: заменить на реальный сервис и получать источники, а уже потом использовать
+      sourceServiceStub.deleteSourceFromUser(chatId, text);
+      sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO: заменить на реальный сервис и получать источники, а уже потом использовать
       messageSenderService.sendTextMessage(chatId, "☑\uFE0F Источник \"" + message.getText() + "\" успешно удалён");
     }
     chatStateService.clearState(chatId);

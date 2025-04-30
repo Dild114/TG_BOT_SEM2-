@@ -2,7 +2,7 @@ package app.api.bot.service.command.callbackComand.category;
 
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.category.CategoryMessageService;
-import app.api.bot.stubs.CategoryServiceStub;
+import app.api.bot.stubs.category.CategoryServiceStub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -29,11 +29,11 @@ public class StatusCategoryCallbackHandler implements CallbackCommandHandler {
     long chatId = callbackQuery.getMessage().getChatId();
 
     String[] parts = callbackData.split("_");
-    String categoryName = parts[3];
+    int categoryId = Integer.parseInt(parts[3]);
     int pageNum = Integer.parseInt(parts[4]);
     //TODO: тут меняем на сервис и он так же принимает chatId
-    categoryServiceStub.changeStatus(categoryName);
+    categoryServiceStub.changeUserCategoryStatus(chatId, categoryId);
     //TODO: аналогично меняем заглушку на норм сервис
-    categoryMessageService.updateCategoryMenuMessage(chatId, pageNum, categoryServiceStub.getCategories());
+    categoryMessageService.updateCategoryMenuMessage(chatId, pageNum, categoryServiceStub.getUserCategories(chatId));
   }
 }

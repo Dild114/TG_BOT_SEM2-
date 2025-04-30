@@ -1,12 +1,13 @@
-package app.api.bot.stubs;
+package app.api.bot.stubs.category;
 
-import lombok.Getter;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@Getter
 @Service
 public class CategoryServiceStub {
   private final Map<Long, Map<Long, CategoryStub>> categoriesForUsers;
@@ -16,12 +17,21 @@ public class CategoryServiceStub {
     this.categoriesForUsers = new HashMap<>();
   }
 
-  public void changeStatus(long chatId, long categoryId) {
+  public List<CategoryStub> getUserCategories(long chatId) {
+    Map<Long, CategoryStub> userCategories = categoriesForUsers.getOrDefault(chatId, new HashMap<>());
+    List<CategoryStub> sortedUserCategories = new ArrayList<>(userCategories.values());
+
+    sortedUserCategories.sort(Comparator.comparingLong(CategoryStub::getCategoryId));
+
+    return sortedUserCategories;
+  }
+
+  public void changeUserCategoryStatus(long chatId, long categoryId) {
     categoriesForUsers.get(chatId).get(categoryId).changeCategoryStatus();
   }
 
-  public void addCategory(long chatId, String categoryName) {
-    Map<Long, CategoryStub> userCategories = categoriesForUsers.get(chatId);
+  public void addCategoryToUser(long chatId, String categoryName) {
+    Map<Long, CategoryStub> userCategories = categoriesForUsers.computeIfAbsent(chatId, k -> new HashMap<>());
     boolean flag = true;
     for (CategoryStub categoryStub : userCategories.values()) {
       if (categoryStub.getCategoryName().equals(categoryName)) {
@@ -31,12 +41,22 @@ public class CategoryServiceStub {
     }
     if (flag) {
       long categoryId = getNextCategoryId();
-      userCategories.put(getNextCategoryId(), new CategoryStub(categoryId, categoryName));
+      userCategories.put(categoryId, new CategoryStub(categoryId, categoryName));
     }
   }
 
-  public void deleteCategory(long chatId, long categoryId) {
-    categoriesForUsers.get(chatId).remove(categoryId);
+  public void deleteCategoryFromUser(long chatId, String categoryName) {
+    Map<Long, CategoryStub> userCategories = categoriesForUsers.computeIfAbsent(chatId, k -> new HashMap<>());
+    for (CategoryStub categoryStub : userCategories.values()) {
+      if (categoryStub.getCategoryName().equals(categoryName)) {
+        userCategories.remove(categoryStub.getCategoryId());
+        break;
+      }
+    }
+  }
+
+  public void deleteAllUserCategories(long chatId) {
+    categoriesForUsers.remove(chatId);
   }
 
   private static long getNextCategoryId() {
