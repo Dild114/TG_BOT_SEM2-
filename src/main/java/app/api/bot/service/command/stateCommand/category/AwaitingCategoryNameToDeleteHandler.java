@@ -5,6 +5,7 @@ import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.category.CategoryMessageService;
 import app.api.bot.stubs.category.CategoryServiceStub;
+import app.api.bot.stubs.exceptions.InvalidValueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -33,13 +34,19 @@ public class AwaitingCategoryNameToDeleteHandler implements StateCommandHandler 
     String text = message.getText();
     if (text == null || text.isBlank() || text.length() > 20 || text.trim().split("\\s+").length > 4 || !text.matches("^[a-zA-Z0-9а-яА-ЯёЁ\\s]+$")) {
       messageSenderService.sendTextMessage(chatId, "❗\uFE0F Недопустимое название категории + \"" + message.getText() + "\"\nНазвание категории должно состоять из 1-4 слов и не более 20 символов (включая пробелы)");
+      messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести название ещё раз:");
     } else {
-      //TODO: заменить на нормальный сервис
-      categoryServiceStub.deleteCategoryFromUser(chatId, message.getText());
-      //TODO: List<CategoryDto> userCategories = categoryService.getCategories(chatId);
-      categoryMessageService.updateCategoryMenuMessage(chatId, 1, categoryServiceStub.getUserCategories(chatId));
-      messageSenderService.sendTextMessage(chatId, "☑\uFE0F Категория \"" + message.getText() + "\" успешно удалена");
+      try {
+        //TODO: заменить на нормальный сервис
+        categoryServiceStub.deleteCategoryFromUser(chatId, message.getText());
+        //TODO: List<CategoryDto> userCategories = categoryService.getCategories(chatId);
+        categoryMessageService.updateCategoryMenuMessage(chatId, 1, categoryServiceStub.getUserCategories(chatId));
+        messageSenderService.sendTextMessage(chatId, "☑\uFE0F Категория \"" + message.getText() + "\" успешно удалена");
+        chatStateService.clearState(chatId);
+      } catch (InvalidValueException e) {
+        messageSenderService.sendTextMessage(chatId, "⚠\uFE0F Категория " + "\"" + message.getText() + "\"" + " не найдена");
+        messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести название ещё раз:");
+      }
     }
-    chatStateService.clearState(chatId);
   }
 }

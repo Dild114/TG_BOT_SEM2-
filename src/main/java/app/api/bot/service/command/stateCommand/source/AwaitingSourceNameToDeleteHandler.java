@@ -4,6 +4,7 @@ import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.source.SourceMessageService;
+import app.api.bot.stubs.exceptions.InvalidValueException;
 import app.api.bot.stubs.source.SourceServiceStub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,13 +35,18 @@ public class AwaitingSourceNameToDeleteHandler implements StateCommandHandler {
 
     if (text == null || text.isBlank() || text.length() > 20 || text.trim().split("\\s+").length > 4 || !text.matches("^[a-zA-Z0-9а-яА-ЯёЁ\\s]+$")) {
         messageSenderService.sendTextMessage(chatId, "❗\uFE0F Недопустимое название источника + \"" + message.getText()
-          + "\"\nНазвание категории должно состоять из 1-4 слов и не более 20 символов (включая пробелы)");
+          + "\"\nНазвание источника должно состоять из 1-4 слов и не более 20 символов (включая пробелы)");
     } else {
-      //TODO: заменить на реальный сервис
-      sourceServiceStub.deleteSourceFromUser(chatId, text);
-      sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO: заменить на реальный сервис и получать источники, а уже потом использовать
-      messageSenderService.sendTextMessage(chatId, "☑\uFE0F Источник \"" + message.getText() + "\" успешно удалён");
+      try {
+        //TODO: заменить на реальный сервис
+        sourceServiceStub.deleteSourceFromUser(chatId, text);
+        sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO: заменить на реальный сервис и получать источники, а уже потом использовать
+        messageSenderService.sendTextMessage(chatId, "☑\uFE0F Источник \"" + message.getText() + "\" успешно удалён");
+        chatStateService.clearState(chatId);
+      } catch (InvalidValueException e) {
+        messageSenderService.sendTextMessage(chatId, "⚠\uFE0F Источник с названием " + "\"" + message.getText() + " не найден");
+        messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести название ещё раз:");
+      }
     }
-    chatStateService.clearState(chatId);
   }
 }

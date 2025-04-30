@@ -26,7 +26,7 @@ public class NewsMessageService {
     sendSecondMessage.setChatId(chatId);
     sendSecondMessage.setReplyMarkup(replyKeyboardFactory.getNewsMenuReplyKeyboard().getKeyboardMarkup());
 
-    messageSenderService.sendMessage(chatId, sendFirstMessage);
+    messageSenderService.sendMessageWithInlineKeyboard(chatId, sendFirstMessage);
     messageSenderService.sendMessage(chatId, sendSecondMessage);
   }
 }

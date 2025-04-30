@@ -4,6 +4,7 @@ import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.source.SourceMessageService;
+import app.api.bot.stubs.exceptions.InvalidValueException;
 import app.api.bot.stubs.source.SourceServiceStub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +44,19 @@ public class AwaitingSourceUrlToAddHandler implements StateCommandHandler {
     String text = message.getText();
     if (!isValidUrl(text)) {
       messageSenderService.sendTextMessage(chatId, "❗\uFE0F Некорректная ссылка: " + text);
+      messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести ссылку ещё раз:");
     } else {
       //TODO: заменить на нормальный сервис
-      sourceServiceStub.addSourceToUser(chatId, chatStateService.getTempSourceName(chatId), text);
-      sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO заменить на получение категорий и их использование
-      messageSenderService.sendTextMessage(chatId, "☑\uFE0F Источник \"" + chatStateService.getTempSourceName(chatId) + "\" успешно добавлен");
+      try {
+        sourceServiceStub.addSourceToUser(chatId, chatStateService.getTempSourceName(chatId), text);
+        sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO заменить на получение категорий и их использование
+        messageSenderService.sendTextMessage(chatId, "☑\uFE0F Источник \"" + chatStateService.getTempSourceName(chatId) + "\" успешно добавлен");
+        chatStateService.clearState(chatId);
+      } catch (InvalidValueException e) {
+        messageSenderService.sendTextMessage(chatId, "⚠\uFE0F Источник с названием " + "\"" + chatStateService.getTempSourceName(chatId) + "\" или ссылкой " + "\"" + message.getText() + "\"" + " уже был добавлен ранее");
+        messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести название а затем ссылку ещё раз:");
+        chatStateService.setState(chatId, "awaiting_source_name_to_add");
+      }
     }
-    chatStateService.clearState(chatId);
   }
 }
