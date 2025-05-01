@@ -17,21 +17,21 @@
 //public class UserId implements Serializable {
 //  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
 //  @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
-//  private Long id;
+//  private Long chatId;
 //
 //  @Override
 //  public boolean equals(Object o) {
 //    if (o == null || getClass() != o.getClass()) return false;
 //    UserId userId = (UserId) o;
-//    return Objects.equals(id, userId.id);
+//    return Objects.equals(chatId, userId.chatId);
 //  }
 //
 //  @Override
 //  public int hashCode() {
-//    return Objects.hashCode(id);
+//    return Objects.hashCode(chatId);
 //  }
 //
 //  public Long getId() {
-//    return id;
+//    return chatId;
 //  }
 //}

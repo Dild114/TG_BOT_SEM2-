@@ -17,10 +17,8 @@
 //  public UserDto toDto(User user) {
 //    // Конвертация сущности в DTO
 //    return UserDto.builder()
-//        .userId(user.getId())
-//        .telegramId(user.getTelegramId())
-//        .isShortDescriptionEnabled(user.isShortDescriptionEnabled())
-//        .websites(user.getWebsites())
+//        .chatId(user.getChatId())
+//
 //        .build();
 //  }
 //

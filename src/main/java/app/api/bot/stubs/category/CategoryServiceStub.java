@@ -1,5 +1,8 @@
 package app.api.bot.stubs.category;
 
+import app.api.repository.*;
+import lombok.*;
+import lombok.extern.slf4j.*;
 import app.api.bot.stubs.exceptions.InvalidValueException;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class CategoryServiceStub {
   private final Map<Long, Map<Long, CategoryStub>> categoriesForUsers;

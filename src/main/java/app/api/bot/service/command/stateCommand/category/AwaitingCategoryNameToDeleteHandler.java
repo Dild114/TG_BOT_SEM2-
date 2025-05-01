@@ -4,8 +4,8 @@ import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.category.CategoryMessageService;
-import app.api.bot.stubs.category.CategoryServiceStub;
 import app.api.bot.stubs.exceptions.InvalidValueException;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -20,7 +20,7 @@ public class AwaitingCategoryNameToDeleteHandler implements StateCommandHandler 
   private final ChatStateService chatStateService;
   private final MessageSenderService messageSenderService;
   private final CategoryMessageService categoryMessageService;
-  private final CategoryServiceStub categoryServiceStub; //TODO: заменить на categoryService
+  private final CategoryService categoryService; //TODO: заменить на categoryService
 
   @Override
   public boolean canHandle(long chatId) {
@@ -38,9 +38,9 @@ public class AwaitingCategoryNameToDeleteHandler implements StateCommandHandler 
     } else {
       try {
         //TODO: заменить на нормальный сервис
-        categoryServiceStub.deleteCategoryFromUser(chatId, message.getText());
+        categoryService.deleteCategoryFromUser(chatId, message.getText());
         //TODO: List<CategoryDto> userCategories = categoryService.getCategories(chatId);
-        categoryMessageService.updateCategoryMenuMessage(chatId, 1, categoryServiceStub.getUserCategories(chatId));
+        categoryMessageService.updateCategoryMenuMessage(chatId, 1, categoryService.getUserCategories(chatId));
         messageSenderService.sendTextMessage(chatId, "☑\uFE0F Категория \"" + message.getText() + "\" успешно удалена");
         chatStateService.clearState(chatId);
       } catch (InvalidValueException e) {

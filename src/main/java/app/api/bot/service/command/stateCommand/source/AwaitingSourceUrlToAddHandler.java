@@ -5,7 +5,7 @@ import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.source.SourceMessageService;
 import app.api.bot.stubs.exceptions.InvalidValueException;
-import app.api.bot.stubs.source.SourceServiceStub;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -21,7 +21,7 @@ public class AwaitingSourceUrlToAddHandler implements StateCommandHandler {
   private final MessageSenderService messageSenderService;
   private final SourceMessageService sourceMessageService;
   //TODO: заменить на сервис нормальный
-  private final SourceServiceStub sourceServiceStub;
+  private final WebsiteService sourceService;
 
   private boolean isValidUrl(String url) {
     try {
@@ -48,8 +48,8 @@ public class AwaitingSourceUrlToAddHandler implements StateCommandHandler {
     } else {
       //TODO: заменить на нормальный сервис
       try {
-        sourceServiceStub.addSourceToUser(chatId, chatStateService.getTempSourceName(chatId), text);
-        sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO заменить на получение категорий и их использование
+        sourceService.addSourceToUser(chatId, chatStateService.getTempSourceName(chatId), text);
+        sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceService.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO заменить на получение категорий и их использование
         messageSenderService.sendTextMessage(chatId, "☑\uFE0F Источник \"" + chatStateService.getTempSourceName(chatId) + "\" успешно добавлен");
         chatStateService.clearState(chatId);
       } catch (InvalidValueException e) {

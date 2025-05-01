@@ -5,7 +5,7 @@ import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.source.SourceMessageService;
 import app.api.bot.stubs.exceptions.InvalidValueException;
-import app.api.bot.stubs.source.SourceServiceStub;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -20,7 +20,7 @@ public class AwaitingSourceNameToDeleteHandler implements StateCommandHandler {
   private final ChatStateService chatStateService;
   private final MessageSenderService messageSenderService;
   private final SourceMessageService sourceMessageService;
-  private final SourceServiceStub sourceServiceStub; //TODO: заменить на реальный сервис
+  private final WebsiteService sourceService; //TODO: заменить на реальный сервис
 
   @Override
   public boolean canHandle(long chatId) {
@@ -39,8 +39,8 @@ public class AwaitingSourceNameToDeleteHandler implements StateCommandHandler {
     } else {
       try {
         //TODO: заменить на реальный сервис
-        sourceServiceStub.deleteSourceFromUser(chatId, text);
-        sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceServiceStub.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO: заменить на реальный сервис и получать источники, а уже потом использовать
+        sourceService.deleteSourceFromUser(chatId, text);
+        sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceService.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO: заменить на реальный сервис и получать источники, а уже потом использовать
         messageSenderService.sendTextMessage(chatId, "☑\uFE0F Источник \"" + message.getText() + "\" успешно удалён");
         chatStateService.clearState(chatId);
       } catch (InvalidValueException e) {

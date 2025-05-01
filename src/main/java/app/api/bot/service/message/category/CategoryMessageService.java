@@ -4,8 +4,8 @@ import app.api.bot.service.keyboard.inlineKeyboard.CategoryMenuInlineKeyboard;
 import app.api.bot.service.keyboard.replyKeyboard.factory.ReplyKeyboardFactory;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.message.MessageTrackingService;
-import app.api.bot.stubs.category.CategoryStub;
-import app.api.bot.stubs.user.UserServiceStub;
+import app.api.dto.*;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -21,16 +21,16 @@ public class CategoryMessageService {
   private final MessageSenderService messageSenderService;
   private final MessageTrackingService messageTrackingService;
 
-  private final UserServiceStub userServiceStub;
+  private final UserService userService;
 
-  public void sendCategoryMenuMessage(long chatId, List<CategoryStub> categories) {
+  public void sendCategoryMenuMessage(long chatId, List<CategoryDto> categories) {
     messageSenderService.deleteLastBotMessage(chatId);
 
     SendMessage sendFirstMessage = new SendMessage();
     sendFirstMessage.setText("Ваши категории:");
     sendFirstMessage.setChatId(chatId);
 
-    int countPages = userServiceStub.getUserCountStringsInOnePage(chatId);
+    int countPages = 5; //userServiceStub.getUserCountStringsInOnePage(chatId);
     sendFirstMessage.setReplyMarkup(categoryMenuInlineKeyboard.createCategoriesList(categories, 1, countPages));
 
     SendMessage sendSecondMessage = new SendMessage();
@@ -43,14 +43,14 @@ public class CategoryMessageService {
   }
 
   //TODO: Заменить LinkedHashMap на что-то нормальное
-  public void updateCategoryMenuMessage(long chatId, int pageNum, List<CategoryStub> categories) {
+  public void updateCategoryMenuMessage(long chatId, int pageNum, List<CategoryDto> categories) {
     int messageId = messageTrackingService.getLastInlineKeyboardId(chatId);
     EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
     editMessageReplyMarkup.setChatId(chatId);
     editMessageReplyMarkup.setMessageId(messageId);
 
     //TODO: не забыть тут заменить User на UserService
-    int countPages = userServiceStub.getUserCountStringsInOnePage(chatId);
+    int countPages = userService.getUserCountStringsInOnePage(chatId);
     editMessageReplyMarkup.setReplyMarkup(categoryMenuInlineKeyboard.createCategoriesList(categories, pageNum, countPages));
 
     messageSenderService.updateInlineKeyboard(editMessageReplyMarkup);
