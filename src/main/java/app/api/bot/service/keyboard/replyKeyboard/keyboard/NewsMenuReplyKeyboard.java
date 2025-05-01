@@ -23,8 +23,11 @@ public class NewsMenuReplyKeyboard implements ReplyKeyboardInterface {
     row1.add("\uD83D\uDCD6 Новые статьи");
 
     KeyboardRow row2 = new KeyboardRow();
-    row2.add("↩ Главная");
+    row2.add("❤\uFE0F Избранное");
 
-    keyboardMarkup.setKeyboard(List.of(row1, row2));
+    KeyboardRow row3 = new KeyboardRow();
+    row3.add("↩ Главная");
+
+    keyboardMarkup.setKeyboard(List.of(row1, row2, row3));
   }
 }

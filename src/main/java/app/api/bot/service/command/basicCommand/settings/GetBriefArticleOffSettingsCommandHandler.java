@@ -25,10 +25,8 @@ public class GetBriefArticleOffSettingsCommandHandler implements BasicCommandHan
   @Override
   public void handle(Message message) {
     long chatId = message.getChatId();
-    if (chatStateService.getState(chatId) != null) {
-      messageSenderService.deleteLastBotMessage(chatId);
-      chatStateService.clearState(chatId);
-    }
+    messageSenderService.deleteAllMessagesAfterReplyKeyboard(chatId);
+    chatStateService.clearState(chatId);
     userServiceStub.changeUserMakeBriefStatus(chatId, false);
     messageSenderService.sendTextMessage(chatId, "☑\uFE0F Получение кратких содержаний выключено");
   }

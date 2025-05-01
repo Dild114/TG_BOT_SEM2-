@@ -9,16 +9,15 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 @Component
-@Order(10)
+@Order(40)
 @RequiredArgsConstructor
-public class StatusBriefArticleCallbackHandler implements CallbackCommandHandler {
-  //TODO: заменить заглушку на что-то нормальное
+public class StatusLikedArticleCallbackHandler implements CallbackCommandHandler {
   private final ArticleServiceStub articleServiceStub;
   private final ArticleMessageService articleMessageService;
 
   @Override
   public boolean canHandle(String callbackData) {
-    return callbackData.startsWith("change_article_brief_");
+    return callbackData.startsWith("change_article_liked_");
   }
 
   //TODO: тут тоже не забыть проверить, как мы в итоге храним, по articleId, или как ещё
@@ -31,7 +30,7 @@ public class StatusBriefArticleCallbackHandler implements CallbackCommandHandler
     String[] parts = callbackData.split("_");
     int articleId = Integer.parseInt(parts[3]);
 
-    articleServiceStub.changeUserArticleStatusBrief(chatId, articleId);
+    articleServiceStub.changeUserArticleFavoriteStatus(chatId, articleId);
     articleMessageService.updateArticleAndArticleMenu(chatId, messageId, articleId);
   }
 }

@@ -15,12 +15,13 @@ public class MainMenuMessageService {
   public void sendMainMenuMessage(long chatId) {
     messageSenderService.deleteAllChatMessagesExceptUndeletable(chatId);
     messageSenderService.deleteLastInlineKeyboardId(chatId);
+    messageSenderService.deleteLastReplyKeyboardId(chatId);
 
     SendMessage sendMessage = new SendMessage();
     sendMessage.setText("↩ Главная");
     sendMessage.setChatId(chatId);
     sendMessage.setReplyMarkup(replyKeyboardFactory.getMainMenu().getKeyboardMarkup());
 
-    messageSenderService.sendMessage(chatId, sendMessage);
+    messageSenderService.sendMessageWithReplyKeyboard(chatId, sendMessage);
   }
 }

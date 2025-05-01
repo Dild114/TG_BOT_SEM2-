@@ -15,12 +15,13 @@ public class SettingsMessageService {
   public void sendSettingsMessage(long chatId) {
     messageSenderService.deleteAllChatMessagesExceptUndeletable(chatId);
     messageSenderService.deleteLastInlineKeyboardId(chatId);
+    messageSenderService.deleteLastReplyKeyboardId(chatId);
 
     SendMessage sendMessage = new SendMessage();
     sendMessage.setText("⚙\uFE0F Настройки");
     sendMessage.setChatId(chatId);
     sendMessage.setReplyMarkup(replyKeyboardFactory.getSettingsMenu().getKeyboardMarkup());
 
-    messageSenderService.sendMessage(chatId, sendMessage);
+    messageSenderService.sendMessageWithReplyKeyboard(chatId, sendMessage);
   }
 }

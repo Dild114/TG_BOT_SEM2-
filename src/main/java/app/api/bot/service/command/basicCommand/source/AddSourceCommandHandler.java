@@ -23,9 +23,7 @@ public class AddSourceCommandHandler implements BasicCommandHandler {
   @Override
   public void handle(Message message) {
     long chatId = message.getChatId();
-    if (chatStateService.getState(chatId) != null) {
-      messageSenderService.deleteLastBotMessage(chatId);
-    }
+    messageSenderService.deleteAllMessagesAfterReplyKeyboard(chatId);
     messageSenderService.sendTextMessage(chatId, "\uD83D\uDCDD➕ Введите название источника:");
     chatStateService.setState(chatId, "awaiting_source_name_to_add");
   }

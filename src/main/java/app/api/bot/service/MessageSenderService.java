@@ -81,6 +81,24 @@ public class MessageSenderService {
     messageTrackingService.setLastInlineKeyboardForChat(chatId, newInlineKeyboardId);
   }
 
+  public void sendMessageWithReplyKeyboard(long chatId, SendMessage sendMessage) {
+    Integer newReplyKeyboardId = sendMessage(chatId, sendMessage);
+    messageTrackingService.setLastReplyKeyboardForChat(chatId, newReplyKeyboardId);
+  }
+
+  public void deleteAllMessagesAfterReplyKeyboard(long chatId) {
+    Integer lastReplyKeyboardId = messageTrackingService.getLastReplyKeyboardForChat(chatId);
+    if (lastReplyKeyboardId != null) {
+      Integer lastMessageId = messageTrackingService.getLastMessageToDelete(chatId);
+      if (lastMessageId != null) {
+        while (!lastMessageId.equals(lastReplyKeyboardId)) {
+          deleteMessage(chatId, lastMessageId);
+          lastMessageId = messageTrackingService.getLastMessageToDelete(chatId);
+        }
+      }
+    }
+  }
+
   public void deleteMessage(long chatId, int messageId) {
     DeleteMessage deleteMessage = new DeleteMessage();
     deleteMessage.setChatId(chatId);
@@ -119,6 +137,10 @@ public class MessageSenderService {
 
   public void deleteLastInlineKeyboardId(long chatId) {
     messageTrackingService.removeLastInlineKeyboardId(chatId);
+  }
+
+  public void deleteLastReplyKeyboardId(long chatId) {
+    messageTrackingService.removeLsatReplyKeyboardId(chatId);
   }
 
   public void updateUndeletableMessage(EditMessageText editMessageText) {

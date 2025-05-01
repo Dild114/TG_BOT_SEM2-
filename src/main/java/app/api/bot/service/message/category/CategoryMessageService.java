@@ -39,7 +39,7 @@ public class CategoryMessageService {
     sendSecondMessage.setReplyMarkup(replyKeyboardFactory.getCategoryMenu().getKeyboardMarkup());
 
     messageSenderService.sendMessageWithInlineKeyboard(chatId, sendFirstMessage);
-    messageSenderService.sendMessage(chatId, sendSecondMessage);
+    messageSenderService.sendMessageWithReplyKeyboard(chatId, sendSecondMessage);
   }
 
   //TODO: Заменить LinkedHashMap на что-то нормальное

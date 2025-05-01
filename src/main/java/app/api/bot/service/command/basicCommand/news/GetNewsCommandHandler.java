@@ -1,5 +1,6 @@
 package app.api.bot.service.command.basicCommand.news;
 
+import app.api.bot.service.ChatStateService;
 import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
 import app.api.bot.service.message.news.NewsMessageService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @RequiredArgsConstructor
 public class GetNewsCommandHandler implements BasicCommandHandler {
   private final NewsMessageService newsMessageService;
+  private final ChatStateService chatStateService;
 
   @Override
   public boolean canHandle(String messageText) {
@@ -21,6 +23,7 @@ public class GetNewsCommandHandler implements BasicCommandHandler {
   @Override
   public void handle(Message message) {
     long chatId = message.getChatId();
+    chatStateService.setState(chatId, "getting_articles");
     newsMessageService.sendNewsMenuMessage(chatId);
   }
 }

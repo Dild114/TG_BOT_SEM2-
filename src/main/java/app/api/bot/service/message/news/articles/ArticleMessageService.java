@@ -2,9 +2,8 @@ package app.api.bot.service.message.news.articles;
 
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.keyboard.inlineKeyboard.ArticleMenuInlineKeyboard;
-import app.api.bot.service.message.MessageTrackingService;
-import app.api.bot.stubs.Article;
-import app.api.bot.stubs.user.UserServiceStub;
+import app.api.bot.stubs.article.ArticleServiceStub;
+import app.api.bot.stubs.article.ArticleStub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,26 +15,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArticleMessageService {
   private final ArticleMenuInlineKeyboard articleMenuInlineKeyboard;
+  private final ArticleServiceStub articleServiceStub;
   private final MessageSenderService messageSenderService;
-  private final MessageTrackingService messageTrackingService;
 
-  private final UserServiceStub userServiceStub;
-
-  //TODO: заменить List<Article> на то, что будет нужно.
-  public void sendArticles(long chatId, List<Article> articles) {
-    for (Article article : articles) {
+  //TODO: заменить List<Article> на то, что будет нужно. Добавить удаление всех категорий из репо;
+  public void sendArticles(long chatId, List<ArticleStub> articles) {
+    for (ArticleStub article : articles) {
       SendMessage sendArticle = new SendMessage();
       sendArticle.setText(getMessageForArticleWithoutBrief(article));
       sendArticle.setChatId(chatId);
 
       sendArticle.setReplyMarkup(articleMenuInlineKeyboard.createArticleKeyboard(article));
-      messageSenderService.sendUndeletableMessage(chatId, sendArticle);
+      messageSenderService.sendMessage(chatId, sendArticle);
     }
   }
 
   //TODO: тут как-то подумать и изменить articleId, т.к. или посмотреть, как оно выглядит в готовой реализации
-  public void updateArticleAndArticleMenu(long chatId, int messageId, int articleId, List<Article> articles) {
-    Article article = articles.get(articleId);
+  public void updateArticleAndArticleMenu(long chatId, int messageId, int articleId) {
+    ArticleStub article = articleServiceStub.getUserArticle(chatId, articleId);
 
     String text = article.getStatusOfWatchingBriefContent()
       ? getMessageForArticleWithBrief(article)
@@ -53,15 +50,19 @@ public class ArticleMessageService {
 
 
   //TODO: Возможно изменить/добавить какие-то эмодзи и тп, т.к. в заглушке всё по умолчанию красиво
-  private String getMessageForArticleWithoutBrief(Article article) {
-    return article.getName() + "\n" + article.getCategoryName() + "\n" + article.getParsedTime();
+  private String getMessageForArticleWithoutBrief(ArticleStub article) {
+    return "\uD83D\uDCCB " + article.getArticleName() + "\n Категория: \"" + article.getArticleCategoryName() + "\" \n\uD83D\uDCC5 "
+      + article.getArticleParsedDate() + " | \uD83D\uDD53 " + article.getArticleParsedTime();
   }
 
-  private String getMessageForArticleWithBrief(Article article) {
-    return article.getName()
-      + "\n" + article.getCategoryName()
-      + "\n" + article.getParsedTime()
-      + "\n\n\uD83D\uDCDA Краткий обзор\n"
-      + article.getBriefContent();
+  private String getMessageForArticleWithBrief(ArticleStub article) {
+    String brief = article.getBriefContent();
+    if (!brief.isEmpty()) {
+      brief = "\uD83D\uDCAC Краткое содержание: \n" + brief;
+    } else {
+      brief = "Краткое содержание отсутствует \uD83E\uDD17";
+    }
+    return "\uD83D\uDCCB " + article.getArticleName() + "\n Категория: \"" + article.getArticleCategoryName() + "\" \n\uD83D\uDCC5 "
+      + article.getArticleParsedDate() + " | \uD83D\uDD53 " + article.getArticleParsedTime() + "\n\n" + brief;
   }
 }

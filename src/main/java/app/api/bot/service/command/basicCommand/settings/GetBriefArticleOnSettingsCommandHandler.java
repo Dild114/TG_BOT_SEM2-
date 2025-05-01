@@ -25,10 +25,8 @@ public class GetBriefArticleOnSettingsCommandHandler implements BasicCommandHand
   @Override
   public void handle(Message message) {
     long chatId = message.getChatId();
-    if (chatStateService.getState(chatId) != null) {
-      messageSenderService.deleteLastBotMessage(chatId);
-      chatStateService.clearState(chatId);
-    }
+    messageSenderService.deleteLastBotMessage(chatId);
+    chatStateService.clearState(chatId);
     userServiceStub.changeUserMakeBriefStatus(chatId, true);
     messageSenderService.sendTextMessage(chatId, "☑\uFE0F Получение кратких содержаний включено");
   }

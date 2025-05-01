@@ -23,9 +23,7 @@ public class ArticlesCountSettingsCommandHandler implements BasicCommandHandler 
   @Override
   public void handle(Message message) {
     long chatId = message.getChatId();
-    if (chatStateService.getState(chatId) != null) {
-      messageSenderService.deleteLastBotMessage(chatId);
-    }
+    messageSenderService.deleteAllMessagesAfterReplyKeyboard(chatId);
     messageSenderService.sendTextMessage(chatId, "\uD83D\uDD22 Введите новое значение:");
     chatStateService.setState(chatId, "awaiting_new_articles_count");
   }

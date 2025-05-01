@@ -15,6 +15,7 @@ public class MessageTrackingService {
   private final Map<Long, List<Integer>> mapForMessagesToDelete = new HashMap<>();
   private final Map<Long, List<Integer>> mapForUndeletableMessages = new HashMap<>();
   private final Map<Long, Integer> mapForLastInlineKeyboardEnabledToUpdate = new HashMap<>();
+  private final Map<Long, Integer> mapForLastReplyKeyboardInChat = new HashMap<>();
 
   public void addMessageToDelete(long chatId, int messageId) {
     mapForMessagesToDelete.computeIfAbsent(chatId, k -> new ArrayList<>()).add(messageId);
@@ -61,5 +62,17 @@ public class MessageTrackingService {
 
   public void removeLastInlineKeyboardId(long chatId) {
     mapForLastInlineKeyboardEnabledToUpdate.remove(chatId);
+  }
+
+  public void setLastReplyKeyboardForChat(long chatId, int messageId) {
+    mapForLastReplyKeyboardInChat.put(chatId, messageId);
+  }
+
+  public Integer getLastReplyKeyboardForChat(long chatId) {
+    return mapForLastReplyKeyboardInChat.get(chatId);
+  }
+
+  public void removeLsatReplyKeyboardId(long chatId) {
+    mapForLastReplyKeyboardInChat.remove(chatId);
   }
 }
