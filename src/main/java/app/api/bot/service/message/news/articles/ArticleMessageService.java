@@ -46,7 +46,7 @@ public class ArticleMessageService {
 
     editMessage.setReplyMarkup(articleMenuInlineKeyboard.createArticleKeyboard(article));
 
-    messageSenderService.updateUndeletableMessage(editMessage);
+    messageSenderService.updateMessage(editMessage);
   }
 
 

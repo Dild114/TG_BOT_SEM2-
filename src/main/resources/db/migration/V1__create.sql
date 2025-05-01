@@ -41,3 +41,13 @@ CREATE TABLE articles (
                           CONSTRAINT fk_article_user FOREIGN KEY (user_id) REFERENCES users(chat_id) ON DELETE CASCADE,
                           CONSTRAINT fk_article_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );
+
+CREATE TABLE messages (
+                          chat_id BIGINT NOT NULL,
+                          message_id INT NOT NULL,
+                          is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+                          is_have_inline_keyboard BOOLEAN NOT NULL DEFAULT FALSE,
+                          is_have_reply_keyboard BOOLEAN NOT NULL DEFAULT FALSE,
+                          PRIMARY KEY (chat_id, message_id),
+                          CONSTRAINT fk_message_user FOREIGN KEY (chat_id) REFERENCES users(chat_id) ON DELETE CASCADE
+);

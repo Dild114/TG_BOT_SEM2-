@@ -28,13 +28,10 @@ public class StartCommandHandler implements MenuCommandHandler {
     long chatId = message.getChatId();
     String userName = message.getFrom().getFirstName();
     chatStateService.clearState(chatId);
-    welcomeMessageService.sendWelcomeMessage(chatId, userName);
-
-    //TODO: userService.delete(chatId)
-    //TODO: userService.register(chatId)
 
     userService.deleteUser(chatId);
     userService.createUser(chatId);
 
+    welcomeMessageService.sendWelcomeMessage(chatId, userName);
   }
 }

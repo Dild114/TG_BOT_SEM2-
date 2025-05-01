@@ -14,8 +14,6 @@ public class MainMenuMessageService {
 
   public void sendMainMenuMessage(long chatId) {
     messageSenderService.deleteAllChatMessagesExceptUndeletable(chatId);
-    messageSenderService.deleteLastInlineKeyboardId(chatId);
-    messageSenderService.deleteLastReplyKeyboardId(chatId);
 
     SendMessage sendMessage = new SendMessage();
     sendMessage.setText("↩ Главная");

@@ -7,8 +7,9 @@ import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.message.mainMenu.MainMenuMessageService;
-import app.api.service.ArticleService;
-import lombok.AllArgsConstructor;
+import app.api.service.*;
+import jakarta.annotation.*;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -19,16 +20,29 @@ import java.util.List;
 
 @Component
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BotUpdateHandler {
   private final MessageSenderService messageSenderService;
   private final ChatStateService chatStateService;
   private final MainMenuMessageService mainMenuMessageService;
+  private final UserService userService;
   private final ArticleService articleService;
-  List<MenuCommandHandler> menuCommandHandlers;
-  List<BasicCommandHandler> basicCommandHandlers;
-  List<StateCommandHandler> stateCommandHandlers;
-  List<CallbackCommandHandler> callbackCommandHandlers;
+
+  private final List<MenuCommandHandler> menuCommandHandlers;
+  private final List<BasicCommandHandler> basicCommandHandlers;
+  private final List<StateCommandHandler> stateCommandHandlers;
+  private final List<CallbackCommandHandler> callbackCommandHandlers;
+
+  static long startupTime;
+
+  @PostConstruct
+  private void init() {
+    List<Long> usersId = userService.getUsersId();
+    for (Long userId : usersId) {
+      mainMenuMessageService.sendMainMenuMessage(userId);
+    }
+    startupTime = System.currentTimeMillis() / 1000;
+  }
 
   public void handleUpdate(Update update) {
     if (update.hasCallbackQuery()) {
@@ -45,6 +59,11 @@ public class BotUpdateHandler {
       log.info("Обновление содержит сообщение");
       Message message = update.getMessage();
       long chatId = message.getChatId();
+
+      if (update.getMessage().getDate() < startupTime) {
+        messageSenderService.deleteMessage(chatId, message.getMessageId());
+        return;
+      }
 
       if ("getting_articles".equals(chatStateService.getState(chatId))) {
         articleService.deleteUnneededUserArticles(chatId);

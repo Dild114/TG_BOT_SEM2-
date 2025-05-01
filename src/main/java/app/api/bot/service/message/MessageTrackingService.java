@@ -1,78 +1,72 @@
 package app.api.bot.service.message;
 
+import app.api.entity.*;
+import app.api.repository.*;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MessageTrackingService {
-  private final Map<Long, List<Integer>> mapForMessagesToDelete = new HashMap<>();
-  private final Map<Long, List<Integer>> mapForUndeletableMessages = new HashMap<>();
-  private final Map<Long, Integer> mapForLastInlineKeyboardEnabledToUpdate = new HashMap<>();
-  private final Map<Long, Integer> mapForLastReplyKeyboardInChat = new HashMap<>();
+  private final MessageRepository messageRepository;
 
-  public void addMessageToDelete(long chatId, int messageId) {
-    mapForMessagesToDelete.computeIfAbsent(chatId, k -> new ArrayList<>()).add(messageId);
+  @Transactional
+  public void addMessage(long chatId, int messageId, boolean deleteStatus, boolean isInlineKeyboard, boolean isReplyKeyboard) {
+    Message message = Message
+        .builder()
+        .chatId(chatId)
+        .messageId(messageId)
+        .isHaveReplyKeyboard(isReplyKeyboard)
+        .isDeleted(deleteStatus)
+        .isHaveInlineKeyboard(isInlineKeyboard)
+        .build();
+
+    messageRepository.save(message);
   }
 
-  public void addMessageToUndeletableMap(long chatId, int messageId) {
-    mapForUndeletableMessages.computeIfAbsent(chatId, k -> new ArrayList<>()).add(messageId);
-  }
-
+  @Transactional
   public void removeMessageToDelete(long chatId, int messageId) {
-    try {
-      mapForMessagesToDelete.getOrDefault(chatId, new ArrayList<>()).remove(Integer.valueOf(messageId));
-      mapForUndeletableMessages.getOrDefault(chatId, new ArrayList<>()).remove(Integer.valueOf(messageId));
-    } catch (Exception e) {
-      log.warn("Сообщения {} в чате {} нет", messageId, chatId, e);
-    }
+    messageRepository.deleteMessage(chatId, messageId);
   }
-
+  @Transactional
   public Integer getLastMessageToDelete(long chatId) {
-    List<Integer> messagesToDelete = mapForMessagesToDelete.get(chatId);
-    if (messagesToDelete == null || messagesToDelete.isEmpty()) {
+    List<Message> messages = messageRepository.findByChatIdAndIsDeletedTrue(chatId);
+    if (messages == null || messages.isEmpty()) {
       return null;
     }
-    return messagesToDelete.get(messagesToDelete.size() - 1);
+    return messages.get(messages.size() - 1).getMessageId();
   }
 
+  @Transactional
   public List<Integer> getAllChatMessagesToDelete(long chatId) {
-    List<Integer> messagesToDelete = mapForMessagesToDelete.getOrDefault(chatId, new ArrayList<>());
-    return Collections.unmodifiableList(messagesToDelete);
+    List<Message> messagesToDelete = messageRepository.findByChatIdAndIsDeletedTrue(chatId);
+    List<Integer> messageIds = new ArrayList<>(messagesToDelete.stream().map(Message::getMessageId).toList());
+    messageIds.sort(Integer::compareTo);
+    return messageIds;
   }
 
+  @Transactional
   public List<Integer> getUndeletableMessages(long chatId) {
-    List<Integer> undeletableMessages = mapForUndeletableMessages.getOrDefault(chatId, new ArrayList<>());
-    return Collections.unmodifiableList(undeletableMessages);
+    List<Message> undeletableMessages = messageRepository.findByChatIdAndIsDeletedFalse(chatId);
+    List<Integer> messageIds = new ArrayList<>(undeletableMessages.stream().map(Message::getMessageId).toList());
+    messageIds.sort(Integer::compareTo);
+    return messageIds;
   }
 
-  public void setLastInlineKeyboardForChat(long chatId, int messageId) {
-    mapForLastInlineKeyboardEnabledToUpdate.put(chatId, messageId);
+  public Integer getLastInlineKeyboardId(Long chatId) {
+    Integer messageId = messageRepository.findByChatIdAndHaveInlineKeyboardTrue(chatId);
+    return messageId;
   }
 
-  public Integer getLastInlineKeyboardId(long chatId) {
-    return mapForLastInlineKeyboardEnabledToUpdate.getOrDefault(chatId, null);
-  }
-
-  public void removeLastInlineKeyboardId(long chatId) {
-    mapForLastInlineKeyboardEnabledToUpdate.remove(chatId);
-  }
-
-  public void setLastReplyKeyboardForChat(long chatId, int messageId) {
-    mapForLastReplyKeyboardInChat.put(chatId, messageId);
-  }
-
+  @Transactional
   public Integer getLastReplyKeyboardForChat(long chatId) {
-    return mapForLastReplyKeyboardInChat.get(chatId);
+    return  messageRepository.findByChatIdAndisHaveReplyKeyboardTrue(chatId);
   }
 
-  public void removeLsatReplyKeyboardId(long chatId) {
-    mapForLastReplyKeyboardInChat.remove(chatId);
-  }
 }

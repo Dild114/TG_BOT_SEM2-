@@ -28,7 +28,7 @@ public class MessageSenderService {
   public Integer sendMessage(long chatId, SendMessage sendMessage) {
     try {
       Message message = telegramBot.execute(sendMessage);
-      messageTrackingService.addMessageToDelete(chatId, message.getMessageId());
+      messageTrackingService.addMessage(chatId, message.getMessageId(), true, false, false);
       return message.getMessageId();
     } catch (TelegramApiException e) {
       log.error("При попытке отправить сообщение {} в чат {} упала ошибка", sendMessage, chatId, e);
@@ -39,7 +39,7 @@ public class MessageSenderService {
   public void sendUndeletableMessage(long chatId, SendMessage sendMessage) {
     try {
       Message message = telegramBot.execute(sendMessage);
-      messageTrackingService.addMessageToUndeletableMap(chatId, message.getMessageId());
+      messageTrackingService.addMessage(chatId, message.getMessageId(), false, false, false);
     } catch (TelegramApiException e) {
       log.error("При попытке отправить сообщение {} в чат {} упала ошибка", sendMessage, chatId, e);
     }
@@ -78,12 +78,12 @@ public class MessageSenderService {
       }
     }
     Integer newInlineKeyboardId = sendMessage(chatId, sendMessage);
-    messageTrackingService.setLastInlineKeyboardForChat(chatId, newInlineKeyboardId);
+    messageTrackingService.addMessage(chatId, newInlineKeyboardId, true, true, false);
   }
 
   public void sendMessageWithReplyKeyboard(long chatId, SendMessage sendMessage) {
     Integer newReplyKeyboardId = sendMessage(chatId, sendMessage);
-    messageTrackingService.setLastReplyKeyboardForChat(chatId, newReplyKeyboardId);
+    messageTrackingService.addMessage(chatId, newReplyKeyboardId, true, false, true);
   }
 
   public void deleteAllMessagesAfterReplyKeyboard(long chatId) {
@@ -135,15 +135,7 @@ public class MessageSenderService {
     }
   }
 
-  public void deleteLastInlineKeyboardId(long chatId) {
-    messageTrackingService.removeLastInlineKeyboardId(chatId);
-  }
-
-  public void deleteLastReplyKeyboardId(long chatId) {
-    messageTrackingService.removeLsatReplyKeyboardId(chatId);
-  }
-
-  public void updateUndeletableMessage(EditMessageText editMessageText) {
+  public void updateMessage(EditMessageText editMessageText) {
     try {
       telegramBot.execute(editMessageText);
     } catch (TelegramApiException e) {

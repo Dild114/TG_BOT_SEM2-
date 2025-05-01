@@ -20,16 +20,16 @@ public class User {
   @Id
   private Long chatId;
 
-  @Column(name = "briefContentOfArticlesStatus")
+  @Column(name = "brief_content_of_articles_status")
   private boolean briefContentOfArticlesStatus;
 
   @Column(name = "message_storage_time_day")
   private long messageStorageTimeDay;
 
-  @Column(name = "countStringsInOnePage")
+  @Column(name = "count_strings_in_one_page")
   private int countStringsInOnePage;
 
-  @Column(name = "countArticlesInOneRequest")
+  @Column(name = "count_articles_in_one_request")
   private int countArticlesInOneRequest;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

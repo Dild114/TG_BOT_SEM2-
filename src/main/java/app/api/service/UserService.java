@@ -1,5 +1,6 @@
 package app.api.service;
 
+import app.api.bot.service.*;
 import app.api.entity.User;
 import app.api.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -9,16 +10,21 @@ import org.springframework.context.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+import java.util.stream.*;
+
 @Slf4j
 @Service
 
 public class UserService {
   private final UserRepository userRepository;
   private final ArticleService articleService;
+  private final MessageSenderService messageSenderService;
 
-  public UserService(UserRepository userRepository, @Lazy ArticleService articleService) {
+  public UserService(UserRepository userRepository, @Lazy ArticleService articleService, MessageSenderService messageSenderService) {
     this.userRepository = userRepository;
     this.articleService = articleService;
+    this.messageSenderService = messageSenderService;
   }
 
   @Transactional
@@ -32,6 +38,12 @@ public class UserService {
 
     userRepository.save(user);
     articleService.addRandomArticlesToUser(user.getChatId());
+  }
+
+  @Transactional
+  public List<Long> getUsersId() {
+    List<User> users = userRepository.findAll();
+    return users.stream().map(User::getChatId).collect(Collectors.toList());
   }
 
   @Transactional(readOnly = true)
@@ -85,6 +97,8 @@ public class UserService {
       log.warn("User not found: {}, for delete", chatId);
       return;
     }
+    messageSenderService.deleteAllChatMessagesExceptUndeletable(chatId);
+    messageSenderService.deleteUndeletableMessages(chatId);
     userRepository.deleteById(chatId);
   }
 }

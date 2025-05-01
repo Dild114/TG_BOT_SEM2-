@@ -17,8 +17,6 @@ public class WelcomeMessageService {
   public void sendWelcomeMessage(long chatId, String userName) {
     messageSenderService.deleteAllChatMessagesExceptUndeletable(chatId);
     messageSenderService.deleteUndeletableMessages(chatId);
-    messageSenderService.deleteLastInlineKeyboardId(chatId);
-    messageSenderService.deleteLastReplyKeyboardId(chatId);
 
     SendMessage sendMessage = new SendMessage();
     sendMessage.setChatId(chatId);
