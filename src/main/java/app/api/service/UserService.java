@@ -1,18 +1,25 @@
 package app.api.service;
 
 import app.api.entity.User;
-import app.api.repository.UserRepository;
+import app.api.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+
 public class UserService {
   private final UserRepository userRepository;
+  private final ArticleService articleService;
+
+  public UserService(UserRepository userRepository, @Lazy ArticleService articleService) {
+    this.userRepository = userRepository;
+    this.articleService = articleService;
+  }
 
   @Transactional
   public void createUser(Long chatId) {
@@ -22,7 +29,9 @@ public class UserService {
         .countStringsInOnePage(5)
         .countArticlesInOneRequest(3)
         .build();
+
     userRepository.save(user);
+    articleService.addRandomArticlesToUser(user.getChatId());
   }
 
   @Transactional(readOnly = true)

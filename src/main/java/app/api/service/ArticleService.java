@@ -21,6 +21,7 @@ import java.util.List;
 public class ArticleService {
   private final ArticleRepository articleRepository;
   private final ArticleMapper articleMapper;
+  private final UserService userService;
 
   @Transactional(readOnly = true)
   public Article getUserArticle(Long chatId, Long articleId) {
@@ -84,6 +85,18 @@ public class ArticleService {
   @Transactional
   public void deleteUnneededUserArticles(Long chatId) {
     articleRepository.deleteUnneededUserArticles(chatId);
+  }
+
+  @Transactional
+  //TODO: УДАЛИТЬ!!! это заглушка
+  public void addRandomArticlesToUser(long chatId) {
+    for (int i = 0; i < 12; i++) {
+      if (i % 2 == 0) {
+        addArticle(userService.getUserById(chatId), "МТС", "Айти", "12:34", "23.04", "https://balashiha.mts.ru/personal", "Мтс внатуре крутые ребята ёмаё");
+      } else {
+        addArticle(userService.getUserById(chatId), "Яндекс", "Доставка еды", "23:15", "01.01", "https://ya.ru/?npr=1&utm_referrer=https%3A%2F%2Fwww.google.com%2F", "");
+      }
+    }
   }
 
   public void changeUserArticleStatusBrief(long chatId, long articleId) {
