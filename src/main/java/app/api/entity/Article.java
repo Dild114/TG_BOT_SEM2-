@@ -38,10 +38,34 @@ public class Article {
     private Website website;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "brief_content")
+    private String briefContent;
+
+    @Column(name = "status_of_watching_brief_content")
+    private Boolean statusOfWatchingBriefContent;
+
+    @Column(name = "favorite_status")
+    private Boolean favoriteStatus;
+
+    @Column(name = "watched_status")
+    private Boolean watchedStatus;
+
+    public void changeStatusOfWatchingBriefContent() {
+        this.statusOfWatchingBriefContent = !this.statusOfWatchingBriefContent;
+    }
+
+    public void changeFixedStatus() {
+        this.favoriteStatus = !this.favoriteStatus;
+    }
+
+    public void changeWatchedStatus() {
+        this.watchedStatus = !this.watchedStatus;
+    }
 }

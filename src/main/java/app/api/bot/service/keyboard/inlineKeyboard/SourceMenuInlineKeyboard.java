@@ -1,6 +1,6 @@
 package app.api.bot.service.keyboard.inlineKeyboard;
 
-import app.api.bot.stubs.source.SourceStub;
+
 import app.api.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

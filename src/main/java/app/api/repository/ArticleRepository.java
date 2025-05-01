@@ -7,24 +7,19 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import java.util.Set;
+
+import java.util.*;
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, ArticleId> {
-  Set<Article> findArticlesByUser_ChatId(Long userId);
-
-  @Query("""
-    SELECT a FROM Article a
-    WHERE a.user.chatId = :userId
-      AND a.creationDate >= FUNCTION('DATE_SUB', CURRENT_TIMESTAMP, a.user.messageStorageTimeDay, 'DAY')
-    """)
-  Set<Article> findActiveArticlesByUserId(@Param("userId") Long userId);
+public interface ArticleRepository extends JpaRepository<Article, Long> {
+  List<Article> findArticlesByUser_ChatId(Long userId);
 
   @Modifying
   @Query(value = """
-    DELETE FROM article a
-    WHERE a.user_id = :userId
-      AND a.creation_date < CURRENT_TIMESTAMP - INTERVAL '1 day' * a.message_storage_time_day
+    DELETE FROM articles
+    WHERE user_id = :chatId
+        AND watched_status = true
+        AND favorite_status = false;
     """, nativeQuery = true)
-  void deleteExpiredArticlesByUserId(@Param("userId") Long userId);
+  void deleteUnneededUserArticles(@Param("chatId") Long chatId);
 }

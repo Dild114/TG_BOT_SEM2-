@@ -1,6 +1,6 @@
 package app.api.bot.stubs.article;
 
-import app.api.bot.stubs.user.UserServiceStub;
+import app.api.service.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,14 +11,14 @@ import java.util.Map;
 
 @Service
 public class ArticleServiceStub {
-  private final UserServiceStub userServiceStub;
+  private final UserService userService;
   private final Map<Long, Map<Long, ArticleStub>> articlesForUsers;
 
   private static long nextId = 0;
 
-  public ArticleServiceStub(UserServiceStub userServiceStub) {
+  public ArticleServiceStub(UserService userService) {
     this.articlesForUsers = new HashMap<>();
-    this.userServiceStub = userServiceStub;
+    this.userService = userService;
   }
 
   public ArticleStub getUserArticle(long chatId, long articleId) {
@@ -32,7 +32,7 @@ public class ArticleServiceStub {
 
     sortedUserArticles.sort(Comparator.comparingLong(ArticleStub::getArticleId).reversed());
 
-    int countResponseArticlesForUser = userServiceStub.getUserCountArticlesInOneRequest(chatId);
+    long countResponseArticlesForUser = userService.getUserCountArticlesInOneRequest(chatId);
 
     List<ArticleStub> responseNewArticles = new ArrayList<>();
 

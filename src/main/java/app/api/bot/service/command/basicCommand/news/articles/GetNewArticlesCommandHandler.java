@@ -3,8 +3,8 @@ package app.api.bot.service.command.basicCommand.news.articles;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
 import app.api.bot.service.message.news.articles.ArticleMessageService;
-import app.api.bot.stubs.article.ArticleServiceStub;
-import app.api.bot.stubs.article.ArticleStub;
+import app.api.entity.*;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -18,8 +18,8 @@ import java.util.List;
 public class GetNewArticlesCommandHandler implements BasicCommandHandler {
   private final ArticleMessageService articleMessageService;
   private final MessageSenderService messageSenderService;
-  //TODO: заменить заглушку на нормальный сервис и думать, где обрабатывать кол-во получаемых статей и порядок их
-  private final ArticleServiceStub articleServiceStub;
+  private final ArticleService articleService;
+  private final UserService userService; // Добавлено для получения настроек пользователя
 
   @Override
   public boolean canHandle(String messageText) {
@@ -29,7 +29,8 @@ public class GetNewArticlesCommandHandler implements BasicCommandHandler {
   @Override
   public void handle(Message message) {
     long chatId = message.getChatId();
-    List<ArticleStub> articles = articleServiceStub.getNewUserArticles(chatId);
+    long countResponseArticlesForUser = userService.getUserCountArticlesInOneRequest(chatId);
+    List<Article> articles = articleService.getNewUserArticles(chatId, countResponseArticlesForUser);
     messageSenderService.deleteAllMessagesAfterReplyKeyboard(chatId);
     if (!articles.isEmpty()) {
       articleMessageService.sendArticles(chatId, articles);

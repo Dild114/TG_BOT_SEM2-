@@ -2,7 +2,7 @@ package app.api.bot.service.command.callbackComand.article;
 
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.news.articles.ArticleMessageService;
-import app.api.bot.stubs.article.ArticleServiceStub;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 @Order(40)
 @RequiredArgsConstructor
 public class StatusLikedArticleCallbackHandler implements CallbackCommandHandler {
-  private final ArticleServiceStub articleServiceStub;
+  private final ArticleService articleService;
   private final ArticleMessageService articleMessageService;
 
   @Override
@@ -30,7 +30,7 @@ public class StatusLikedArticleCallbackHandler implements CallbackCommandHandler
     String[] parts = callbackData.split("_");
     int articleId = Integer.parseInt(parts[3]);
 
-    articleServiceStub.changeUserArticleFavoriteStatus(chatId, articleId);
+    articleService.changeUserArticleFavoriteStatus(chatId, articleId);
     articleMessageService.updateArticleAndArticleMenu(chatId, messageId, articleId);
   }
 }

@@ -7,7 +7,7 @@ import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
 import app.api.bot.service.ChatStateService;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.message.mainMenu.MainMenuMessageService;
-import app.api.bot.stubs.article.ArticleServiceStub;
+import app.api.service.ArticleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class BotUpdateHandler {
   private final MessageSenderService messageSenderService;
   private final ChatStateService chatStateService;
   private final MainMenuMessageService mainMenuMessageService;
-  private final ArticleServiceStub articleServiceStub;
+  private final ArticleService articleService;
   List<MenuCommandHandler> menuCommandHandlers;
   List<BasicCommandHandler> basicCommandHandlers;
   List<StateCommandHandler> stateCommandHandlers;
@@ -46,8 +46,8 @@ public class BotUpdateHandler {
       Message message = update.getMessage();
       long chatId = message.getChatId();
 
-      if (chatStateService.getState(chatId) != null && chatStateService.getState(chatId).equals("getting_articles")) {
-        articleServiceStub.deleteUnneededUserArticles(chatId);
+      if ("getting_articles".equals(chatStateService.getState(chatId))) {
+        articleService.deleteUnneededUserArticles(chatId);
       }
 
       boolean used = false;
@@ -84,7 +84,6 @@ public class BotUpdateHandler {
             }
           }
         }
-
       }
       if (!used) {
         chatStateService.clearState(chatId);

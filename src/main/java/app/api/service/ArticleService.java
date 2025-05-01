@@ -1,18 +1,19 @@
 package app.api.service;
 
-import app.api.dto.ArticleDto;
 import app.api.entity.Article;
-import app.api.entity.ArticleId;
+import app.api.entity.User;
 import app.api.mapper.ArticleMapper;
 import app.api.repository.ArticleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -21,33 +22,85 @@ public class ArticleService {
   private final ArticleRepository articleRepository;
   private final ArticleMapper articleMapper;
 
-  // вот тут так раз надо учитывать время хранения и удалять статьи которые хранятся дольше чем нужно
-  // те нужно сделать @Query select ... where now - createDateArticle < user.massage_storage_time_day
-  // а дальше лучше сделать @Query delete ... where now - createDateArticle > user.massage_storage_time_day
-  // тут уже находятся статьи которые подходят по времени и удаляются остальные
+  @Transactional(readOnly = true)
+  public Article getUserArticle(Long chatId, Long articleId) {
+    return articleRepository.findById(articleId)
+        .orElseThrow(() -> new EntityNotFoundException("Article not found with id: " + articleId));
+  }
+
+  @Transactional
+  public List<Article> getNewUserArticles(Long chatId, long countResponseArticlesForUser) {
+    List<Article> articles = articleRepository.findArticlesByUser_ChatId(chatId);
+    articles.sort(Comparator.comparing(Article::getId).reversed());
+
+    List<Article> responseNewArticles = new ArrayList<>();
+    int countArticlesInResponseList = 0;
+
+    for (Article article : articles) {
+      if (!article.getFavoriteStatus()) {
+        responseNewArticles.add(article);
+        article.changeWatchedStatus();
+        ++countArticlesInResponseList;
+      }
+      if (countArticlesInResponseList == countResponseArticlesForUser) {
+        break;
+      }
+    }
+    return responseNewArticles;
+  }
 
   @Transactional(readOnly = true)
-  public Set<ArticleDto> getArticlesByUserId(Long userId) {
-   Set<Article> articles = articleRepository.findActiveArticlesByUserId(userId);
-   Set<ArticleDto> articleDtoSet = articles.stream().map(articleMapper::toDto).collect(Collectors.toSet());
-   articleRepository.deleteExpiredArticlesByUserId(userId);
-   return articleDtoSet;
-  }
+  public List<Article> getLikedUserArticles(Long chatId) {
+    List<Article> articles = articleRepository.findArticlesByUser_ChatId(chatId);
+    articles.sort(Comparator.comparing(Article::getId));
 
-  @Transactional
-  public void deleteArticle(Long id) {
-    if (!articleRepository.existsById(new ArticleId(id))) {
-      throw new EntityNotFoundException("Article not found with id: " + id);
+    List<Article> responseLikedArticles = new ArrayList<>();
+    for (Article article : articles) {
+      if (article.getFavoriteStatus()) {
+        responseLikedArticles.add(article);
+        article.changeWatchedStatus();
+      }
     }
-    log.info("Deleting article with id: {}", id);
-    articleRepository.deleteById(new ArticleId(id));
+
+    return responseLikedArticles;
   }
 
+  @Transactional
+  public void addArticle(User user, String articleName, String articleCategoryName, String articleParsedTime, String articleParsedDate, String articleUrl, String briefContent) {
+    Article article = Article.builder()
+        .name(articleName)
+        .url(articleUrl)
+        .creationDate(OffsetDateTime.now())
+        .briefContent(briefContent)
+        .statusOfWatchingBriefContent(false)
+        .favoriteStatus(false)
+        .watchedStatus(false)
+        .user(user)
+        .build();
+
+    articleRepository.save(article);
+  }
 
   @Transactional
-  public ArticleDto createArticle(ArticleDto articleDto) {
-    Article article = articleMapper.toEntity(articleDto);
+  public void deleteUnneededUserArticles(Long chatId) {
+    articleRepository.deleteUnneededUserArticles(chatId);
+  }
+
+  public void changeUserArticleStatusBrief(long chatId, long articleId) {
+    Article article = articleRepository.findArticlesByUser_ChatId(chatId).stream()
+        .filter(a -> a.getId().equals(articleId))
+        .findFirst()
+        .orElseThrow(() -> new EntityNotFoundException("Article not found with id: " + articleId));
+    article.changeStatusOfWatchingBriefContent();
     articleRepository.save(article);
-    return articleMapper.toDto(article);
+  }
+
+  public void changeUserArticleFavoriteStatus(long chatId, long articleId) {
+    Article article = articleRepository.findArticlesByUser_ChatId(chatId).stream()
+        .filter(a -> a.getId().equals(articleId))
+        .findFirst()
+        .orElseThrow(() -> new EntityNotFoundException("Article not found with id: " + articleId));
+    article.changeFixedStatus();
+    articleRepository.save(article);
   }
 }

@@ -2,8 +2,9 @@ package app.api.bot.service.message.news.articles;
 
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.keyboard.inlineKeyboard.ArticleMenuInlineKeyboard;
-import app.api.bot.stubs.article.ArticleServiceStub;
-import app.api.bot.stubs.article.ArticleStub;
+
+import app.api.entity.*;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,12 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArticleMessageService {
   private final ArticleMenuInlineKeyboard articleMenuInlineKeyboard;
-  private final ArticleServiceStub articleServiceStub;
+  private final ArticleService articleService;
   private final MessageSenderService messageSenderService;
 
   //TODO: заменить List<Article> на то, что будет нужно. Добавить удаление всех категорий из репо;
-  public void sendArticles(long chatId, List<ArticleStub> articles) {
-    for (ArticleStub article : articles) {
+  public void sendArticles(long chatId, List<Article> articles) {
+    for (Article article : articles) {
       SendMessage sendArticle = new SendMessage();
       sendArticle.setText(getMessageForArticleWithoutBrief(article));
       sendArticle.setChatId(chatId);
@@ -31,8 +32,8 @@ public class ArticleMessageService {
   }
 
   //TODO: тут как-то подумать и изменить articleId, т.к. или посмотреть, как оно выглядит в готовой реализации
-  public void updateArticleAndArticleMenu(long chatId, int messageId, int articleId) {
-    ArticleStub article = articleServiceStub.getUserArticle(chatId, articleId);
+  public void updateArticleAndArticleMenu(long chatId, int messageId, long articleId) {
+    Article article = articleService.getUserArticle(chatId, articleId);
 
     String text = article.getStatusOfWatchingBriefContent()
       ? getMessageForArticleWithBrief(article)
@@ -50,19 +51,19 @@ public class ArticleMessageService {
 
 
   //TODO: Возможно изменить/добавить какие-то эмодзи и тп, т.к. в заглушке всё по умолчанию красиво
-  private String getMessageForArticleWithoutBrief(ArticleStub article) {
-    return "\uD83D\uDCCB " + article.getArticleName() + "\n Категория: \"" + article.getArticleCategoryName() + "\" \n\uD83D\uDCC5 "
-      + article.getArticleParsedDate() + " | \uD83D\uDD53 " + article.getArticleParsedTime();
+  private String getMessageForArticleWithoutBrief(Article article) {
+    return "\uD83D\uDCCB " + article.getName() + "\n Категория: \"" + (article.getCategory() != null ? article.getCategory().getName() : "Без категории") + "\" \n\uD83D\uDCC5 "
+        + article.getCreationDate().toLocalDate() + " | \uD83D\uDD53 " + article.getCreationDate().toLocalTime();
   }
 
-  private String getMessageForArticleWithBrief(ArticleStub article) {
+  private String getMessageForArticleWithBrief(Article article) {
     String brief = article.getBriefContent();
     if (!brief.isEmpty()) {
       brief = "\uD83D\uDCAC Краткое содержание: \n" + brief;
     } else {
       brief = "Краткое содержание отсутствует \uD83E\uDD17";
     }
-    return "\uD83D\uDCCB " + article.getArticleName() + "\n Категория: \"" + article.getArticleCategoryName() + "\" \n\uD83D\uDCC5 "
-      + article.getArticleParsedDate() + " | \uD83D\uDD53 " + article.getArticleParsedTime() + "\n\n" + brief;
+    return "\uD83D\uDCCB " + article.getName() + "\n Категория: \"" + (article.getCategory() != null ? article.getCategory().getName() : "Без категории") + "\" \n\uD83D\uDCC5 "
+        + article.getCreationDate().toLocalDate() + " | \uD83D\uDD53 " + article.getCreationDate().toLocalTime() + "\n\n" + brief;
   }
 }

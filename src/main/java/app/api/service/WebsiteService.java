@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,7 +27,9 @@ public class WebsiteService {
   public List<Website> getUserSources(Long chatId) {
     User user = userRepository.findByIdWithWebsites(chatId)
         .orElseThrow(() -> new EntityNotFoundException("User not found: " + chatId));
-    return user.getWebsites();
+    List<Website> websites = user.getWebsites();
+    websites.sort(Comparator.comparing(Website::getSourceId));
+    return websites;
   }
 
   @Transactional

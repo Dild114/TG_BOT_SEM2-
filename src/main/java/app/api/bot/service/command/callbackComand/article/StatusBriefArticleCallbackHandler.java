@@ -2,7 +2,7 @@ package app.api.bot.service.command.callbackComand.article;
 
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.news.articles.ArticleMessageService;
-import app.api.bot.stubs.article.ArticleServiceStub;
+import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 @RequiredArgsConstructor
 public class StatusBriefArticleCallbackHandler implements CallbackCommandHandler {
   //TODO: заменить заглушку на что-то нормальное
-  private final ArticleServiceStub articleServiceStub;
+  private final ArticleService articleService;
   private final ArticleMessageService articleMessageService;
 
   @Override
@@ -31,7 +31,7 @@ public class StatusBriefArticleCallbackHandler implements CallbackCommandHandler
     String[] parts = callbackData.split("_");
     int articleId = Integer.parseInt(parts[3]);
 
-    articleServiceStub.changeUserArticleStatusBrief(chatId, articleId);
+    articleService.changeUserArticleStatusBrief(chatId, articleId);
     articleMessageService.updateArticleAndArticleMenu(chatId, messageId, articleId);
   }
 }
