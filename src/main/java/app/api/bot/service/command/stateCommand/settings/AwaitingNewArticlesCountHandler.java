@@ -30,9 +30,10 @@ public class AwaitingNewArticlesCountHandler implements StateCommandHandler {
       //TODO: заменить на нормальный метод из нормального сервиса
       userService.changeUserCountArticlesInOneRequest(chatId, newSize);
       messageSenderService.sendTextMessage(chatId, "☑\uFE0F Новое кол-во статей получаемых одним запросом \"" + message.getText() + "\" успешно установлено");
+      userService.clearState(chatId);
     } else {
       messageSenderService.sendTextMessage(chatId, "❗\uFE0F Значение \"" + message.getText() + "\" неприемлемо. Кол-во получаемых статей должно быть натуральным числом меньшим 10^9");
+      messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести новое значение ещё раз:");
     }
-    userService.clearState(chatId);
   }
 }

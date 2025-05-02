@@ -30,9 +30,10 @@ public class AwaitingNewColumnHeightHandler implements StateCommandHandler {
       //TODO: заменить на нормальный метод из нормального сервиса
       userService.changeUserCountStringsInOnePage(chatId, newSize);
       messageSenderService.sendTextMessage(chatId, "☑\uFE0F Новая высота столбца \"" + message.getText() + "\" успешно установлена");
+      userService.clearState(chatId);
     } else {
       messageSenderService.sendTextMessage(chatId, "❗\uFE0F Значение \"" + message.getText() + "\" неприемлемо. Высота столбца должна быть натуральным числом меньшим 10^9");
+      messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести новое значение ещё раз:");
     }
-    userService.clearState(chatId);
   }
 }
