@@ -1,6 +1,5 @@
 package app.api.bot.service.command.basicCommand.settings;
 
-import app.api.bot.service.ChatStateService;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
 import app.api.service.*;
@@ -13,9 +12,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @Order(32)
 @RequiredArgsConstructor
 public class GetBriefArticleOnSettingsCommandHandler implements BasicCommandHandler {
-  private final ChatStateService chatStateService;
-  private final MessageSenderService messageSenderService;
   private final UserService userService;
+  private final MessageSenderService messageSenderService;
 
   @Override
   public boolean canHandle(String messageText) {
@@ -26,7 +24,7 @@ public class GetBriefArticleOnSettingsCommandHandler implements BasicCommandHand
   public void handle(Message message) {
     long chatId = message.getChatId();
     messageSenderService.deleteLastBotMessage(chatId);
-    chatStateService.clearState(chatId);
+    userService.clearState(chatId);
     userService.changeUserMakeBriefStatus(chatId, true);
     messageSenderService.sendTextMessage(chatId, "☑\uFE0F Получение кратких содержаний включено");
   }

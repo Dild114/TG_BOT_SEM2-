@@ -4,7 +4,6 @@ import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.command.handlerInterfaces.MenuCommandHandler;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
-import app.api.bot.service.ChatStateService;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.message.mainMenu.MainMenuMessageService;
 import app.api.service.*;
@@ -23,9 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BotUpdateHandler {
   private final MessageSenderService messageSenderService;
-  private final ChatStateService chatStateService;
-  private final MainMenuMessageService mainMenuMessageService;
   private final UserService userService;
+  private final MainMenuMessageService mainMenuMessageService;
   private final ArticleService articleService;
 
   private final List<MenuCommandHandler> menuCommandHandlers;
@@ -33,14 +31,10 @@ public class BotUpdateHandler {
   private final List<StateCommandHandler> stateCommandHandlers;
   private final List<CallbackCommandHandler> callbackCommandHandlers;
 
-  static long startupTime;
+  private static long startupTime;
 
   @PostConstruct
   private void init() {
-    List<Long> usersId = userService.getUsersId();
-    for (Long userId : usersId) {
-      mainMenuMessageService.sendMainMenuMessage(userId);
-    }
     startupTime = System.currentTimeMillis() / 1000;
   }
 
@@ -65,7 +59,7 @@ public class BotUpdateHandler {
         return;
       }
 
-      if ("getting_articles".equals(chatStateService.getState(chatId))) {
+      if ("getting_articles".equals(userService.getState(chatId))) {
         articleService.deleteUnneededUserArticles(chatId);
       }
 
@@ -105,7 +99,7 @@ public class BotUpdateHandler {
         }
       }
       if (!used) {
-        chatStateService.clearState(chatId);
+        userService.clearState(chatId);
         mainMenuMessageService.sendMainMenuMessage(chatId);
       }
     }

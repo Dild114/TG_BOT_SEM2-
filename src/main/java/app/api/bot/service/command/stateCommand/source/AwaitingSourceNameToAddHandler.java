@@ -2,7 +2,7 @@ package app.api.bot.service.command.stateCommand.source;
 
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
-import app.api.bot.service.ChatStateService;
+import app.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -14,12 +14,12 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @RequiredArgsConstructor
 @Slf4j
 public class AwaitingSourceNameToAddHandler implements StateCommandHandler {
-  private final ChatStateService chatStateService;
+  private final UserService userService;
   private final MessageSenderService messageSenderService;
 
   @Override
   public boolean canHandle(long chatId) {
-    String state = chatStateService.getState(chatId);
+    String state = userService.getState(chatId);
     return state != null && state.equals("awaiting_source_name_to_add");
   }
 
@@ -33,8 +33,8 @@ public class AwaitingSourceNameToAddHandler implements StateCommandHandler {
       messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести название источника ещё раз:");
     } else {
       messageSenderService.sendTextMessage(chatId, "\uD83D\uDCDD\uD83D\uDD17 Введите ссылку на источник:");
-      chatStateService.setTempSourceName(chatId, text);
-      chatStateService.setState(chatId, "awaiting_source_url_to_add");
+      userService.setTempSourceName(chatId, text);
+      userService.setState(chatId, "awaiting_source_url_to_add");
     }
   }
 }

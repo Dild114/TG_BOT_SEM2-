@@ -2,7 +2,6 @@ package app.api.bot.service.command.stateCommand.category;
 
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
-import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.category.CategoryMessageService;
 import app.api.bot.stubs.exceptions.InvalidValueException;
 import app.api.service.*;
@@ -17,14 +16,14 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @RequiredArgsConstructor
 @Slf4j
 public class AwaitingCategoryNameToAddHandler implements StateCommandHandler {
-  private final ChatStateService chatStateService;
+  private final UserService userService;
   private final MessageSenderService messageSenderService;
   private final CategoryMessageService categoryMessageService;
   private final CategoryService categoryService; //TODO: заменить на categoryService
 
   @Override
   public boolean canHandle(long chatId) {
-    String state = chatStateService.getState(chatId);
+    String state = userService.getState(chatId);
     return state != null && state.equals("awaiting_category_name_to_add");
   }
 
@@ -44,7 +43,7 @@ public class AwaitingCategoryNameToAddHandler implements StateCommandHandler {
         //TODO: List<CategoryDto> userCategories = categoryService.getCategories(chatId);
         categoryMessageService.updateCategoryMenuMessage(chatId, 1, categoryService.getUserCategories(chatId)); //TODO: заменить на userCategories
         messageSenderService.sendTextMessage(chatId, "☑\uFE0F Категория \"" + message.getText() + "\" успешно добавлена");
-        chatStateService.clearState(chatId);
+        userService.clearState(chatId);
       } catch (InvalidValueException e) {
         messageSenderService.sendTextMessage(chatId, "⚠\uFE0F Категория " + "\"" + message.getText() + "\"" + " уже была добавлена ранее");
         messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести название ещё раз:");

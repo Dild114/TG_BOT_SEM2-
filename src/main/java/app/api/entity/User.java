@@ -32,6 +32,15 @@ public class User {
   @Column(name = "count_articles_in_one_request")
   private int countArticlesInOneRequest;
 
+  @Column(name = "state")
+  private String state;
+
+  @Column(name = "temp_source_name")
+  private String tempSourceName;
+
+  @Column(name = "temp_view_mode")
+  private String tempViewMode;
+
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Category> categories = new ArrayList<>();
 

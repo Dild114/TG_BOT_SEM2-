@@ -1,8 +1,8 @@
 package app.api.bot.service.command.basicCommand;
 
 import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
-import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.mainMenu.MainMenuMessageService;
+import app.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @RequiredArgsConstructor
 public class GoBackCommandHandler implements BasicCommandHandler {
   private final MainMenuMessageService mainMenuMessageService;
-  private final ChatStateService chatStateService;
+  private final UserService userService;
 
   @Override
   public boolean canHandle(String messageText) {
@@ -26,6 +26,6 @@ public class GoBackCommandHandler implements BasicCommandHandler {
   public void handle(Message message) {
     long chatId = message.getChatId();
     mainMenuMessageService.sendMainMenuMessage(chatId);
-    chatStateService.clearState(chatId);
+    userService.clearState(chatId);
   }
 }

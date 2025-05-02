@@ -1,6 +1,5 @@
 package app.api.bot.service.command.callbackComand.source;
 
-import app.api.bot.service.ChatStateService;
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.source.SourceMessageService;
 import app.api.entity.*;
@@ -17,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 @RequiredArgsConstructor
 public class StatusSourceCallbackHandler implements CallbackCommandHandler {
   private final SourceMessageService sourceMessageService;
-  private final ChatStateService chatStateService;
+  private final UserService userService;
   //TODO:заменить на нормальный сервис
   private final WebsiteService sourceService;
 
@@ -37,6 +36,6 @@ public class StatusSourceCallbackHandler implements CallbackCommandHandler {
     //TODO: заменить на норм сервис, который принимает ещё и chatId
     sourceService.changeUserSourceStatus(chatId, sourceId);
     //TODO: аналогично меняем заглушку на норм сервис
-    sourceMessageService.updateSourceMenuMessage(chatId, pageNum, sourceService.getUserSources(chatId), chatStateService.getTempViewMode(chatId));
+    sourceMessageService.updateSourceMenuMessage(chatId, pageNum, sourceService.getUserSources(chatId), userService.getTempViewMode(chatId));
   }
 }

@@ -51,3 +51,8 @@ CREATE TABLE messages (
                           PRIMARY KEY (chat_id, message_id),
                           CONSTRAINT fk_message_user FOREIGN KEY (chat_id) REFERENCES users(chat_id) ON DELETE CASCADE
 );
+
+ALTER TABLE users
+ADD COLUMN state VARCHAR(255),
+ADD COLUMN temp_source_name VARCHAR(255),
+ADD COLUMN temp_view_mode VARCHAR(255);

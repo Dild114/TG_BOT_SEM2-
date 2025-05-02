@@ -34,6 +34,7 @@ public class UserService {
         .briefContentOfArticlesStatus(false)
         .countStringsInOnePage(5)
         .countArticlesInOneRequest(3)
+        .tempViewMode("state")
         .build();
 
     userRepository.save(user);
@@ -48,8 +49,7 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public User getUserById(Long chatId) {
-    return userRepository.findById(chatId)
-        .orElseThrow(() -> new EntityNotFoundException("User not found with chatId: " + chatId));
+    return userRepository.findById(chatId).orElse(null);
   }
 
   @Transactional(readOnly = true)
@@ -100,5 +100,61 @@ public class UserService {
     messageSenderService.deleteAllChatMessagesExceptUndeletable(chatId);
     messageSenderService.deleteUndeletableMessages(chatId);
     userRepository.deleteById(chatId);
+  }
+
+  @Transactional
+  public void setState(Long chatId, String state) {
+    User user = getUserById(chatId);
+    if (user != null) {
+      user.setState(state);
+      userRepository.save(user);
+    }
+  }
+
+  @Transactional(readOnly = true)
+  public String getState(Long chatId) {
+    User user = getUserById(chatId);
+    return user != null ? user.getState() : null;
+  }
+
+  @Transactional
+  public void setTempSourceName(Long chatId, String name) {
+    User user = getUserById(chatId);
+    if (user != null) {
+      user.setTempSourceName(name);
+      userRepository.save(user);
+    }
+  }
+
+  @Transactional(readOnly = true)
+  public String getTempSourceName(Long chatId) {
+    User user = getUserById(chatId);
+    return user != null ? user.getTempSourceName() : null;
+  }
+
+  @Transactional
+  public void setTempViewMode(Long chatId, String mode) {
+    User user = getUserById(chatId);
+    if (user != null) {
+      user.setTempViewMode(mode);
+      userRepository.save(user);
+    }
+  }
+
+  @Transactional(readOnly = true)
+  public String getTempViewMode(Long chatId) {
+    User user = getUserById(chatId);
+    return user != null ? user.getTempViewMode() : null;
+  }
+
+  @Transactional
+  public void clearState(Long chatId) {
+    User user = getUserById(chatId);
+    if (user != null) {
+      user.setState(null);
+      user.setTempSourceName(null);
+      user.setTempViewMode(null);
+      userRepository.save(user);
+    }
   }
 }

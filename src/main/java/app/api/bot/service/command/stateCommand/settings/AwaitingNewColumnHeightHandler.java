@@ -2,10 +2,8 @@ package app.api.bot.service.command.stateCommand.settings;
 
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
-import app.api.bot.service.ChatStateService;
 import app.api.service.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -14,14 +12,12 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @Order(16)
 @RequiredArgsConstructor
 public class AwaitingNewColumnHeightHandler implements StateCommandHandler {
-  private final ChatStateService chatStateService;
-  private final MessageSenderService messageSenderService;
-
   private final UserService userService;
+  private final MessageSenderService messageSenderService;
 
   @Override
   public boolean canHandle(long chatId) {
-    String state = chatStateService.getState(chatId);
+    String state = userService.getState(chatId);
     return state != null && state.equals("awaiting_new_column_height");
   }
 
@@ -37,6 +33,6 @@ public class AwaitingNewColumnHeightHandler implements StateCommandHandler {
     } else {
       messageSenderService.sendTextMessage(chatId, "❗\uFE0F Значение \"" + message.getText() + "\" неприемлемо. Высота столбца должна быть натуральным числом меньшим 10^9");
     }
-    chatStateService.clearState(chatId);
+    userService.clearState(chatId);
   }
 }

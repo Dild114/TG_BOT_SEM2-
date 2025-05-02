@@ -2,7 +2,6 @@ package app.api.bot.service.command.stateCommand.source;
 
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.StateCommandHandler;
-import app.api.bot.service.ChatStateService;
 import app.api.bot.service.message.source.SourceMessageService;
 import app.api.bot.stubs.exceptions.InvalidValueException;
 import app.api.service.*;
@@ -17,14 +16,14 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @RequiredArgsConstructor
 @Slf4j
 public class AwaitingSourceNameToDeleteHandler implements StateCommandHandler {
-  private final ChatStateService chatStateService;
+  private final UserService userService;
   private final MessageSenderService messageSenderService;
   private final SourceMessageService sourceMessageService;
   private final WebsiteService sourceService; //TODO: заменить на реальный сервис
 
   @Override
   public boolean canHandle(long chatId) {
-    String state = chatStateService.getState(chatId);
+    String state = userService.getState(chatId);
     return state != null && state.equals("awaiting_source_name_to_delete");
   }
 
@@ -40,9 +39,9 @@ public class AwaitingSourceNameToDeleteHandler implements StateCommandHandler {
       try {
         //TODO: заменить на реальный сервис
         sourceService.deleteSourceFromUser(chatId, text);
-        sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceService.getUserSources(chatId), chatStateService.getTempViewMode(chatId)); //TODO: заменить на реальный сервис и получать источники, а уже потом использовать
+        sourceMessageService.updateSourceMenuMessage(chatId, 1, sourceService.getUserSources(chatId), userService.getTempViewMode(chatId)); //TODO: заменить на реальный сервис и получать источники, а уже потом использовать
         messageSenderService.sendTextMessage(chatId, "☑\uFE0F Источник \"" + message.getText() + "\" успешно удалён");
-        chatStateService.clearState(chatId);
+        userService.clearState(chatId);
       } catch (InvalidValueException e) {
         messageSenderService.sendTextMessage(chatId, "⚠\uFE0F Источник с названием " + "\"" + message.getText() + " не найден");
         messageSenderService.sendTextMessage(chatId, "\uD83D\uDD04 Попробуйте ввести название ещё раз:");
