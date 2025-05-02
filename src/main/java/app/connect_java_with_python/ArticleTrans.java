@@ -36,6 +36,7 @@ public class ArticleTrans {
   @Transactional
   public void addArticleByUser(User user) {
     List<Website> websites = websiteRepository.findAllWebsitesByUser_ChatId(user.getChatId());
+    log.info("website db");
     List<String> categories =
         categoryRepository.
             findCategoriesByUser_ChatId(user.getChatId())
@@ -43,7 +44,8 @@ public class ArticleTrans {
             .filter(Category::isEnabled)
             .map(Category::getName)
             .toList();
-
+    log.info(categories.toString() + "  " + categories.get(0));
+    log.info(websites.get(0).getSourceUrl() + " asdasdasd");
     for (Website website : websites) {
       if (website.isSourceActiveStatus()) {
         // map<url, text>

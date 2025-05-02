@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 public class RestClient {
-  private static final String BASE_URL = "http://localhost:8080";
+  private static final String BASE_URL = "http://localhost:8000";
   private static final RestTemplate restTemplate = new RestTemplate();
 
   // возвращается индекс из массива категории,

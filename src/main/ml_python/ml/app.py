@@ -54,7 +54,7 @@ async def receive_json(data: RequestModel):
         return -2
 
 @app.post("/check_moderate")
-async def receive_json(data: RequestModel):
+async def receive_json(data: RequestModelOnlyArticle):
     check_moderate = Moderate_text.moderate_text(data.article)
     return {"Moderate" : check_moderate}
 
