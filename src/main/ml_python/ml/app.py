@@ -26,6 +26,7 @@ class RequestModelOnlyArticle(BaseModel):
 
 @app.post("/articles")
 async def receive_json(data: RequestModel):
+    print(data + "python /articles те определение категории")
     result = model(data.article, data.categories)
     best_label = result["labels"][0]
     best_score = result["scores"][0]
@@ -39,8 +40,6 @@ async def receive_json(data: RequestModel):
 @app.post("/articleswithmoderate")
 async def receive_json(data: RequestModel):
     check_moderate = Moderate_text.moderate_text(data.article)
-    print(check_moderate)
-    print(check_moderate["result"])
     if check_moderate["result"]:
         result = model(data.article, data.categories)
         best_label = result["labels"][0]
@@ -60,19 +59,16 @@ async def receive_json(data: RequestModelOnlyArticle):
 
 @app.post("/retelling")
 async def receive_json(data: RequestModelOnlyArticle):
-    print(data)
     result = Retelling_text.retelling(data.article)
     return result
 
 @app.post("/very_short_retelling")
 async def receive_json(data: RequestModelOnlyArticle):
-    print(data)
     result = Retelling_text.short_retelling(data.article)
     return result
 
 @app.post("/parsing")
 async def receive_json(data: RequestParsingModel):
-    print(data.url)
     result = parsing_sites.parser(data.url)
     return result.split("q1w2e3r4t5y6u7i8o9@@#!@")
 

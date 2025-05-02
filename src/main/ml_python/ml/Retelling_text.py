@@ -4,7 +4,7 @@ from openai import OpenAI
 def retelling(text):
     client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="YOUR_KEY",
+        api_key="***REMOVED***",
     )
 
     completion = client.chat.completions.create(
@@ -26,7 +26,7 @@ def retelling(text):
 def short_retelling(text):
     client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="YOUR_KEY",
+        api_key="***REMOVED***",
     )
 
     completion = client.chat.completions.create(

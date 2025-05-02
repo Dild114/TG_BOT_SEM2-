@@ -19,13 +19,17 @@ public class RestClient {
   // возвращается индекс из массива категории,
   // который больше всего подходит или null если такого нет
   public static Integer getCategoryArticle(String textArticle, List<String> categories) {
-    String url = BASE_URL + "/articles";
+;    String url = BASE_URL + "/articles";
     Map<String, Object> body = new HashMap<>();
     body.put("article", textArticle);
     body.put("categories", categories);
     Integer response = restTemplate.postForObject(url, body, Integer.class);
-    log.info("getCategoryArticle: {} by url {}", response, url);
+    for (String category : categories) {
+      log.info("{} перечисление категорий в методе resClient getCategoryArticle", category);
+    }
+    log.info("getCategoryArticle: {} by url {} list categories {}, textArticle {}", response, url, categories, textArticle);
     if (response == null || response < 0 || response > categories.size()) {
+      log.info("response не валидный {}", response);
       return null;
     } else {
       return response;
@@ -46,26 +50,37 @@ public class RestClient {
 
   public static String getRetelling(String textArticle) {
     String urlRetelling = BASE_URL + "/retelling";
+    log.info("python retelling request");
     return restTemplate.postForObject(urlRetelling, urlRetelling, String.class);
   }
 
   public static Map<String, String> getListArticleByUrl(String url) {
     String urlParsing = BASE_URL + "/parsing";
-    log.info("parsing url:" + url);
-    String[] responseParsing = restTemplate.postForObject(urlParsing, String.class, String[].class);
-    if (responseParsing == null || responseParsing.length == 0) {
-      return null;
-    }
+    log.info("parsing2 url: {}", url);
+    Map<String, String> requestBody = new HashMap<>();
+    requestBody.put("url", url);
+
+    String[] responseParsing = restTemplate.postForObject(
+        urlParsing,
+        requestBody,
+        String[].class
+    );
+    log.info(responseParsing.toString() + " parsing after request");
+
     // map<url, descr>
     Map<String, String> articleMap = new HashMap<>();
     for (int i = 1; i < responseParsing.length; i++) {
-     articleMap.put(responseParsing[i], responseParsing[i -1]);
+     articleMap.put(responseParsing[i], responseParsing[i - 1]);
     }
     return articleMap;
   }
 
   public static String getNameArticle(String textArticle) {
     String urlRetelling = BASE_URL + "/very_short_retelling";
-    return restTemplate.postForObject(urlRetelling, urlRetelling, String.class);
+//    Map<String, String>
+    log.info("get Name article");
+    Map<String, String> request = new HashMap<>();
+    request.put("article", textArticle);
+    return restTemplate.postForObject(urlRetelling, request, String.class);
   }
 }

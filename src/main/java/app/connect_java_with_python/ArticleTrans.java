@@ -44,12 +44,16 @@ public class ArticleTrans {
             .filter(Category::isEnabled)
             .map(Category::getName)
             .toList();
-    log.info(categories.toString() + "  " + categories.get(0));
+    log.info(categories.toString() + " ss  " + categories.get(0));
     log.info(websites.get(0).getSourceUrl() + " asdasdasd");
     for (Website website : websites) {
       if (website.isSourceActiveStatus()) {
         // map<url, text>
         Map<String, String> articles = RestClient.getListArticleByUrl(website.getSourceUrl());
+        if (!articles.isEmpty()) {
+          log.info(articles.toString());
+          log.info("успешно спарсил");
+        }
         // map<url, category>
         Map<String, String> categoryByUrl = new HashMap<>();
 
@@ -60,18 +64,19 @@ public class ArticleTrans {
 
         for (Map.Entry<String, String> item : articles.entrySet()) {
           Integer idx = RestClient.getCategoryArticle(item.getValue(), categories);
-
+          log.info("после запроса на определение категории index: {} and text: {}", idx, item.getValue());
           // Проверяем, что индекс непустой и в пределах списка
           if (idx != null && idx >= 0 && idx < categories.size()) {
             categoryByUrl.put(item.getKey(), categories.get(idx));
           } else {
-            log.warn("не удалось или не нашлась категория для статьи с url: {} и статьей с ссылкой: {}", website.getSourceUrl(), item.getKey());
+            log.warn("не удалось или не нашлась категория для статьи с url: {} и статьей с ссылкой: {} и индекс категории: {}", website.getSourceUrl(), item.getKey(), idx);
           }
 //
         }
         Map<String, String> urlAndShortDiscr = Map.of();
         if (user.isBriefContentOfArticlesStatus()) {
           // map<url, shortDiscr>
+          log.info("включено кратное описание");
           urlAndShortDiscr = new HashMap<>();
           for (Map.Entry<String, String> item : articles.entrySet()) {
             urlAndShortDiscr.put(item.getKey(), RestClient.getRetelling(item.getKey()));
@@ -81,23 +86,27 @@ public class ArticleTrans {
         Map<String, String> urlAndName = new HashMap<>();
         for (Map.Entry<String, String> item : articles.entrySet()) {
           urlAndName.put(item.getKey(), RestClient.getNameArticle(item.getValue()));
+          log.info("формируем название для сайта {}", item.getKey());
         }
 
         for (String key : articles.keySet()) {
-          Category category = categoryRepository.findCategoriesByNameAndUser_ChatId(categoryByUrl.get(key), user.getChatId());
-          Article article = Article.builder()
-              .name(urlAndName.get(key))
-              .url(key)
-              .website(website)
-              .creationDate(OffsetDateTime.now())
-              .briefContent(urlAndShortDiscr.get(key))
-              .statusOfWatchingBriefContent(false)
-              .favoriteStatus(false)
-              .watchedStatus(false)
-              .user(user)
-              .category(category)
-              .build();
-          articleRepository.save(article);
+          log.info("добавляем в бд");
+          if (categoryByUrl.get(key) != null) {
+            Category category = categoryRepository.findCategoriesByNameAndUser_ChatId(categoryByUrl.get(key), user.getChatId());
+            Article article = Article.builder()
+                .name(urlAndName.get(key))
+                .url(key)
+                .website(website)
+                .creationDate(OffsetDateTime.now())
+                .briefContent(urlAndShortDiscr.get(key))
+                .statusOfWatchingBriefContent(false)
+                .favoriteStatus(false)
+                .watchedStatus(false)
+                .user(user)
+                .category(category)
+                .build();
+            articleRepository.save(article);
+          }
         }
       }
     }

@@ -16,7 +16,7 @@ spring:
   application:
     name: HomeWork
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgress
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: password
     driver-class-name: org.postgresql.Driver
