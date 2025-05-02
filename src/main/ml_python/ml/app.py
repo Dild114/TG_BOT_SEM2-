@@ -64,6 +64,12 @@ async def receive_json(data: RequestModelOnlyArticle):
     result = Retelling_text.retelling(data.article)
     return result
 
+@app.post("/very_short_retelling")
+async def receive_json(data: RequestModelOnlyArticle):
+    print(data)
+    result = Retelling_text.short_retelling(data.article)
+    return result
+
 @app.post("/parsing")
 async def receive_json(data: RequestParsingModel):
     print(data.url)
