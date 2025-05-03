@@ -39,5 +39,6 @@ def parser(url_request):
         ]
     )
 
+
     return completion.choices[0].message.content
 
