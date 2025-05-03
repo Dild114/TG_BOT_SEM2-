@@ -26,7 +26,7 @@ class RequestModelOnlyArticle(BaseModel):
 
 @app.post("/articles")
 async def receive_json(data: RequestModel):
-    print(data + "python /articles те определение категории")
+    print("python /articles те определение категории")
     result = model(data.article, data.categories)
     best_label = result["labels"][0]
     best_score = result["scores"][0]
@@ -70,7 +70,7 @@ async def receive_json(data: RequestModelOnlyArticle):
 @app.post("/parsing")
 async def receive_json(data: RequestParsingModel):
     result = parsing_sites.parser(data.url)
-    return result.split("q1w2e3r4t5y6u7i8o9@@#!@")
+    return result.split("==")
 
 # true - fake, false - real news
 @app.post("/check_fake")

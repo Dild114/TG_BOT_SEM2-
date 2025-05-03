@@ -61,13 +61,15 @@ public class ArticleTrans {
           log.error("failed get article from user {} and url {}", user.getChatId(), website.getSourceUrl());
           continue;
         }
-
+        // map<url, text>
+        Map<String, String> newArticles = new HashMap<>();
         for (Map.Entry<String, String> item : articles.entrySet()) {
           Integer idx = RestClient.getCategoryArticle(item.getValue(), categories);
           log.info("после запроса на определение категории index: {} and text: {}", idx, item.getValue());
           // Проверяем, что индекс непустой и в пределах списка
           if (idx != null && idx >= 0 && idx < categories.size()) {
             categoryByUrl.put(item.getKey(), categories.get(idx));
+            newArticles.put(item.getKey(), item.getValue());
           } else {
             log.warn("не удалось или не нашлась категория для статьи с url: {} и статьей с ссылкой: {} и индекс категории: {}", website.getSourceUrl(), item.getKey(), idx);
           }
@@ -78,18 +80,18 @@ public class ArticleTrans {
           // map<url, shortDiscr>
           log.info("включено кратное описание");
           urlAndShortDiscr = new HashMap<>();
-          for (Map.Entry<String, String> item : articles.entrySet()) {
+          for (Map.Entry<String, String> item : newArticles.entrySet()) {
             urlAndShortDiscr.put(item.getKey(), RestClient.getRetelling(item.getKey()));
           }
         }
         // map<url, name (around 10 word)>
         Map<String, String> urlAndName = new HashMap<>();
-        for (Map.Entry<String, String> item : articles.entrySet()) {
+        for (Map.Entry<String, String> item : newArticles.entrySet()) {
           urlAndName.put(item.getKey(), RestClient.getNameArticle(item.getValue()));
           log.info("формируем название для сайта {}", item.getKey());
         }
 
-        for (String key : articles.keySet()) {
+        for (String key : newArticles.keySet()) {
           log.info("добавляем в бд");
           if (categoryByUrl.get(key) != null) {
             Category category = categoryRepository.findCategoriesByNameAndUser_ChatId(categoryByUrl.get(key), user.getChatId());

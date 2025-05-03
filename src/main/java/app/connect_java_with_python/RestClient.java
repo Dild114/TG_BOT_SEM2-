@@ -19,14 +19,11 @@ public class RestClient {
   // возвращается индекс из массива категории,
   // который больше всего подходит или null если такого нет
   public static Integer getCategoryArticle(String textArticle, List<String> categories) {
-;    String url = BASE_URL + "/articles";
+    String url = BASE_URL + "/articles";
     Map<String, Object> body = new HashMap<>();
     body.put("article", textArticle);
     body.put("categories", categories);
     Integer response = restTemplate.postForObject(url, body, Integer.class);
-    for (String category : categories) {
-      log.info("{} перечисление категорий в методе resClient getCategoryArticle", category);
-    }
     log.info("getCategoryArticle: {} by url {} list categories {}, textArticle {}", response, url, categories, textArticle);
     if (response == null || response < 0 || response > categories.size()) {
       log.info("response не валидный {}", response);
@@ -69,8 +66,11 @@ public class RestClient {
 
     // map<url, descr>
     Map<String, String> articleMap = new HashMap<>();
-    for (int i = 1; i < responseParsing.length; i++) {
-     articleMap.put(responseParsing[i], responseParsing[i - 1]);
+    for (int i = 0; i < responseParsing.length - 1; i = i + 2) {
+      if (i + 1 < responseParsing.length) {
+        articleMap.put(responseParsing[i], responseParsing[i + 1]);
+      }
+
     }
     return articleMap;
   }
