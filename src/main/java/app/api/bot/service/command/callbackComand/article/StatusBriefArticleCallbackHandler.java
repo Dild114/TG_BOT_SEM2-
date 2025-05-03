@@ -2,7 +2,7 @@ package app.api.bot.service.command.callbackComand.article;
 
 import app.api.bot.service.command.handlerInterfaces.CallbackCommandHandler;
 import app.api.bot.service.message.news.articles.ArticleMessageService;
-import app.api.service.*;
+import app.api.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

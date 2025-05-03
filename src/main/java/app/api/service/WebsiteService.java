@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @Service
 public class WebsiteService {
   private final WebsiteRepository websiteRepository;
-  private final WebsiteMapper websiteMapper;
   private final UserRepository userRepository;
 
   @Transactional(readOnly = true)
@@ -36,6 +35,15 @@ public class WebsiteService {
   public void addSourceToUser(Long chatId, String sourceName, String sourceUrl) {
     User user = userRepository.findById(chatId)
         .orElseThrow(() -> new EntityNotFoundException("User not found: " + chatId));
+    List<String> existingSourceNames = user.getWebsites().stream()
+        .map(Website::getSourceName)
+        .toList();
+    List<String> existingSourceUrls = user.getWebsites().stream()
+        .map(Website::getSourceUrl)
+        .toList();
+    if (existingSourceNames.contains(sourceName) || existingSourceUrls.contains(sourceUrl)) {
+      throw new InvalidValueException("Источник с таким названием или ссылкой уже существует");
+    }
     Website website = Website
         .builder()
         .user(user)

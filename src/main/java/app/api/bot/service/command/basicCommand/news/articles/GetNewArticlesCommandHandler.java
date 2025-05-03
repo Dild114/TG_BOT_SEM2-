@@ -19,7 +19,7 @@ public class GetNewArticlesCommandHandler implements BasicCommandHandler {
   private final ArticleMessageService articleMessageService;
   private final MessageSenderService messageSenderService;
   private final ArticleService articleService;
-  private final UserService userService; // Добавлено для получения настроек пользователя
+  private final UserService userService;
 
   @Override
   public boolean canHandle(String messageText) {
