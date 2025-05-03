@@ -12,7 +12,6 @@ def get_html(url):
 
 def parser(url_request):
 
-
     client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
         # ключ максима
