@@ -30,13 +30,14 @@ CREATE TABLE websites (
 );
 
 CREATE TABLE articles (
-                          id            BIGINT NOT NULL,
-                          name          VARCHAR(255),
-                          url           VARCHAR(255),
+                          id            BIGINT NOT NULL DEFAULT nextval('article_id_seq'),
+                          name          TEXT,
+                          url           TEXT,
                           creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
                           website_id    BIGINT,
                           category_id   BIGINT,
                           user_id       BIGINT NOT NULL,
+                          brief_content TEXT,
                           CONSTRAINT articles_pkey PRIMARY KEY (id),
                           CONSTRAINT fk_article_user FOREIGN KEY (user_id) REFERENCES users(chat_id) ON DELETE CASCADE,
                           CONSTRAINT fk_article_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL

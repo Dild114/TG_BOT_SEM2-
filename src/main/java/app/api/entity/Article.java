@@ -45,7 +45,7 @@ public class Article {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "brief_content")
+    @Column(name = "brief_content", columnDefinition = "TEXT")
     private String briefContent;
 
     @Column(name = "status_of_watching_brief_content")

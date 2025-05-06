@@ -6,7 +6,9 @@ import app.api.entity.User;
 import app.api.entity.Website;
 import app.api.repository.ArticleRepository;
 import app.api.repository.CategoryRepository;
+import app.api.repository.UserRepository;
 import app.api.repository.WebsiteRepository;
+import jakarta.ws.rs.OPTIONS;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -21,20 +24,28 @@ public class ArticleTrans {
   private final ArticleRepository articleRepository;
   private final WebsiteRepository websiteRepository;
   private final CategoryRepository categoryRepository;
+  private final UserRepository userRepository;
 
   public ArticleTrans (
       ArticleRepository articleRepository,
       WebsiteRepository websiteRepository,
-      CategoryRepository categoryRepository
+      CategoryRepository categoryRepository,
+      UserRepository userRepository
   ) {
     this.articleRepository = articleRepository;
     this.websiteRepository = websiteRepository;
     this.categoryRepository = categoryRepository;
+    this.userRepository = userRepository;
   }
 
 
   @Transactional
-  public void addArticleByUser(User user) {
+  public void addArticleByUser(Long chatId) {
+    Optional<User> userOptional = userRepository.findById(chatId);
+    User user = null;
+    if (userOptional.isPresent()) {
+      user = userOptional.get();
+    }
     List<Website> websites = websiteRepository.findAllWebsitesByUser_ChatId(user.getChatId());
     log.info("website db");
     List<String> categories =
@@ -99,15 +110,17 @@ public class ArticleTrans {
                 .name(urlAndName.get(key))
                 .url(key)
                 .website(website)
-                .creationDate(OffsetDateTime.now())
                 .briefContent(urlAndShortDiscr.get(key))
+                .creationDate(OffsetDateTime.now())
                 .statusOfWatchingBriefContent(false)
                 .favoriteStatus(false)
                 .watchedStatus(false)
                 .user(user)
                 .category(category)
                 .build();
-            articleRepository.save(article);
+            Article savedArticle = articleRepository.save(article);
+            user.getArticles().add(savedArticle);
+            userRepository.save(user);
           }
         }
       }
