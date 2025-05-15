@@ -3,9 +3,11 @@ package app.api.bot.service.command.basicCommand.news.articles;
 import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
 import app.api.bot.service.message.news.articles.ArticleMessageService;
+import app.api.dto.ArticleDto;
 import app.api.entity.*;
 import app.api.service.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Component
 @Order(15)
+@Slf4j
 @RequiredArgsConstructor
 public class GetNewArticlesCommandHandler implements BasicCommandHandler {
   private final ArticleMessageService articleMessageService;
@@ -30,7 +33,7 @@ public class GetNewArticlesCommandHandler implements BasicCommandHandler {
   public void handle(Message message) {
     long chatId = message.getChatId();
     long countResponseArticlesForUser = userService.getUserCountArticlesInOneRequest(chatId);
-    List<Article> articles = articleService.getNewUserArticles(chatId, countResponseArticlesForUser);
+    List<ArticleDto> articles = articleService.getNewUserArticles(chatId, countResponseArticlesForUser);
     messageSenderService.deleteAllMessagesAfterReplyKeyboard(chatId);
     if (!articles.isEmpty()) {
       articleMessageService.sendArticles(chatId, articles);

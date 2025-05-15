@@ -1,5 +1,6 @@
 package app.api.bot.service.keyboard.inlineKeyboard;
 
+import app.api.dto.ArticleDto;
 import app.api.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,12 +16,12 @@ public class ArticleMenuInlineKeyboard {
   private final InlineKeyboardHelper inlineKeyboardHelper;
 
   //TODO: заменить Article article на нормальную dto и соответственно перепроверить методы
-  public InlineKeyboardMarkup createArticleKeyboard(Article article) {
+  public InlineKeyboardMarkup createArticleKeyboard(ArticleDto article) {
     InlineKeyboardMarkup articleMenuKeyboard = new InlineKeyboardMarkup();
 
     List<List<InlineKeyboardButton>> articlesKeyboard = new ArrayList<>();
 
-    boolean isWatchingBrief = article.getStatusOfWatchingBriefContent();
+    boolean isWatchingBrief = article.isStatusOfWatchingBriefContent();
     articlesKeyboard.add(
       List.of(
         inlineKeyboardHelper.createCallbackButton(
@@ -31,7 +32,7 @@ public class ArticleMenuInlineKeyboard {
     );
 
     InlineKeyboardButton urlButton = inlineKeyboardHelper.createUrlButton("🔗", article.getUrl());
-    InlineKeyboardButton closeButton = inlineKeyboardHelper.createCallbackButton(!article.getFavoriteStatus() ? "\uD83E\uDD0D" : "❤\uFE0F", "change_article_liked_" + article.getId());
+    InlineKeyboardButton closeButton = inlineKeyboardHelper.createCallbackButton(!article.isFavoriteStatus() ? "\uD83E\uDD0D" : "❤\uFE0F", "change_article_liked_" + article.getId());
 
     articlesKeyboard.add(List.of(urlButton, closeButton));
 

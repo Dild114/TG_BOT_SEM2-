@@ -68,7 +68,7 @@ public class ArticleTrans {
         // map<url, category>
         Map<String, String> categoryByUrl = new HashMap<>();
 
-        if (articles == null) {
+        if (articles.isEmpty()) {
           log.error("failed get article from user {} and url {}", user.getChatId(), website.getSourceUrl());
           continue;
         }

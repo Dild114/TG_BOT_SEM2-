@@ -4,6 +4,7 @@ import app.api.bot.service.MessageSenderService;
 import app.api.bot.service.command.handlerInterfaces.BasicCommandHandler;
 import app.api.bot.service.message.news.articles.ArticleMessageService;
 import app.api.entity.*;
+import app.api.mapper.ArticleMapper;
 import app.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Order(32)
@@ -32,7 +34,9 @@ public class GetLikedArticlesCommandHandler implements BasicCommandHandler {
     List<Article> articles = articleService.getLikedUserArticles(chatId);
     messageSenderService.deleteAllMessagesAfterReplyKeyboard(chatId);
     if (!articles.isEmpty()) {
-      articleMessageService.sendArticles(chatId, articles);
+      articleMessageService.sendArticles(chatId, articles.stream()
+          .map(ArticleMapper::toDto)
+          .collect(Collectors.toList()));
     } else {
       messageSenderService.sendTextMessage(chatId, "\uD83E\uDD14 Ни одна статья не была добавлена в избранное");
     }

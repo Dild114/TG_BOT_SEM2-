@@ -57,7 +57,7 @@ public class RestClient {
     Map<String, String> requestBody = new HashMap<>();
     requestBody.put("url", url);
 
-    String[] responseParsing = restTemplate.postForObject(
+      String[] responseParsing = restTemplate.postForObject(
         urlParsing,
         requestBody,
         String[].class
@@ -68,7 +68,7 @@ public class RestClient {
     Map<String, String> articleMap = new HashMap<>();
     for (int i = 0; i < responseParsing.length - 1; i = i + 2) {
       if (i + 1 < responseParsing.length) {
-        articleMap.put(responseParsing[i], responseParsing[i + 1]);
+        articleMap.put(responseParsing[i].trim(), responseParsing[i + 1]);
       }
 
     }

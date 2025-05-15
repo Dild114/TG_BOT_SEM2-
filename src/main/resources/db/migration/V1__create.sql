@@ -12,7 +12,7 @@ CREATE TABLE users (
 
 CREATE TABLE categories (
                             id      BIGINT NOT NULL,
-                            name    VARCHAR(255),
+                            name    TEXT,
                             user_id BIGINT NOT NULL,
                             is_enabled BOOLEAN NOT NULL,
                             CONSTRAINT categories_pkey PRIMARY KEY (id),
@@ -21,8 +21,8 @@ CREATE TABLE categories (
 
 CREATE TABLE websites (
                           source_id   BIGINT NOT NULL DEFAULT nextval('website_id_seq'),
-                          name        VARCHAR(255),
-                          url         VARCHAR(255),
+                          name        TEXT,
+                          url         TEXT,
                           is_enabled  BOOLEAN NOT NULL,
                           user_id     BIGINT NOT NULL,
                           CONSTRAINT websites_pkey PRIMARY KEY (source_id),

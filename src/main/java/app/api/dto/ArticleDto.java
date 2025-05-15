@@ -21,9 +21,15 @@ public class ArticleDto {
 
   private OffsetDateTime creationDate;
 
-  private Long categoryId;
+  private String category;
 
-  private Long websiteId;
+  private String website;
 
   private String userId;
+
+  private boolean statusOfWatchingBriefContent;
+
+  private boolean favoriteStatus;
+
+  private String brief = null;
 }

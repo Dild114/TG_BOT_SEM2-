@@ -35,7 +35,7 @@ public class ArticleAuto {
   }
 
   // 5 минут
-  @Scheduled(fixedDelay = 50000)
+  @Scheduled(fixedDelay = 5000)
   public void addArticleByAllUsers() {
     log.info("add article all users!!!!");
     List<User> allUsers = userRepository.findAll();

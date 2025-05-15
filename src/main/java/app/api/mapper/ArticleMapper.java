@@ -7,14 +7,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class ArticleMapper {
 
-  public ArticleDto toDto(Article article) {
+  public static ArticleDto toDto(Article article) {
     return ArticleDto.builder()
         .id(article.getId())
         .name(article.getName())
         .url(article.getUrl())
         .creationDate(article.getCreationDate())
-        .categoryId(article.getCategory().getId())  // Привязка к категории
-        .websiteId(article.getWebsite().getSourceId())  // Привязка к сайту
+        .category(article.getCategory() != null ? article.getCategory().getName() : null)
+        .website(article.getWebsite() != null ? article.getWebsite().getSourceName() : null)
+        .statusOfWatchingBriefContent(article.getStatusOfWatchingBriefContent())
+        .favoriteStatus(article.getFavoriteStatus())
         .build();
   }
 

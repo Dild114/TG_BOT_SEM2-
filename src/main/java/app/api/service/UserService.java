@@ -38,7 +38,6 @@ public class UserService {
         .build();
 
     userRepository.save(user);
-    articleService.addRandomArticlesToUser(user.getChatId());
   }
 
   @Transactional

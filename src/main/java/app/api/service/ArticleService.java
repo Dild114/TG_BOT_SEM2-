@@ -1,5 +1,6 @@
 package app.api.service;
 
+import app.api.dto.ArticleDto;
 import app.api.entity.Article;
 import app.api.entity.User;
 import app.api.mapper.ArticleMapper;
@@ -14,6 +15,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,7 +32,7 @@ public class ArticleService {
   }
 
   @Transactional
-  public List<Article> getNewUserArticles(Long chatId, long countResponseArticlesForUser) {
+  public List<ArticleDto> getNewUserArticles(Long chatId, long countResponseArticlesForUser) {
     List<Article> articles = articleRepository.findArticlesByUser_ChatId(chatId);
     articles.sort(Comparator.comparing(Article::getId).reversed());
 
@@ -47,7 +49,12 @@ public class ArticleService {
         break;
       }
     }
-    return responseNewArticles;
+
+    List<ArticleDto> articleDtos = responseNewArticles.stream()
+        .map(ArticleMapper::toDto).collect(Collectors.toList());
+    articleDtos.sort(Comparator.comparing(ArticleDto::getId).reversed());
+
+    return articleDtos;
   }
 
   @Transactional(readOnly = true)
